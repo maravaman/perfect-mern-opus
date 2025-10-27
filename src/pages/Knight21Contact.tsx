@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Linkedin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 export default function Knight21Contact() {
   const [formData, setFormData] = useState({
@@ -14,11 +15,33 @@ export default function Knight21Contact() {
     subject: "",
     message: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent successfully! We'll get back to you soon.");
-    setFormData({ name: "", phone: "", email: "", subject: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.from('contact_inquiries').insert([
+        {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        },
+      ]);
+
+      if (error) throw error;
+
+      toast.success("Message sent successfully! We'll get back to you soon.");
+      setFormData({ name: "", phone: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -184,8 +207,8 @@ export default function Knight21Contact() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full">
-                  Submit Message
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? "Sending..." : "Submit Message"}
                 </Button>
               </form>
             </Card>
