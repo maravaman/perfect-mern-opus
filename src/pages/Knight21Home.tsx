@@ -119,12 +119,12 @@ export default function Knight21Home() {
               Your Growth Partner In Website Designing, SEO Management, Google Ads, Social Media Marketing, Content Marketing, Email Marketing, Mobile Apps
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link to="/contact">
+              <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="group">
                   Get Start Today
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-              </Link>
+              </a>
               <Link to="/services">
                 <Button size="lg" variant="outline">
                   All Services
@@ -189,57 +189,106 @@ export default function Knight21Home() {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Our Packages Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
-              Our Courses <span className="text-primary">Price Table</span>
+              Our <span className="text-primary">Packages</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Choose from our flexible and affordable pricing plans tailored to suit businesses of all sizes.
+              Choose the perfect package for your business needs
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {pricingPlans.map((plan) => (
-              <Card key={plan.name} className={`p-6 ${plan.popular ? "border-primary border-2 relative" : ""}`}>
-                {plan.popular && (
+            {[
+              {
+                name: "Starter Package",
+                price: "₹15,000",
+                features: [
+                  "Basic Website Design",
+                  "5 Pages",
+                  "Mobile Responsive",
+                  "SEO Basic Setup",
+                  "1 Month Support",
+                  "Social Media Integration"
+                ]
+              },
+              {
+                name: "Professional Package",
+                price: "₹35,000",
+                popular: true,
+                features: [
+                  "Advanced Website Design",
+                  "10 Pages",
+                  "E-commerce Integration",
+                  "Advanced SEO Setup",
+                  "3 Months Support",
+                  "Google Ads Setup",
+                  "Social Media Marketing",
+                  "Content Writing"
+                ]
+              },
+              {
+                name: "Enterprise Package",
+                price: "₹75,000",
+                features: [
+                  "Custom Web Application",
+                  "Unlimited Pages",
+                  "Full E-commerce Solution",
+                  "Complete SEO Campaign",
+                  "6 Months Support",
+                  "Google Ads Management",
+                  "Social Media Management",
+                  "Email Marketing",
+                  "Analytics & Reporting"
+                ]
+              }
+            ].map((pkg) => (
+              <Card key={pkg.name} className={`p-6 ${pkg.popular ? "border-primary border-2 relative" : ""}`}>
+                {pkg.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-sm font-semibold">
                     Most Popular
                   </div>
                 )}
-                <h3 className="text-2xl font-bold font-poppins mb-2">{plan.name}</h3>
-                <div className="text-3xl font-bold text-primary mb-6">{plan.price}</div>
+                <h3 className="text-2xl font-bold font-poppins mb-2">{pkg.name}</h3>
+                <div className="text-3xl font-bold text-primary mb-6">{pkg.price}</div>
                 <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature, index) => (
+                  {pkg.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-2">
                       <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
-                {plan.price !== "₹ 0" && (
-                  <Link to="/contact">
-                    <Button className="w-full">Enroll Now</Button>
-                  </Link>
-                )}
+                <Link to="/contact">
+                  <Button className="w-full">Get Started</Button>
+                </Link>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Who Should Join */}
+      {/* Who We Serve */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold font-poppins text-center mb-8">
-            Who Should <span className="text-primary">Join?</span>
+            Industries We <span className="text-primary">Serve</span>
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-4xl mx-auto">
-            {["Students", "Working Professionals", "Business Professionals", "Housewives", "Career Changers"].map((category) => (
-              <Card key={category} className="p-4 text-center hover:shadow-md transition-shadow">
-                <p className="font-semibold">{category}</p>
-              </Card>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {[
+              { name: "Schools", icon: "🎓" },
+              { name: "Restaurants", icon: "🍽️" },
+              { name: "Colleges", icon: "🏫" },
+              { name: "Hospitals", icon: "🏥" }
+            ].map((category) => (
+              <Link key={category.name} to="/portfolio">
+                <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer group">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{category.icon}</div>
+                  <p className="font-semibold text-lg">{category.name}</p>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

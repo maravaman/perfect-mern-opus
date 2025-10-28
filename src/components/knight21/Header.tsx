@@ -44,9 +44,9 @@ export const Header = () => {
           </nav>
 
           {/* Desktop CTA */}
-          <Link to="/contact" className="hidden md:block">
+          <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" className="hidden md:block">
             <Button>Get Started</Button>
-          </Link>
+          </a>
 
           {/* Mobile Menu Button */}
           <button
@@ -73,9 +73,9 @@ export const Header = () => {
                   {link.label}
                 </Link>
               ))}
-              <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
+              <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>
                 <Button className="w-full">Get Started</Button>
-              </Link>
+              </a>
             </nav>
           </div>
         )}

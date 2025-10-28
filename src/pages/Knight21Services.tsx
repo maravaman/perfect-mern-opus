@@ -1,8 +1,9 @@
 import { Card } from "@/components/ui/card";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Globe, Search, MousePointerClick, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart, Calculator, Wrench } from "lucide-react";
 
 const services = [
   {
+    icon: Globe,
     title: "Website Designing",
     description: "Your website is your online identity. We create modern, responsive, and SEO friendly websites that reflect your brand and engage your visitors. From single page websites to complex e-commerce platforms, our web design team brings your vision to life with stunning layouts, easy navigation, and strong calls to action.",
     features: [
@@ -14,6 +15,7 @@ const services = [
     ]
   },
   {
+    icon: Search,
     title: "Search Engine Optimization",
     description: "Appear on the first page of Google and dominate your industry with our result driven SEO strategies. We offer on-page, off-page, and technical SEO services to help you get higher rankings, increase organic traffic, and attract qualified leads.",
     features: [
@@ -27,6 +29,7 @@ const services = [
     ]
   },
   {
+    icon: MousePointerClick,
     title: "Google Ads",
     description: "Get instant visibility on Google with our expertly managed Google Ads campaigns. We create compelling ad copy, manage bidding strategies, and continuously optimize campaigns for better ROI.",
     features: [
@@ -40,6 +43,7 @@ const services = [
     ]
   },
   {
+    icon: Share2,
     title: "Social Media Marketing",
     description: "We build your brand on platforms like Facebook, Instagram, LinkedIn, and Twitter with engaging content, paid ads, and audience interaction strategies. Whether you're launching a product or building a loyal customer base, we make your social media shine.",
     features: [
@@ -51,6 +55,7 @@ const services = [
     ]
   },
   {
+    icon: FileText,
     title: "Content Marketing",
     description: "Content is the king, and we are the kingmakers. Our content team develops well-structured, SEO-optimized content that educates, entertains, and converts. From blogs to website content to ad copy – we write it all.",
     features: [
@@ -63,6 +68,7 @@ const services = [
     ]
   },
   {
+    icon: Users,
     title: "Social Media Maintenance",
     description: "We don't just market – we maintain your brand presence. Our Social Media Maintenance services ensure your profiles stay active, engaging, and on-trend. This includes regular posting, designing creative visuals, and replying to messages/comments.",
     features: [
@@ -74,6 +80,7 @@ const services = [
     ]
   },
   {
+    icon: Smartphone,
     title: "Mobile App Development",
     description: "Need a mobile app to engage your users on the go? We design and develop custom Android and iOS applications with interactive user interfaces and smart features. From eCommerce apps to service-based apps, we cover all.",
     features: [
@@ -85,24 +92,42 @@ const services = [
     ]
   },
   {
-    title: "Website Designing and Digital Marketing Online Training",
+    icon: Calculator,
+    title: "CA Services",
+    description: "Complete chartered accountant services for your business compliance needs. From company registration to GST filing and trademark registration, we handle all your legal and financial documentation.",
+    features: [
+      "MSME Registration",
+      "GST Registration & Filing",
+      "Trademark Registration",
+      "Company Registration",
+      "Tax Planning & Filing",
+      "Accounting & Bookkeeping"
+    ]
+  },
+  {
+    icon: Wrench,
+    title: "Business Tools & Software",
+    description: "Powerful business tools to streamline your operations and boost productivity. Get access to premium tools including CRM, ERP, and essential software at affordable prices.",
+    features: [
+      "CRM Systems",
+      "ERP Solutions",
+      "API Integrations",
+      "Canva Pro",
+      "Gemini AI Access",
+      "Custom Software Development"
+    ]
+  },
+  {
+    icon: GraduationCap,
+    title: "Professional Online Training",
     description: "Want to learn how to design websites or run digital marketing campaigns like a pro? Join our hands-on, beginner-to-advanced Online Training Programs. Get certified, learn from experienced trainers, and build real-time projects.",
     features: [
-      "Website Designing",
+      "Website Designing Course",
       "Digital Marketing Master Course",
       "SEO, Google Ads & Social Media",
       "Content Writing & Branding",
       "Freelancing & Client Handling Skills",
       "One-on-One Doubt Sessions"
-    ]
-  },
-  {
-    title: "Buy Pro Tools",
-    description: "Now, you can buy premium digital tools directly from our website at affordable prices. These tools can boost your design, marketing, and productivity.",
-    features: [
-      "Canva",
-      "Chat GPT",
-      "SEO & Keyword Research Tools"
     ]
   }
 ];
@@ -131,8 +156,13 @@ export default function Knight21Services() {
             {services.map((service, index) => (
               <div key={index} className={`grid md:grid-cols-2 gap-8 items-center ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
                 <div className={`${index % 2 === 1 ? 'md:order-2' : ''}`}>
-                  <div className="text-6xl font-bold text-primary/10 mb-4">
-                    {String(index + 1).padStart(2, '0')}
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <service.icon className="w-8 h-8 text-primary" />
+                    </div>
+                    <div className="text-4xl font-bold text-primary/20">
+                      {String(index + 1).padStart(2, '0')}
+                    </div>
                   </div>
                   <h2 className="text-3xl font-bold font-poppins mb-4">{service.title}</h2>
                   <p className="text-muted-foreground leading-relaxed mb-6">

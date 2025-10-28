@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Linkedin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabase";
 
 export default function Knight21Contact() {
   const [formData, setFormData] = useState({
@@ -22,23 +21,28 @@ export default function Knight21Contact() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from('contact_inquiries').insert([
-        {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          subject: formData.subject,
-          message: formData.message,
-        },
-      ]);
+      // Send to Google Sheets via Web App
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('subject', formData.subject);
+      formDataToSend.append('message', formData.message);
 
-      if (error) throw error;
+      // Replace this URL with your Google Apps Script Web App URL
+      const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+      
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: formDataToSend,
+        mode: 'no-cors'
+      });
 
       toast.success("Message sent successfully! We'll get back to you soon.");
       setFormData({ name: "", phone: "", email: "", subject: "", message: "" });
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error("Failed to send message. Please try again.");
+      toast.error("Failed to send message. Please try again or contact us directly.");
     } finally {
       setIsSubmitting(false);
     }
@@ -210,6 +214,9 @@ export default function Knight21Contact() {
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? "Sending..." : "Submit Message"}
                 </Button>
+                <p className="text-sm text-muted-foreground text-center">
+                  Note: To set up Google Sheets integration, please follow our documentation.
+                </p>
               </form>
             </Card>
           </div>

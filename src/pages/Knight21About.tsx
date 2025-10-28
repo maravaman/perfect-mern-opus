@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Knight21About() {
   return (
@@ -115,34 +116,41 @@ export default function Knight21About() {
             {[
               {
                 title: "Website Designing & Development",
-                description: "Stunning, responsive websites that deliver seamless user experiences across devices built with performance, speed, and design in mind."
+                description: "Stunning, responsive websites that deliver seamless user experiences across devices built with performance, speed, and design in mind.",
+                link: "/services"
               },
               {
                 title: "Digital Marketing Services",
-                description: "Data-driven strategies including SEO, Google Ads, and content marketing to attract, engage, and convert your ideal audience."
+                description: "Data-driven strategies including SEO, Google Ads, and content marketing to attract, engage, and convert your ideal audience.",
+                link: "/services"
               },
               {
                 title: "Social Media Marketing & Management",
-                description: "From campaign planning to daily content, we manage your brand's voice across platforms like Instagram, Facebook, LinkedIn, and more."
+                description: "From campaign planning to daily content, we manage your brand's voice across platforms like Instagram, Facebook, LinkedIn, and more.",
+                link: "/services"
               },
               {
-                title: "Branding & Visual Identity",
-                description: "We create cohesive, professional branding elements that resonate with your target audience and leave a lasting impression."
+                title: "CA Services",
+                description: "Complete chartered accountant services including MSME registration, GST filing, trademark registration, and business compliance.",
+                link: "/services"
               },
               {
                 title: "Online Training & Consultation",
-                description: "We empower individuals and businesses with knowledge through workshops and custom digital training in web design, digital marketing, and paid media."
+                description: "We empower individuals and businesses with knowledge through workshops and custom digital training in web design, digital marketing, and paid media.",
+                link: "/services"
               }
             ].map((service, index) => (
-              <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="flex items-start gap-3">
-                  <Star className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-xl font-semibold font-poppins mb-2">{service.title}</h3>
-                    <p className="text-muted-foreground">{service.description}</p>
+              <Link key={index} to={service.link}>
+                <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer group">
+                  <div className="flex items-start gap-3">
+                    <Star className="w-6 h-6 text-primary flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
+                    <div>
+                      <h3 className="text-xl font-semibold font-poppins mb-2 group-hover:text-primary transition-colors">{service.title}</h3>
+                      <p className="text-muted-foreground">{service.description}</p>
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
