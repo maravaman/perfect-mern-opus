@@ -1,55 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Star, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-const services = [
-  {
-    number: "01",
-    title: "Website Designing",
-    description: "A strong website is the foundation of your online presence. Our responsive, SEO-friendly websites are designed to attract and convert visitors."
-  },
-  {
-    number: "02",
-    title: "SEO Management",
-    description: "Reach the top of search engines and attract more organic traffic with proven, data-driven optimization strategies."
-  },
-  {
-    number: "03",
-    title: "Google Ads",
-    description: "With targeted pay-per-click campaigns, we help you reach the right audience at the right time and maximize your return on investment."
-  },
-  {
-    number: "04",
-    title: "Social Media Marketing",
-    description: "Engage your audience and grow your brand across all major social media platforms – Facebook, Instagram, LinkedIn, Youtube, Twitter and more."
-  },
-  {
-    number: "05",
-    title: "Content Marketing",
-    description: "Our team develops valuable, relevant content that informs, engages, and drives action – helping you build trust and authority in your niche."
-  },
-  {
-    number: "06",
-    title: "Social Media Maintenance",
-    description: "We manage and maintain your social media profiles with consistent, engaging content, timely responses, and regular performance tracking."
-  },
-  {
-    number: "07",
-    title: "Mobile App Development",
-    description: "From concept to launch, we build responsive, feature-rich mobile apps that enhance user experiences and grow your business."
-  },
-  {
-    number: "08",
-    title: "Professional Online Training",
-    description: "We offer hands-on Online training in Digital Marketing and Website Designing & Development to help individuals and businesses upskill."
-  },
-  {
-    number: "09",
-    title: "Buy Pro Tools Online",
-    description: "Upgrade your digital toolkit with our premium marketing and development tools. Browse, choose, and buy the best pro tools to boost your productivity."
-  }
-];
+const serviceIcons = {
+  "Website Designing": Globe,
+  "SEO Management": Search,
+  "Google Ads": Megaphone,
+  "Social Media Marketing": Share2,
+  "Content Marketing": FileText,
+  "Social Media Maintenance": Users,
+  "Mobile App Development": Smartphone,
+  "Professional Online Training": GraduationCap,
+  "Buy Pro Tools Online": ShoppingCart
+} as const;
 
 const pricingPlans = [
   {
@@ -100,6 +66,26 @@ const pricingPlans = [
 ];
 
 export default function Knight21Home() {
+  const [services, setServices] = useState<any[]>([]);
+  const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const [servicesRes, portfolioRes, reviewsRes] = await Promise.all([
+      supabase.from('services').select('*').eq('active', true).order('display_order'),
+      supabase.from('portfolio_items').select('*').eq('active', true).order('display_order').limit(6),
+      supabase.from('reviews').select('*').eq('active', true).order('display_order').limit(6)
+    ]);
+
+    if (servicesRes.data) setServices(servicesRes.data);
+    if (portfolioRes.data) setPortfolioItems(portfolioRes.data);
+    if (reviewsRes.data) setReviews(reviewsRes.data);
+  };
+
   return (
     <div className="font-outfit">
       {/* Hero Section */}
@@ -175,16 +161,22 @@ export default function Knight21Home() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <Card key={service.number} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="text-4xl font-bold text-primary/20 mb-4">{service.number}</div>
-                <h3 className="text-xl font-semibold font-poppins mb-3">{service.title}</h3>
-                <p className="text-muted-foreground mb-4">{service.description}</p>
-                <Link to="/services" className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all">
-                  LEARN MORE… <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </Card>
-            ))}
+            {services.map((service, index) => {
+              const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
+              return (
+                <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow">
+                  <div className="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <IconComponent className="w-7 h-7 text-primary" />
+                  </div>
+                  <div className="text-sm font-bold text-primary/40 mb-2">{service.number || `0${index + 1}`}</div>
+                  <h3 className="text-xl font-semibold font-poppins mb-3">{service.title}</h3>
+                  <p className="text-muted-foreground mb-4">{service.description}</p>
+                  <Link to="/services" className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all">
+                    LEARN MORE… <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -270,26 +262,89 @@ export default function Knight21Home() {
         </div>
       </section>
 
-      {/* Who We Serve */}
-      <section className="py-16 bg-gray-50">
+      {/* Portfolio Section */}
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold font-poppins text-center mb-8">
-            Industries We <span className="text-primary">Serve</span>
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            {[
-              { name: "Schools", icon: "🎓" },
-              { name: "Restaurants", icon: "🍽️" },
-              { name: "Colleges", icon: "🏫" },
-              { name: "Hospitals", icon: "🏥" }
-            ].map((category) => (
-              <Link key={category.name} to="/portfolio">
-                <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer group">
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{category.icon}</div>
-                  <p className="font-semibold text-lg">{category.name}</p>
-                </Card>
-              </Link>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
+              Our <span className="text-primary">Portfolio</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Check out some of our recent projects and success stories
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {portfolioItems.map((item) => (
+              <Card key={item.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                <div className="aspect-video overflow-hidden">
+                  <img
+                    src={item.image_url || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.category}</p>
+                </div>
+              </Card>
             ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/portfolio">
+              <Button variant="outline" size="lg">
+                View All Projects <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Client Reviews */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
+              What Our <span className="text-primary">Clients Say</span>
+            </h2>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <span className="text-xl font-bold">4.9/5.0</span>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {reviews.map((review) => (
+              <Card key={review.id} className="p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={review.image_url || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150"}
+                    alt={review.name}
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                  <div>
+                    <h3 className="font-semibold text-lg">{review.name}</h3>
+                    <p className="text-sm text-muted-foreground">{review.role}</p>
+                  </div>
+                </div>
+                <div className="flex mb-3">
+                  {[...Array(review.rating || 5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <p className="text-muted-foreground leading-relaxed">{review.comment}</p>
+              </Card>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/reviews">
+              <Button variant="outline" size="lg">
+                Read More Reviews <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
