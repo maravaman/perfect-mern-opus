@@ -74,8 +74,23 @@ export default function Knight21Home() {
     { id: 6, number: "06", title: "Mobile App Development", description: "Native and cross-platform mobile applications", display_order: 6, active: true }
   ];
 
-  const portfolioItems: any[] = [];
-  const reviews: any[] = [];
+  const portfolioItems = [
+    { id: 1, title: "E-Commerce Website", category: "Web Development", image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500", display_order: 1 },
+    { id: 2, title: "Digital Marketing Campaign", category: "Marketing", image_url: "https://images.unsplash.com/photo-1432888622747-4eb9a8f2c293?w=500", display_order: 2 },
+    { id: 3, title: "Mobile App Design", category: "App Development", image_url: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500", display_order: 3 },
+    { id: 4, title: "SEO Optimization Project", category: "SEO", image_url: "https://images.unsplash.com/photo-1571677205640-d1c4e73f1d09?w=500", display_order: 4 },
+    { id: 5, title: "Social Media Strategy", category: "Social Media", image_url: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500", display_order: 5 },
+    { id: 6, title: "Brand Identity Design", category: "Branding", image_url: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500", display_order: 6 }
+  ];
+
+  const reviews = [
+    { id: 1, name: "Rajesh Kumar", role: "CEO, TechStart Solutions", rating: 5, comment: "Knight21 transformed our online presence completely. Their SEO and digital marketing strategies increased our traffic by 300%. Highly recommended!", image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150", display_order: 1 },
+    { id: 2, name: "Priya Sharma", role: "Founder, EcoLife Products", rating: 5, comment: "Excellent work on our e-commerce website. The team was professional, responsive, and delivered beyond our expectations. Our sales have doubled since launch!", image_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150", display_order: 2 },
+    { id: 3, name: "Arun Patel", role: "Marketing Director, FashionHub", rating: 5, comment: "Their social media marketing campaigns are outstanding. We saw a 250% increase in engagement within just 2 months. The ROI speaks for itself!", image_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150", display_order: 3 },
+    { id: 4, name: "Sneha Reddy", role: "Owner, Café Delight", rating: 5, comment: "Knight21 created a beautiful website and helped us rank on first page of Google. Their Google Ads management brought us so many new customers!", image_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150", display_order: 4 },
+    { id: 5, name: "Vikram Singh", role: "Director, BuildPro Construction", rating: 5, comment: "Professional team with great expertise. They handled everything from website to complete digital marketing. Our business visibility has increased tremendously.", image_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150", display_order: 5 },
+    { id: 6, name: "Meera Desai", role: "CEO, EduLearn Platform", rating: 5, comment: "Amazing results! Their content marketing and SEO strategies helped us reach thousands of students. The team is knowledgeable and always available to help.", image_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150", display_order: 6 }
+  ];
 
   return (
     <div className="font-outfit">
@@ -172,8 +187,46 @@ export default function Knight21Home() {
         </div>
       </section>
 
-      {/* Our Packages Section */}
+      {/* Portfolio Section */}
       <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
+              Our <span className="text-primary">Portfolio</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Check out some of our recent projects and success stories
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {portfolioItems.map((item) => (
+              <Card key={item.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                <div className="aspect-video overflow-hidden">
+                  <img
+                    src={item.image_url || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.category}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/portfolio">
+              <Button variant="outline" size="lg">
+                View All Projects <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Packages Section */}
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
@@ -253,43 +306,6 @@ export default function Knight21Home() {
         </div>
       </section>
 
-      {/* Portfolio Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
-              Our <span className="text-primary">Portfolio</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Check out some of our recent projects and success stories
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {portfolioItems.map((item) => (
-              <Card key={item.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                <div className="aspect-video overflow-hidden">
-                  <img
-                    src={item.image_url || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.category}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link to="/portfolio">
-              <Button variant="outline" size="lg">
-                View All Projects <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Client Reviews */}
       <section className="py-20 bg-white">
