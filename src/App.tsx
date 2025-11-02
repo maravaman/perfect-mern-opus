@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header } from "./components/knight21/Header";
 import { Footer } from "./components/knight21/Footer";
-import Index from "./pages/Index";
+import Knight21Home from "./pages/Knight21Home";
 import Knight21About from "./pages/Knight21About";
 import Knight21Services from "./pages/Knight21Services";
 import Knight21Contact from "./pages/Knight21Contact";
@@ -27,7 +27,7 @@ const App = () => (
           <Header />
           <main className="flex-1">
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Knight21Home />} />
               <Route path="/about" element={<Knight21About />} />
               <Route path="/services" element={<Knight21Services />} />
               <Route path="/contact" element={<Knight21Contact />} />
