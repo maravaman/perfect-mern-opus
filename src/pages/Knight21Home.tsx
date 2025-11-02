@@ -2,8 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 const serviceIcons = {
   "Website Designing": Globe,
@@ -66,25 +64,18 @@ const pricingPlans = [
 ];
 
 export default function Knight21Home() {
-  const [services, setServices] = useState<any[]>([]);
-  const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
-  const [reviews, setReviews] = useState<any[]>([]);
+  // Temporary mock data until Supabase environment is ready
+  const services = [
+    { id: 1, number: "01", title: "Website Designing", description: "Professional, responsive websites tailored to your business needs", display_order: 1, active: true },
+    { id: 2, number: "02", title: "SEO Management", description: "Boost your visibility and rank higher on search engines", display_order: 2, active: true },
+    { id: 3, number: "03", title: "Google Ads", description: "Targeted advertising campaigns that drive real results", display_order: 3, active: true },
+    { id: 4, number: "04", title: "Social Media Marketing", description: "Engage your audience and build your brand across social platforms", display_order: 4, active: true },
+    { id: 5, number: "05", title: "Content Marketing", description: "Compelling content that converts visitors into customers", display_order: 5, active: true },
+    { id: 6, number: "06", title: "Mobile App Development", description: "Native and cross-platform mobile applications", display_order: 6, active: true }
+  ];
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    const [servicesRes, portfolioRes, reviewsRes] = await Promise.all([
-      supabase.from('services').select('*').eq('active', true).order('display_order'),
-      supabase.from('portfolio_items').select('*').eq('active', true).order('display_order').limit(6),
-      supabase.from('reviews').select('*').eq('active', true).order('display_order').limit(6)
-    ]);
-
-    if (servicesRes.data) setServices(servicesRes.data);
-    if (portfolioRes.data) setPortfolioItems(portfolioRes.data);
-    if (reviewsRes.data) setReviews(reviewsRes.data);
-  };
+  const portfolioItems: any[] = [];
+  const reviews: any[] = [];
 
   return (
     <div className="font-outfit">
