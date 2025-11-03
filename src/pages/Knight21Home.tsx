@@ -239,45 +239,47 @@ export default function Knight21Home() {
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
               {
-                name: "Starter Package",
-                price: "₹15,000",
+                name: "Basic",
+                price: "₹5,999",
                 features: [
-                  "Basic Website Design",
-                  "5 Pages",
-                  "Mobile Responsive",
-                  "SEO Basic Setup",
-                  "1 Month Support",
-                  "Social Media Integration"
+                  "Create Facebook and Instagram accounts",
+                  "SMO (Social Media Optimization)",
+                  "SMM (Facebook and Instagram ads)",
+                  "12 posters, 4 videos + festival posters",
+                  "Maintenance",
+                  "Daily Report"
                 ]
               },
               {
-                name: "Professional Package",
-                price: "₹35,000",
+                name: "Standard",
+                price: "₹7,499",
                 popular: true,
                 features: [
-                  "Advanced Website Design",
-                  "10 Pages",
-                  "E-commerce Integration",
-                  "Advanced SEO Setup",
-                  "3 Months Support",
-                  "Google Ads Setup",
-                  "Social Media Marketing",
-                  "Content Writing"
+                  "Create Facebook, Instagram and YouTube",
+                  "SMO (Social Media Optimization)",
+                  "SMM (Facebook, Instagram, and YouTube ads)",
+                  "12 posters, 4 videos + festival posters",
+                  "YouTube SEO and maintenance",
+                  "Facebook 20 groups share",
+                  "WhatsApp marketing 200 numbers",
+                  "Daily report"
                 ]
               },
               {
-                name: "Enterprise Package",
-                price: "₹75,000",
+                name: "Premium",
+                price: "₹9,999",
                 features: [
-                  "Custom Web Application",
-                  "Unlimited Pages",
-                  "Full E-commerce Solution",
-                  "Complete SEO Campaign",
-                  "6 Months Support",
-                  "Google Ads Management",
-                  "Social Media Management",
-                  "Email Marketing",
-                  "Analytics & Reporting"
+                  "Create Facebook, Instagram and YouTube",
+                  "Google ads & Local SEO",
+                  "GMB Setup",
+                  "SMO (Social Media Optimization)",
+                  "SMM (Facebook, Instagram, and YouTube ads)",
+                  "12 posters, 4 videos + festival posters",
+                  "5 videos editing related business promotion",
+                  "YouTube SEO and maintenance",
+                  "Facebook 20 groups and marketplace share",
+                  "WhatsApp marketing 500 numbers",
+                  "Daily report"
                 ]
               }
             ].map((pkg) => (
