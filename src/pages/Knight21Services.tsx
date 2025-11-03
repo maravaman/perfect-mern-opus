@@ -1,133 +1,122 @@
 import { Card } from "@/components/ui/card";
-import { CheckCircle2, Globe, Search, MousePointerClick, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart, Calculator, Wrench } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { 
+  Smartphone, Globe, Code, Palette, Cloud, Wrench, 
+  TrendingUp, Search, MousePointerClick, FileText, Mail, 
+  Lightbulb, Building, FileCheck, Scale, ShieldCheck, 
+  Award, Briefcase, CheckCircle2 
+} from "lucide-react";
 
 const services = [
   {
-    icon: Globe,
-    title: "Website Designing",
-    description: "Your website is your online identity. We create modern, responsive, and SEO friendly websites that reflect your brand and engage your visitors. From single page websites to complex e-commerce platforms, our web design team brings your vision to life with stunning layouts, easy navigation, and strong calls to action.",
-    features: [
-      "Business & Portfolio Websites",
-      "E-Commerce Websites",
-      "Landing Pages",
-      "Custom Web Applications",
-      "Domain & Hosting Support"
+    icon: Code,
+    title: "App & Software Development",
+    description: "We provide complete app and software solutions with modern technologies for startups, enterprises, and individuals.",
+    subcategories: [
+      {
+        icon: Smartphone,
+        title: "Mobile App Development",
+        items: ["Android App Development", "iOS App Development", "Hybrid App Development (Flutter / React Native)"]
+      },
+      {
+        icon: Globe,
+        title: "Web App Development",
+        items: ["Custom Web Applications", "E-Commerce Development", "Admin Dashboard Development"]
+      },
+      {
+        icon: Briefcase,
+        title: "Software Solutions",
+        items: ["CRM Software", "ERP Software", "Billing & Inventory Software", "School/College Management Software"]
+      },
+      {
+        icon: Palette,
+        title: "UI/UX Design",
+        items: ["App UI Design", "Website UI/UX", "Prototyping & Wireframes"]
+      },
+      {
+        icon: Cloud,
+        title: "API & Integration Services",
+        items: ["Payment Gateway Integration", "Third-Party API Integration", "Cloud & Database Setup"]
+      },
+      {
+        icon: Wrench,
+        title: "Maintenance & Support",
+        items: ["App Updates", "Bug Fixing", "Version Upgrades"]
+      }
     ]
   },
   {
-    icon: Search,
-    title: "Search Engine Optimization",
-    description: "Appear on the first page of Google and dominate your industry with our result driven SEO strategies. We offer on-page, off-page, and technical SEO services to help you get higher rankings, increase organic traffic, and attract qualified leads.",
-    features: [
-      "Keyword Research",
-      "Competitor Analysis",
-      "Technical SEO Audits",
-      "On-Page Optimization",
-      "Backlink Building",
-      "Local SEO & Google Business Setup",
-      "Monthly SEO Reports"
+    icon: TrendingUp,
+    title: "Digital Marketing",
+    description: "We help brands grow online through data-driven strategies, creative content, and performance marketing.",
+    subcategories: [
+      {
+        icon: MousePointerClick,
+        title: "Social Media Marketing",
+        items: ["Facebook & Instagram Ads", "YouTube Marketing", "LinkedIn & Twitter Ads"]
+      },
+      {
+        icon: Search,
+        title: "SEO (Search Engine Optimization)",
+        items: ["On-Page SEO", "Off-Page SEO", "Local SEO (Google My Business)"]
+      },
+      {
+        icon: MousePointerClick,
+        title: "Google Ads (PPC Campaigns)",
+        items: ["Search Ads", "Display Ads", "Remarketing Campaigns"]
+      },
+      {
+        icon: FileText,
+        title: "Content Marketing",
+        items: ["Blog Writing", "Copywriting", "Video & Reels Content Creation"]
+      },
+      {
+        icon: Mail,
+        title: "Email & WhatsApp Marketing",
+        items: ["Email Campaign Management", "WhatsApp Business Marketing"]
+      },
+      {
+        icon: Lightbulb,
+        title: "Brand Development",
+        items: ["Logo & Graphic Design", "Branding Strategy", "Influencer Collaboration"]
+      },
+      {
+        icon: Globe,
+        title: "Website Development",
+        items: ["WordPress Sites", "Landing Pages", "E-Commerce Websites"]
+      }
     ]
   },
   {
-    icon: MousePointerClick,
-    title: "Google Ads",
-    description: "Get instant visibility on Google with our expertly managed Google Ads campaigns. We create compelling ad copy, manage bidding strategies, and continuously optimize campaigns for better ROI.",
-    features: [
-      "Search Ads",
-      "Display Ads",
-      "Shopping Ads",
-      "Remarketing Campaigns",
-      "YouTube Video Ads",
-      "Conversion Tracking",
-      "Budget Optimization"
-    ]
-  },
-  {
-    icon: Share2,
-    title: "Social Media Marketing",
-    description: "We build your brand on platforms like Facebook, Instagram, LinkedIn, and Twitter with engaging content, paid ads, and audience interaction strategies. Whether you're launching a product or building a loyal customer base, we make your social media shine.",
-    features: [
-      "Profile Setup & Optimization",
-      "Paid Campaigns (Meta Ads)",
-      "Influencer Collaboration",
-      "Lead Generation Campaigns",
-      "Performance Reporting"
-    ]
-  },
-  {
-    icon: FileText,
-    title: "Content Marketing",
-    description: "Content is the king, and we are the kingmakers. Our content team develops well-structured, SEO-optimized content that educates, entertains, and converts. From blogs to website content to ad copy – we write it all.",
-    features: [
-      "Blog Writing",
-      "Website Page Content",
-      "SEO Articles",
-      "Ad Copy & Creatives",
-      "Social Media Captions",
-      "Email Campaigns"
-    ]
-  },
-  {
-    icon: Users,
-    title: "Social Media Maintenance",
-    description: "We don't just market – we maintain your brand presence. Our Social Media Maintenance services ensure your profiles stay active, engaging, and on-trend. This includes regular posting, designing creative visuals, and replying to messages/comments.",
-    features: [
-      "Monthly Content Calendars",
-      "Daily Posting & Hashtags",
-      "Festival & Event Creatives",
-      "Community Management",
-      "Weekly Performance Reports"
-    ]
-  },
-  {
-    icon: Smartphone,
-    title: "Mobile App Development",
-    description: "Need a mobile app to engage your users on the go? We design and develop custom Android and iOS applications with interactive user interfaces and smart features. From eCommerce apps to service-based apps, we cover all.",
-    features: [
-      "Native & Hybrid App Development",
-      "UI/UX Design for Mobile",
-      "App Store Publishing",
-      "API Integration",
-      "App Maintenance & Support"
-    ]
-  },
-  {
-    icon: Calculator,
-    title: "CA Services",
-    description: "Complete chartered accountant services for your business compliance needs. From company registration to GST filing and trademark registration, we handle all your legal and financial documentation.",
-    features: [
-      "MSME Registration",
-      "GST Registration & Filing",
-      "Trademark Registration",
-      "Company Registration",
-      "Tax Planning & Filing",
-      "Accounting & Bookkeeping"
-    ]
-  },
-  {
-    icon: Wrench,
-    title: "Business Tools & Software",
-    description: "Powerful business tools to streamline your operations and boost productivity. Get access to premium tools including CRM, ERP, and essential software at affordable prices.",
-    features: [
-      "CRM Systems",
-      "ERP Solutions",
-      "API Integrations",
-      "Canva Pro",
-      "Gemini AI Access",
-      "Custom Software Development"
-    ]
-  },
-  {
-    icon: GraduationCap,
-    title: "Professional Online Training",
-    description: "Want to learn how to design websites or run digital marketing campaigns like a pro? Join our hands-on, beginner-to-advanced Online Training Programs. Get certified, learn from experienced trainers, and build real-time projects.",
-    features: [
-      "Website Designing Course",
-      "Digital Marketing Master Course",
-      "SEO, Google Ads & Social Media",
-      "Content Writing & Branding",
-      "Freelancing & Client Handling Skills",
-      "One-on-One Doubt Sessions"
+    icon: FileCheck,
+    title: "Business Certificates",
+    description: "We assist startups and businesses in getting all necessary registrations, licenses, and legal documents to operate legally.",
+    subcategories: [
+      {
+        icon: Building,
+        title: "Business Registration",
+        items: ["GST Registration", "MSME / UDYAM Registration", "Shop Act / Trade License"]
+      },
+      {
+        icon: Briefcase,
+        title: "Company Formation",
+        items: ["Private Limited Company", "LLP Registration", "One Person Company (OPC)"]
+      },
+      {
+        icon: Scale,
+        title: "Tax & Compliance",
+        items: ["PAN / TAN Application", "Income Tax Filing", "Professional Tax Registration"]
+      },
+      {
+        icon: ShieldCheck,
+        title: "Import-Export & Other Licenses",
+        items: ["IEC Code (Import Export Certificate)", "FSSAI License (Food Business)", "ISO Certification", "Trademark Registration"]
+      },
+      {
+        icon: Award,
+        title: "Business Consultancy",
+        items: ["Startup Guidance", "Legal Documentation Support"]
+      }
     ]
   }
 ];
@@ -152,46 +141,55 @@ export default function Knight21Services() {
       {/* Services List */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto space-y-16">
+          <div className="max-w-6xl mx-auto space-y-12">
             {services.map((service, index) => (
-              <div key={index} className={`grid md:grid-cols-2 gap-8 items-center ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
-                <div className={`${index % 2 === 1 ? 'md:order-2' : ''}`}>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <service.icon className="w-8 h-8 text-primary" />
+              <Card key={index} className="overflow-hidden border-2 hover:border-primary/50 transition-colors">
+                <div className="p-8">
+                  <div className="flex items-start gap-6 mb-6">
+                    <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <service.icon className="w-10 h-10 text-white" />
                     </div>
-                    <div className="text-4xl font-bold text-primary/20">
-                      {String(index + 1).padStart(2, '0')}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h2 className="text-3xl font-bold font-poppins">{service.title}</h2>
+                        <div className="text-3xl font-bold text-primary/20">
+                          {String(index + 1).padStart(2, '0')}
+                        </div>
+                      </div>
+                      <p className="text-muted-foreground leading-relaxed text-lg">
+                        {service.description}
+                      </p>
                     </div>
                   </div>
-                  <h2 className="text-3xl font-bold font-poppins mb-4">{service.title}</h2>
-                  <p className="text-muted-foreground leading-relaxed mb-6">
-                    {service.description}
-                  </p>
-                  {service.features.length > 0 && (
-                    <div>
-                      <h3 className="font-semibold mb-3">
-                        {service.title.includes("Training") ? "Courses We Offer:" : 
-                         service.title.includes("Tools") ? "Available Tools:" : 
-                         `Our ${service.title} Services Include:`}
-                      </h3>
-                      <ul className="space-y-2">
-                        {service.features.map((feature, fIndex) => (
-                          <li key={fIndex} className="flex items-start gap-2">
-                            <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                            <span className="text-muted-foreground">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+
+                  <Accordion type="multiple" className="w-full">
+                    {service.subcategories.map((subcategory, subIndex) => (
+                      <AccordionItem key={subIndex} value={`item-${index}-${subIndex}`}>
+                        <AccordionTrigger className="hover:no-underline">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                              <subcategory.icon className="w-5 h-5 text-primary" />
+                            </div>
+                            <span className="font-semibold text-lg">{subcategory.title}</span>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="pl-[52px] pt-2">
+                            <ul className="space-y-2">
+                              {subcategory.items.map((item, itemIndex) => (
+                                <li key={itemIndex} className="flex items-start gap-2">
+                                  <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                  <span className="text-muted-foreground">{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
                 </div>
-                <Card className={`p-8 bg-gradient-to-br from-gray-50 to-white ${index % 2 === 1 ? 'md:order-1' : ''}`}>
-                  <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg flex items-center justify-center">
-                    <div className="text-4xl font-bold text-primary/20">{service.title}</div>
-                  </div>
-                </Card>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
