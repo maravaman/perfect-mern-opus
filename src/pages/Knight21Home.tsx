@@ -4,15 +4,9 @@ import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileT
 import { Link } from "react-router-dom";
 
 const serviceIcons = {
-  "Website Designing": Globe,
-  "SEO Management": Search,
-  "Google Ads": Megaphone,
-  "Social Media Marketing": Share2,
-  "Content Marketing": FileText,
-  "Social Media Maintenance": Users,
-  "Mobile App Development": Smartphone,
-  "Professional Online Training": GraduationCap,
-  "Buy Pro Tools Online": ShoppingCart
+  "App & Software Development": Code,
+  "Digital Marketing": TrendingUp,
+  "Business Certificates": FileText
 } as const;
 
 const pricingPlans = [
@@ -64,14 +58,28 @@ const pricingPlans = [
 ];
 
 export default function Knight21Home() {
-  // Temporary mock data until Supabase environment is ready
   const services = [
-    { id: 1, number: "01", title: "Website Designing", description: "Professional, responsive websites tailored to your business needs", display_order: 1, active: true },
-    { id: 2, number: "02", title: "SEO Management", description: "Boost your visibility and rank higher on search engines", display_order: 2, active: true },
-    { id: 3, number: "03", title: "Google Ads", description: "Targeted advertising campaigns that drive real results", display_order: 3, active: true },
-    { id: 4, number: "04", title: "Social Media Marketing", description: "Engage your audience and build your brand across social platforms", display_order: 4, active: true },
-    { id: 5, number: "05", title: "Content Marketing", description: "Compelling content that converts visitors into customers", display_order: 5, active: true },
-    { id: 6, number: "06", title: "Mobile App Development", description: "Native and cross-platform mobile applications", display_order: 6, active: true }
+    {
+      id: 1,
+      number: "01",
+      title: "App & Software Development",
+      description: "Complete app and software solutions with modern technologies for startups, enterprises, and individuals.",
+      subcategories: ["Mobile Apps (Android/iOS)", "Web Applications", "CRM & ERP Software", "UI/UX Design", "API Integration"]
+    },
+    {
+      id: 2,
+      number: "02",
+      title: "Digital Marketing",
+      description: "Data-driven strategies, creative content, and performance marketing to help brands grow online.",
+      subcategories: ["Social Media Marketing", "SEO Optimization", "Google Ads (PPC)", "Content Marketing", "Email & WhatsApp Marketing"]
+    },
+    {
+      id: 3,
+      number: "03",
+      title: "Business Certificates",
+      description: "Get all necessary registrations, licenses, and legal documents to operate your business legally.",
+      subcategories: ["GST & MSME Registration", "Company Formation", "Tax & Compliance", "Import-Export Licenses", "Business Consultancy"]
+    }
   ];
 
   const portfolioItems = [
@@ -166,30 +174,37 @@ export default function Knight21Home() {
               Our range of customized solutions is designed to help your business grow, connect with customers, and achieve measurable success online.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {services.slice(0, 3).map((service, index) => {
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {services.map((service, index) => {
               const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
               return (
-                <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                    <IconComponent className="w-7 h-7 text-primary" />
+                <Card key={service.id} className="p-8 hover:shadow-xl transition-all hover:border-primary/50 border-2">
+                  <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center mb-6 shadow-lg">
+                    <IconComponent className="w-10 h-10 text-white" />
                   </div>
-                  <div className="text-sm font-bold text-primary/40 mb-2">{service.number || `0${index + 1}`}</div>
-                  <h3 className="text-xl font-semibold font-poppins mb-3">{service.title}</h3>
-                  <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <Link to="/services" className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all">
-                    LEARN MORE… <ArrowRight className="w-4 h-4 ml-1" />
+                  <div className="flex items-center gap-3 mb-3">
+                    <h3 className="text-2xl font-bold font-poppins">{service.title}</h3>
+                    <div className="text-2xl font-bold text-primary/20">
+                      {service.number}
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
+                  
+                  <div className="space-y-2 mb-6">
+                    {service.subcategories.map((sub, idx) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
+                        <span className="text-sm text-muted-foreground">{sub}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <Link to="/services" className="text-primary font-semibold inline-flex items-center hover:gap-2 transition-all group">
+                    VIEW DETAILS <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Card>
               );
             })}
-          </div>
-          <div className="text-center mt-8">
-            <Link to="/services">
-              <Button size="lg">
-                View All Services <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
