@@ -13,6 +13,8 @@ import Portfolio from "./pages/Portfolio";
 import Reviews from "./pages/Reviews";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import Courses from "./pages/Courses";
+import Tools from "./pages/Tools";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +35,8 @@ const App = () => (
               <Route path="/contact" element={<Knight21Contact />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/reviews" element={<Reviews />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/tools" element={<Tools />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

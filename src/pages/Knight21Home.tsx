@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart } from "lucide-react";
+import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart, Code, TrendingUp, Bot, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const serviceIcons = {
@@ -166,8 +166,8 @@ export default function Knight21Home() {
               Our range of customized solutions is designed to help your business grow, connect with customers, and achieve measurable success online.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service, index) => {
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {services.slice(0, 3).map((service, index) => {
               const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
               return (
                 <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow">
@@ -183,6 +183,159 @@ export default function Knight21Home() {
                 </Card>
               );
             })}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/services">
+              <Button size="lg">
+                View All Services <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Courses Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
+              Professional <span className="text-primary">Courses</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Master in-demand skills with our expert-led training programs
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <Card className="p-8 hover:shadow-lg transition-shadow group">
+              <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Code className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-semibold font-poppins mb-3">Web Development</h3>
+              <p className="text-muted-foreground mb-6">
+                Learn HTML, CSS, JavaScript, React, and build real-world projects with hands-on training
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">3-6 Months Duration</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Industry Certification</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Job Placement Support</span>
+                </li>
+              </ul>
+              <Link to="/courses">
+                <Button className="w-full group-hover:gap-2">
+                  Explore Course <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+            </Card>
+
+            <Card className="p-8 hover:shadow-lg transition-shadow group">
+              <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-semibold font-poppins mb-3">Digital Marketing</h3>
+              <p className="text-muted-foreground mb-6">
+                Master SEO, social media marketing, Google Ads, and grow businesses online
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">2-4 Months Duration</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Google & Facebook Certified</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Internship Opportunities</span>
+                </li>
+              </ul>
+              <Link to="/courses">
+                <Button className="w-full group-hover:gap-2">
+                  Explore Course <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Tools Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
+              AI <span className="text-primary">Tools</span> We Use
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Leverage cutting-edge AI technology to transform your business
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <Card className="p-8 hover:shadow-lg transition-shadow group">
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Bot className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-semibold font-poppins mb-3">OpenAI</h3>
+              <p className="text-muted-foreground mb-6">
+                Advanced AI for content generation, chatbots, code development, and business automation
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">GPT Models</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">DALL-E Image Generation</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Natural Language Processing</span>
+                </li>
+              </ul>
+              <Link to="/tools">
+                <Button className="w-full group-hover:gap-2">
+                  Learn More <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+            </Card>
+
+            <Card className="p-8 hover:shadow-lg transition-shadow group">
+              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-semibold font-poppins mb-3">Gemini AI</h3>
+              <p className="text-muted-foreground mb-6">
+                Google's powerful multimodal AI for advanced analysis, document processing, and insights
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Multimodal Processing</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Long Context Understanding</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Real-time Processing</span>
+                </li>
+              </ul>
+              <Link to="/tools">
+                <Button className="w-full group-hover:gap-2">
+                  Learn More <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+            </Card>
           </div>
         </div>
       </section>
