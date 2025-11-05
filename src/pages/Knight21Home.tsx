@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart, Code, TrendingUp, Bot, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -174,37 +175,46 @@ export default function Knight21Home() {
               Our range of customized solutions is designed to help your business grow, connect with customers, and achieve measurable success online.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {services.map((service, index) => {
-              const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
-              return (
-                <Card key={service.id} className="p-8 hover:shadow-xl transition-all hover:border-primary/50 border-2">
-                  <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center mb-6 shadow-lg">
-                    <IconComponent className="w-10 h-10 text-white" />
-                  </div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <h3 className="text-2xl font-bold font-poppins">{service.title}</h3>
-                    <div className="text-2xl font-bold text-primary/20">
-                      {service.number}
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">{service.description}</p>
-                  
-                  <div className="space-y-2 mb-6">
-                    {service.subcategories.map((sub, idx) => (
-                      <div key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
-                        <span className="text-sm text-muted-foreground">{sub}</span>
+          <div className="max-w-4xl mx-auto">
+            <Accordion type="single" collapsible className="space-y-4">
+              {services.map((service) => {
+                const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
+                return (
+                  <AccordionItem key={service.id} value={`service-${service.id}`} className="bg-white rounded-lg border-2 hover:border-primary/50 transition-all">
+                    <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                      <div className="flex items-center gap-4 text-left">
+                        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center flex-shrink-0">
+                          <IconComponent className="w-7 h-7 text-white" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-3 mb-1">
+                            <h3 className="text-xl font-bold font-poppins">{service.title}</h3>
+                            <span className="text-sm font-bold text-primary/40">{service.number}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{service.description}</p>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                  
-                  <Link to="/services" className="text-primary font-semibold inline-flex items-center hover:gap-2 transition-all group">
-                    VIEW DETAILS <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Card>
-              );
-            })}
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-4">
+                      <div className="pl-[72px] space-y-3">
+                        {service.subcategories.map((sub, idx) => (
+                          <div key={idx} className="flex items-start gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
+                            <span className="text-sm text-muted-foreground">{sub}</span>
+                          </div>
+                        ))}
+                        <Link 
+                          to={`/services?category=${encodeURIComponent(service.title)}`}
+                          className="inline-flex items-center text-primary font-semibold hover:gap-2 transition-all group mt-4"
+                        >
+                          VIEW DETAILS <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
           </div>
         </div>
       </section>
@@ -467,9 +477,9 @@ export default function Knight21Home() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/contact">
+                <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" className="block">
                   <Button className="w-full">Get Started</Button>
-                </Link>
+                </a>
               </Card>
             ))}
           </div>
@@ -522,6 +532,59 @@ export default function Knight21Home() {
                 Read More Reviews <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Terms and Conditions Section */}
+      <section className="py-16 bg-white border-t">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-8 text-center">
+              Terms & <span className="text-primary">Conditions</span>
+            </h2>
+            <div className="space-y-6 text-muted-foreground">
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-3">1. Service Agreement</h3>
+                <p className="leading-relaxed">
+                  By engaging Knight21's services, you agree to our terms and conditions. All services are provided as per the agreed scope of work and timeline. Any modifications to the project scope may result in additional charges.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-3">2. Payment Terms</h3>
+                <p className="leading-relaxed">
+                  Payment terms are specified in the service agreement. Typically, we require 50% advance payment before project commencement and the remaining 50% upon completion. All prices are subject to applicable GST.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-3">3. Intellectual Property</h3>
+                <p className="leading-relaxed">
+                  Upon full payment, all rights to the deliverables are transferred to the client. Knight21 retains the right to showcase the work in our portfolio unless otherwise agreed in writing.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-3">4. Refund Policy</h3>
+                <p className="leading-relaxed">
+                  Refunds are considered on a case-by-case basis. Once work has commenced, advance payments are non-refundable. Any refund requests must be made in writing within 7 days of project initiation.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold text-foreground mb-3">5. Confidentiality</h3>
+                <p className="leading-relaxed">
+                  We maintain strict confidentiality of all client information and project details. Both parties agree not to disclose confidential information to third parties without prior written consent.
+                </p>
+              </div>
+
+              <div className="pt-4 text-center">
+                <Link to="/terms-conditions" className="text-primary font-semibold hover:underline inline-flex items-center gap-2">
+                  Read Full Terms & Conditions <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>

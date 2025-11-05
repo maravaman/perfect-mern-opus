@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Globe, Search, Megaphone, Share2, FileText, Smartphone } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ArrowRight, Globe, Search, Megaphone, Share2, FileText, Smartphone, Code, TrendingUp, CheckCircle2 } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
 
 const serviceIcons = {
   "Website Designing": Globe,
@@ -8,8 +10,35 @@ const serviceIcons = {
   "Google Ads": Megaphone,
   "Social Media Marketing": Share2,
   "Content Marketing": FileText,
-  "Mobile App Development": Smartphone
+  "Mobile App Development": Smartphone,
+  "App & Software Development": Code,
+  "Digital Marketing": TrendingUp,
+  "Business Certificates": FileText
 } as const;
+
+const detailedServices = [
+  {
+    id: 1,
+    number: "01",
+    title: "App & Software Development",
+    description: "Complete app and software solutions with modern technologies for startups, enterprises, and individuals.",
+    subcategories: ["Mobile Apps (Android/iOS)", "Web Applications", "CRM & ERP Software", "UI/UX Design", "API Integration"]
+  },
+  {
+    id: 2,
+    number: "02",
+    title: "Digital Marketing",
+    description: "Data-driven strategies, creative content, and performance marketing to help brands grow online.",
+    subcategories: ["Social Media Marketing", "SEO Optimization", "Google Ads (PPC)", "Content Marketing", "Email & WhatsApp Marketing"]
+  },
+  {
+    id: 3,
+    number: "03",
+    title: "Business Certificates",
+    description: "Get all necessary registrations, licenses, and legal documents to operate your business legally.",
+    subcategories: ["GST & MSME Registration", "Company Formation", "Tax & Compliance", "Import-Export Licenses", "Business Consultancy"]
+  }
+];
 
 const services = [
   { id: 1, number: "01", title: "Website Designing", description: "Professional, responsive websites tailored to your business needs", display_order: 1, active: true },
@@ -21,6 +50,15 @@ const services = [
 ];
 
 export default function Knight21Services() {
+  const [searchParams] = useSearchParams();
+  const categoryFilter = searchParams.get('category');
+  
+  const filteredDetailedServices = categoryFilter 
+    ? detailedServices.filter(s => s.title === categoryFilter)
+    : detailedServices;
+  
+  const showDetailedServices = filteredDetailedServices.length > 0;
+
   return (
     <div className="font-outfit">
       {/* Hero Section */}
@@ -36,6 +74,56 @@ export default function Knight21Services() {
           </div>
         </div>
       </section>
+
+      {/* Detailed Services Section */}
+      {showDetailedServices && (
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <Accordion type="single" collapsible className="space-y-4">
+                {filteredDetailedServices.map((service) => {
+                  const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
+                  return (
+                    <AccordionItem key={service.id} value={`service-${service.id}`} className="bg-white rounded-lg border-2 hover:border-primary/50 transition-all">
+                      <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                        <div className="flex items-center gap-4 text-left">
+                          <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center flex-shrink-0">
+                            <IconComponent className="w-7 h-7 text-white" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-3 mb-1">
+                              <h3 className="text-xl font-bold font-poppins">{service.title}</h3>
+                              <span className="text-sm font-bold text-primary/40">{service.number}</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{service.description}</p>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-6 pb-4">
+                        <div className="pl-[72px] space-y-3">
+                          {service.subcategories.map((sub, idx) => (
+                            <div key={idx} className="flex items-start gap-2">
+                              <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-1" />
+                              <span className="text-sm text-muted-foreground">{sub}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+              {categoryFilter && (
+                <div className="text-center mt-8">
+                  <Link to="/services">
+                    <Button variant="outline">View All Services</Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Services Grid */}
       <section className="py-20 bg-white">
