@@ -9,34 +9,45 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 13%;
+    --foreground: 215 50% 25%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 13%;
+    --card-foreground: 215 50% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 13%;
+    --popover-foreground: 215 50% 25%;
 
-    --primary: 0 72% 51%;
+    --primary: 338 100% 60%;
     --primary-foreground: 0 0% 100%;
+    --primary-glow: 338 100% 70%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 265 45% 45%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted-foreground: 215 30% 45%;
 
-    --accent: 0 72% 51%;
+    --accent: 38 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 72% 51%;
+    --border: 215 20% 90%;
+    --input: 215 20% 90%;
+    --ring: 338 100% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(338 100% 60%), hsl(265 45% 45%));
+    --gradient-secondary: linear-gradient(135deg, hsl(265 45% 45%), hsl(215 50% 35%));
+    --gradient-accent: linear-gradient(135deg, hsl(38 100% 50%), hsl(338 100% 60%));
+    
+    /* Shadows */
+    --shadow-primary: 0 10px 40px -10px hsl(338 100% 60% / 0.3);
+    --shadow-secondary: 0 10px 40px -10px hsl(265 45% 45% / 0.3);
+    --shadow-glow: 0 0 60px hsl(338 100% 70% / 0.4);
   }
 }
 

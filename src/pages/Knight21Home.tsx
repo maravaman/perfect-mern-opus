@@ -104,8 +104,10 @@ export default function Knight21Home() {
   return (
     <div className="font-outfit">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-20">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-br from-primary/5 via-purple-50 to-accent/5 py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,51,102,0.1),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(107,63,160,0.1),transparent_50%)]"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
               <Star className="w-4 h-4" />
@@ -121,13 +123,13 @@ export default function Knight21Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" className="group">
+                <Button size="lg" variant="secondary" className="group">
                   Get Start Today
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </a>
               <Link to="/services">
-                <Button size="lg" variant="outline">
+                <Button size="lg" variant="accent">
                   All Services
                 </Button>
               </Link>
@@ -165,7 +167,7 @@ export default function Knight21Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gradient-to-br from-gray-50 via-primary/5 to-purple-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
@@ -180,12 +182,12 @@ export default function Knight21Home() {
               {services.map((service) => {
                 const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
                 return (
-                  <AccordionItem key={service.id} value={`service-${service.id}`} className="bg-white rounded-lg border-2 hover:border-primary/50 transition-all">
-                    <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                      <div className="flex items-center gap-4 text-left">
-                        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center flex-shrink-0">
-                          <IconComponent className="w-7 h-7 text-white" />
-                        </div>
+                    <AccordionItem key={service.id} value={`service-${service.id}`} className="bg-white rounded-xl border-2 hover:border-primary/50 transition-all hover:shadow-xl">
+                      <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                        <div className="flex items-center gap-4 text-left">
+                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <IconComponent className="w-7 h-7 text-white" />
+                          </div>
                         <div>
                           <div className="flex items-center gap-3 mb-1">
                             <h3 className="text-xl font-bold font-poppins">{service.title}</h3>
@@ -231,9 +233,9 @@ export default function Knight21Home() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <Card className="p-8 hover:shadow-lg transition-shadow group">
-              <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Code className="w-8 h-8 text-primary" />
+            <Card className="p-8 hover:shadow-lg transition-shadow group border-2 hover:border-primary/30">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                <Code className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-semibold font-poppins mb-3">Web Development</h3>
               <p className="text-muted-foreground mb-6">
@@ -260,9 +262,9 @@ export default function Knight21Home() {
               </Link>
             </Card>
 
-            <Card className="p-8 hover:shadow-lg transition-shadow group">
-              <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-8 h-8 text-primary" />
+            <Card className="p-8 hover:shadow-lg transition-shadow group border-2 hover:border-primary/30">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                <TrendingUp className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-semibold font-poppins mb-3">Digital Marketing</h3>
               <p className="text-muted-foreground mb-6">
@@ -293,7 +295,7 @@ export default function Knight21Home() {
       </section>
 
       {/* Tools Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gradient-to-br from-gray-50 via-accent/5 to-primary/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
@@ -304,8 +306,8 @@ export default function Knight21Home() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <Card className="p-8 hover:shadow-lg transition-shadow group">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <Card className="p-8 hover:shadow-lg transition-shadow group border-2 hover:border-accent/30">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
                 <Bot className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-semibold font-poppins mb-3">OpenAI</h3>
@@ -333,8 +335,8 @@ export default function Knight21Home() {
               </Link>
             </Card>
 
-            <Card className="p-8 hover:shadow-lg transition-shadow group">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <Card className="p-8 hover:shadow-lg transition-shadow group border-2 hover:border-accent/30">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-semibold font-poppins mb-3">Gemini AI</h3>
@@ -406,7 +408,7 @@ export default function Knight21Home() {
       </section>
 
       {/* Our Packages Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gradient-to-br from-primary/5 via-purple-50 to-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
@@ -587,8 +589,10 @@ export default function Knight21Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-white">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-20 bg-gradient-to-r from-primary via-secondary to-primary text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,165,0,0.2),transparent_50%)]"></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
             Ready to Grow Your Business?
           </h2>
