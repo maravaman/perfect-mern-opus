@@ -1,14 +1,87 @@
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 
 const portfolioData = {
   websites: [
-    { id: 1, title: "E-Commerce Platform", category: "E-commerce", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500" },
-    { id: 2, title: "Restaurant Website", category: "Restaurant", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500" },
-    { id: 3, title: "Hospital Portal", category: "Hospital", image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=500" },
-    { id: 4, title: "School Management", category: "School", image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500" },
-    { id: 5, title: "College Website", category: "College", image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=500" },
+    { 
+      id: 1, 
+      title: "Anvika Computers Services", 
+      category: "Computer Services", 
+      url: "https://anvikacomputersservices.com",
+      description: "Professional computer services and IT solutions"
+    },
+    { 
+      id: 2, 
+      title: "Sri Academy", 
+      category: "Education", 
+      url: "https://sriacademy111.com",
+      description: "Educational institution providing quality learning"
+    },
+    { 
+      id: 3, 
+      title: "Vedha Software Solutions", 
+      category: "Software", 
+      url: "https://vedhasoftwaresolutions.com",
+      description: "Complete software development and IT consulting"
+    },
+    { 
+      id: 4, 
+      title: "Dine Empire", 
+      category: "Restaurant", 
+      url: "https://dineempire.com",
+      description: "Fine dining restaurant and culinary experiences"
+    },
+    { 
+      id: 5, 
+      title: "Jireh Melodies", 
+      category: "Music", 
+      url: "https://www.jirehmelodies.com",
+      description: "Music production and entertainment services"
+    },
+    { 
+      id: 6, 
+      title: "Saduvu Mallesh Mudhiraj", 
+      category: "Personal", 
+      url: "https://saduvumalleshmudhiraj.com",
+      description: "Personal portfolio and professional profile"
+    },
+    { 
+      id: 7, 
+      title: "MB Prime Projects", 
+      category: "Real Estate", 
+      url: "https://mbprimeprojects.com",
+      description: "Prime real estate and construction projects"
+    },
+    { 
+      id: 8, 
+      title: "Decorative & Return Gifts", 
+      category: "E-commerce", 
+      url: "https://decorativeandreturngifts.com",
+      description: "Unique decorative items and gift solutions"
+    },
+    { 
+      id: 9, 
+      title: "Next Gens Store", 
+      category: "E-commerce", 
+      url: "https://nextgensstore.com",
+      description: "Modern online store with latest products"
+    },
+    { 
+      id: 10, 
+      title: "New Gen Elevators", 
+      category: "Industrial", 
+      url: "https://newgenelevators.in",
+      description: "Elevator installation and maintenance services"
+    },
+    { 
+      id: 11, 
+      title: "Leelavathi Designer", 
+      category: "Fashion", 
+      url: "https://leelavathidesigner.com",
+      description: "Custom fashion design and styling services"
+    }
   ],
   logos: [
     { id: 1, title: "Tech Startup Logo", category: "Technology", image: "https://images.unsplash.com/photo-1634942537034-2531766767d1?w=500" },
@@ -75,7 +148,7 @@ export default function Portfolio() {
               >
                 All
               </button>
-              {["School", "Restaurant", "College", "Hospital"].map((cat) => (
+              {["Education", "Restaurant", "E-commerce", "Software", "Real Estate", "Fashion"].map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
@@ -91,19 +164,36 @@ export default function Portfolio() {
             <TabsContent value="websites">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filterByCategory(portfolioData.websites).map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                    <div className="aspect-video overflow-hidden">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.category}</p>
-                    </div>
-                  </Card>
+                  <a 
+                    key={item.id} 
+                    href={item.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <Card className="overflow-hidden group cursor-pointer hover:shadow-xl transition-all hover:border-primary/50 border-2 h-full">
+                      <div className="aspect-video overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center relative">
+                        <div className="text-center p-6">
+                          <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <ExternalLink className="w-8 h-8 text-primary" />
+                          </div>
+                          <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                          <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
+                        </div>
+                        <div className="absolute top-3 right-3 bg-primary text-white text-xs px-3 py-1 rounded-full">
+                          Live
+                        </div>
+                      </div>
+                      <div className="p-4 border-t">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-primary">{item.category}</span>
+                          <span className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                            Visit Site →
+                          </span>
+                        </div>
+                      </div>
+                    </Card>
+                  </a>
                 ))}
               </div>
             </TabsContent>

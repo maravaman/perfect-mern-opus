@@ -579,11 +579,6 @@ export default function Knight21Home() {
                 </p>
               </div>
 
-              <div className="pt-4 text-center">
-                <Link to="/terms-conditions" className="text-primary font-semibold hover:underline inline-flex items-center gap-2">
-                  Read Full Terms & Conditions <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
             </div>
           </div>
         </div>
