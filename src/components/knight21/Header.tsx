@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import { useState } from "react";
 
 export const Header = () => {
@@ -51,9 +51,17 @@ export const Header = () => {
           </nav>
 
           {/* Desktop CTA */}
-          <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" className="hidden md:block">
-            <Button variant="secondary">Get Started</Button>
-          </a>
+          <div className="hidden md:flex items-center gap-3">
+            <Link to="/auth">
+              <Button variant="outline" size="sm">
+                <LogIn className="w-4 h-4 mr-2" />
+                Admin Login
+              </Button>
+            </Link>
+            <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer">
+              <Button variant="secondary">Get Started</Button>
+            </a>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -80,6 +88,12 @@ export const Header = () => {
                   {link.label}
                 </Link>
               ))}
+              <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="w-full" variant="outline">
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Admin Login
+                </Button>
+              </Link>
               <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>
                 <Button className="w-full" variant="secondary">Get Started</Button>
               </a>
