@@ -17,6 +17,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Courses from "./pages/Courses";
 import Tools from "./pages/Tools";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
+import CancellationRefunds from "./pages/CancellationRefunds";
+import Shipping from "./pages/Shipping";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +45,10 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-conditions" element={<TermsConditions />} />
+              <Route path="/cancellation-refunds" element={<CancellationRefunds />} />
+              <Route path="/shipping" element={<Shipping />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
