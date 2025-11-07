@@ -2,18 +2,27 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Linkedin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  phone: z.string().trim().min(10, "Please enter a valid phone number").max(15, "Phone number too long"),
+  email: z.string().trim().email("Please enter a valid email").max(255, "Email must be less than 255 characters"),
+  message: z.string().trim().min(1, "Message is required").max(1000, "Message must be less than 1000 characters"),
+});
 
 export default function Knight21Contact() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
-    subject: "",
-    message: ""
+    message: "",
+    zapierWebhook: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,23 +31,64 @@ export default function Knight21Contact() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('contact_inquiries')
+      // Validate form data
+      const validatedData = contactSchema.parse(formData);
+
+      // Save to database
+      const { error: dbError } = await (supabase as any)
+        .from('contact_submissions')
         .insert([{
-          name: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message
+          name: validatedData.name,
+          phone: validatedData.phone,
+          email: validatedData.email,
+          message: validatedData.message,
+          zapier_webhook_url: formData.zapierWebhook || null,
+          zapier_sent: false
         }]);
 
-      if (error) throw error;
+      if (dbError) throw dbError;
+
+      // Send to Zapier if webhook URL is provided
+      if (formData.zapierWebhook) {
+        try {
+          await fetch(formData.zapierWebhook, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            mode: "no-cors",
+            body: JSON.stringify({
+              name: validatedData.name,
+              phone: validatedData.phone,
+              email: validatedData.email,
+              message: validatedData.message,
+              timestamp: new Date().toISOString(),
+            }),
+          });
+
+          // Update zapier_sent status
+          await (supabase as any)
+            .from('contact_submissions')
+            .update({ zapier_sent: true })
+            .eq('email', validatedData.email)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        } catch (zapierError) {
+          console.warn('Zapier webhook failed:', zapierError);
+          // Don't fail the entire submission if Zapier fails
+        }
+      }
 
       toast.success("Message sent successfully! We'll get back to you soon.");
-      setFormData({ name: "", phone: "", email: "", subject: "", message: "" });
+      setFormData({ name: "", phone: "", email: "", message: "", zapierWebhook: "" });
     } catch (error: any) {
       console.error('Error submitting form:', error);
-      toast.error("Failed to send message. Please try again or contact us directly.");
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        toast.error("Failed to send message. Please try again or contact us directly.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -51,11 +101,12 @@ export default function Knight21Contact() {
   return (
     <div className="font-outfit">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold font-poppins">
-              Contact <span className="text-primary">Us</span>
+      <section className="bg-gradient-hero pattern-dots py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
+            <h1 className="text-4xl md:text-6xl font-bold font-poppins text-gradient">
+              Contact Us
             </h1>
             <p className="text-xl text-muted-foreground">
               Feel Free To Contact us & Get In Touch!
@@ -65,25 +116,26 @@ export default function Knight21Contact() {
       </section>
 
       {/* Contact Info & Form */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-white pattern-grid relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
             {/* Contact Information */}
-            <div className="space-y-8">
+            <div className="space-y-8 animate-slide-up">
               <div>
-                <h2 className="text-3xl font-bold font-poppins mb-8">
-                  Get in touch with <span className="text-primary">Knight21</span>
+                <h2 className="text-3xl font-bold font-poppins mb-8 text-gradient">
+                  Get in touch with Knight21
                 </h2>
                 <p className="text-muted-foreground mb-8">
                   Get in touch with Knight21 today and let's create something amazing together!
                 </p>
               </div>
 
-              <Card className="p-6">
+              <Card className="p-6 glass-card shadow-card hover:shadow-card-hover transition-all">
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <Mail className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Email Address</h3>
@@ -94,8 +146,8 @@ export default function Knight21Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <Phone className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Phone Number</h3>
@@ -106,8 +158,8 @@ export default function Knight21Contact() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-6 h-6 text-primary" />
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <MapPin className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Location Address</h3>
@@ -124,23 +176,23 @@ export default function Knight21Contact() {
                 <h3 className="text-xl font-semibold font-poppins mb-4">Follow us on social media:</h3>
                 <div className="flex gap-3">
                   <a href="https://www.facebook.com/share/1JYd3DXAxz/" target="_blank" rel="noopener noreferrer" 
-                    className="w-12 h-12 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+                    className="w-12 h-12 rounded-full glass-card hover:bg-primary hover:text-white flex items-center justify-center transition-all hover:scale-110 shadow-card hover:shadow-card-hover">
                     <Facebook className="w-5 h-5" />
                   </a>
                   <a href="https://www.instagram.com/knight21.in" target="_blank" rel="noopener noreferrer"
-                    className="w-12 h-12 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+                    className="w-12 h-12 rounded-full glass-card hover:bg-primary hover:text-white flex items-center justify-center transition-all hover:scale-110 shadow-card hover:shadow-card-hover">
                     <Instagram className="w-5 h-5" />
                   </a>
                   <a href="https://youtube.com/@knight21digihub" target="_blank" rel="noopener noreferrer"
-                    className="w-12 h-12 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+                    className="w-12 h-12 rounded-full glass-card hover:bg-primary hover:text-white flex items-center justify-center transition-all hover:scale-110 shadow-card hover:shadow-card-hover">
                     <Youtube className="w-5 h-5" />
                   </a>
                   <a href="https://www.linkedin.com/in/knight-digi-hub-9a597528b" target="_blank" rel="noopener noreferrer"
-                    className="w-12 h-12 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+                    className="w-12 h-12 rounded-full glass-card hover:bg-primary hover:text-white flex items-center justify-center transition-all hover:scale-110 shadow-card hover:shadow-card-hover">
                     <Linkedin className="w-5 h-5" />
                   </a>
                   <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer"
-                    className="w-12 h-12 rounded-full bg-primary/10 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+                    className="w-12 h-12 rounded-full glass-card hover:bg-primary hover:text-white flex items-center justify-center transition-all hover:scale-110 shadow-card hover:shadow-card-hover">
                     <MessageCircle className="w-5 h-5" />
                   </a>
                 </div>
@@ -148,21 +200,22 @@ export default function Knight21Contact() {
             </div>
 
             {/* Contact Form */}
-            <Card className="p-8">
+            <Card className="p-8 glass-card shadow-card hover:shadow-card-hover transition-all animate-slide-up" style={{animationDelay: '0.1s'}}>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Your Name *</label>
+                  <Label>Your Name *</Label>
                   <Input
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your Name..."
                     required
+                    maxLength={100}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Your Mobile Number *</label>
+                  <Label>Your Mobile Number *</Label>
                   <Input
                     name="phone"
                     type="tel"
@@ -170,11 +223,12 @@ export default function Knight21Contact() {
                     onChange={handleChange}
                     placeholder="Your Mobile Number..."
                     required
+                    maxLength={15}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Your Email *</label>
+                  <Label>Your Email *</Label>
                   <Input
                     name="email"
                     type="email"
@@ -182,32 +236,38 @@ export default function Knight21Contact() {
                     onChange={handleChange}
                     placeholder="Your Email..."
                     required
+                    maxLength={255}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Your Subject *</label>
-                  <Input
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    placeholder="Your Subject..."
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Your Message</label>
+                  <Label>Your Message *</Label>
                   <Textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Your Message (Optional)"
+                    placeholder="Your Message..."
                     rows={5}
+                    required
+                    maxLength={1000}
                   />
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                <div>
+                  <Label>Zapier Webhook URL (Optional)</Label>
+                  <Input
+                    name="zapierWebhook"
+                    type="url"
+                    value={formData.zapierWebhook}
+                    onChange={handleChange}
+                    placeholder="https://hooks.zapier.com/..."
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Add your Zapier webhook to automatically send this to Google Sheets
+                  </p>
+                </div>
+
+                <Button type="submit" className="w-full shadow-card hover:shadow-card-hover" disabled={isSubmitting}>
                   {isSubmitting ? "Sending..." : "Submit Message"}
                 </Button>
               </form>

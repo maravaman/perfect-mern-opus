@@ -13,6 +13,7 @@ import Portfolio from "./pages/Portfolio";
 import Reviews from "./pages/Reviews";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import AdminDashboard from "./pages/AdminDashboard";
 import Courses from "./pages/Courses";
 import Tools from "./pages/Tools";
 import NotFound from "./pages/NotFound";
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/tools" element={<Tools />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
