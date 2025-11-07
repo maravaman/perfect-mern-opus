@@ -19,6 +19,20 @@ export default function AdminDashboard() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/auth");
+        return;
+      }
+
+      // Check if user has admin role
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (roleError || roleData?.role !== 'admin') {
+        toast.error("Access denied. Admin privileges required.");
+        navigate("/");
+        return;
       }
     };
     checkAuth();
