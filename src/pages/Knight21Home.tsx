@@ -104,17 +104,16 @@ export default function Knight21Home() {
   return (
     <div className="font-outfit">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 via-purple-50 to-accent/5 py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,51,102,0.1),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(107,63,160,0.1),transparent_50%)]"></div>
+      <section className="bg-gradient-hero pattern-dots py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
-              <Star className="w-4 h-4" />
+          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
+            <div className="inline-flex items-center gap-2 glass-card text-primary px-4 py-2 rounded-full text-sm font-medium shadow-card">
+              <Star className="w-4 h-4 animate-glow-pulse" />
               Enterprise-Grade Digital Marketing
             </div>
             <h1 className="text-4xl md:text-6xl font-bold font-poppins">
-              We Are <span className="text-primary">Knight 21</span>
+              We Are <span className="text-gradient">Knight 21</span>
               <br />
               Digital Marketing Agency
             </h1>
@@ -123,13 +122,13 @@ export default function Knight21Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" variant="secondary" className="group">
+                <Button size="lg" variant="secondary" className="group shadow-lg hover:shadow-card-hover hover:scale-105 transition-all">
                   Get Start Today
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </a>
               <Link to="/services">
-                <Button size="lg" variant="accent">
+                <Button size="lg" variant="accent" className="shadow-lg hover:shadow-card-hover hover:scale-105 transition-all">
                   All Services
                 </Button>
               </Link>
@@ -139,12 +138,13 @@ export default function Knight21Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+      <section className="py-16 bg-white pattern-grid relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
               Driven by Data, Fueled by Creativity,{" "}
-              <span className="text-primary">Focused on Results</span>
+              <span className="text-gradient">Focused on Results</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               We are a passionate team of digital marketers, designers, and strategists dedicated to helping your business thrive online.
@@ -157,8 +157,8 @@ export default function Knight21Home() {
               { label: "Results-Driven", icon: CheckCircle2 },
               { label: "Customer Support", icon: CheckCircle2 }
             ].map((item, index) => (
-              <Card key={index} className="p-6 text-center">
-                <item.icon className="w-8 h-8 text-primary mx-auto mb-2" />
+              <Card key={index} className="p-6 text-center glass-card hover:shadow-card-hover transition-all group hover:scale-105 animate-slide-up" style={{animationDelay: `${index * 0.1}s`}}>
+                <item.icon className="w-8 h-8 text-primary mx-auto mb-2 group-hover:scale-110 transition-transform" />
                 <p className="font-semibold">{item.label}</p>
               </Card>
             ))}
@@ -167,11 +167,12 @@ export default function Knight21Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 via-primary/5 to-purple-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
-              Our Services & <span className="text-primary">Features</span>
+      <section className="py-20 bg-gradient-hero pattern-dots relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4 text-gradient">
+              Our Services & Features
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Our range of customized solutions is designed to help your business grow, connect with customers, and achieve measurable success online.
@@ -179,18 +180,18 @@ export default function Knight21Home() {
           </div>
           <div className="max-w-4xl mx-auto">
             <Accordion type="single" collapsible className="space-y-4">
-              {services.map((service) => {
+              {services.map((service, idx) => {
                 const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
                 return (
-                    <AccordionItem key={service.id} value={`service-${service.id}`} className="bg-white rounded-xl border-2 hover:border-primary/50 transition-all hover:shadow-xl">
-                      <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                    <AccordionItem key={service.id} value={`service-${service.id}`} className="glass-card rounded-xl border-2 border-primary/10 hover:border-primary/30 transition-all hover:shadow-card-hover animate-slide-up" style={{animationDelay: `${idx * 0.1}s`}}>
+                      <AccordionTrigger className="px-6 py-4 hover:no-underline group">
                         <div className="flex items-center gap-4 text-left">
-                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center flex-shrink-0 shadow-lg">
+                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
                             <IconComponent className="w-7 h-7 text-white" />
                           </div>
                         <div>
                           <div className="flex items-center gap-3 mb-1">
-                            <h3 className="text-xl font-bold font-poppins">{service.title}</h3>
+                            <h3 className="text-xl font-bold font-poppins group-hover:text-primary transition-colors">{service.title}</h3>
                             <span className="text-sm font-bold text-primary/40">{service.number}</span>
                           </div>
                           <p className="text-sm text-muted-foreground">{service.description}</p>
@@ -222,22 +223,23 @@ export default function Knight21Home() {
       </section>
 
       {/* Courses Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
-              Professional <span className="text-primary">Courses</span>
+      <section className="py-20 bg-white pattern-grid relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4 text-gradient">
+              Professional Courses
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Master in-demand skills with our expert-led training programs
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <Card className="p-8 hover:shadow-lg transition-shadow group border-2 hover:border-primary/30">
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+            <Card className="p-8 glass-card hover:shadow-card-hover transition-all group border-2 border-primary/10 hover:border-primary/30 animate-slide-up">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
                 <Code className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-semibold font-poppins mb-3">Web Development</h3>
+              <h3 className="text-2xl font-semibold font-poppins mb-3 group-hover:text-primary transition-colors">Web Development</h3>
               <p className="text-muted-foreground mb-6">
                 Learn HTML, CSS, JavaScript, React, and build real-world projects with hands-on training
               </p>
@@ -256,17 +258,17 @@ export default function Knight21Home() {
                 </li>
               </ul>
               <Link to="/courses">
-                <Button className="w-full group-hover:gap-2">
+                <Button className="w-full group-hover:gap-2 shadow-card hover:shadow-card-hover">
                   Explore Course <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
             </Card>
 
-            <Card className="p-8 hover:shadow-lg transition-shadow group border-2 hover:border-primary/30">
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+            <Card className="p-8 glass-card hover:shadow-card-hover transition-all group border-2 border-primary/10 hover:border-primary/30 animate-slide-up" style={{animationDelay: '0.1s'}}>
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-semibold font-poppins mb-3">Digital Marketing</h3>
+              <h3 className="text-2xl font-semibold font-poppins mb-3 group-hover:text-primary transition-colors">Digital Marketing</h3>
               <p className="text-muted-foreground mb-6">
                 Master SEO, social media marketing, Google Ads, and grow businesses online
               </p>
@@ -285,7 +287,7 @@ export default function Knight21Home() {
                 </li>
               </ul>
               <Link to="/courses">
-                <Button className="w-full group-hover:gap-2">
+                <Button className="w-full group-hover:gap-2 shadow-card hover:shadow-card-hover">
                   Explore Course <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>

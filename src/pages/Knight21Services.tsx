@@ -97,11 +97,12 @@ export default function Knight21Services() {
   return (
     <div className="font-outfit">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+      <section className="bg-gradient-hero pattern-dots py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold font-poppins">
-              Our <span className="text-primary">Services</span>
+              Our <span className="text-gradient">Services</span>
             </h1>
             <p className="text-xl text-muted-foreground">
               Comprehensive digital solutions to help your business grow online
@@ -112,22 +113,23 @@ export default function Knight21Services() {
 
       {/* Detailed Services Section */}
       {showDetailedServices && (
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4">
+        <section className="py-20 bg-white pattern-grid relative">
+          <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
               <Accordion type="single" collapsible className="space-y-4" defaultValue={defaultExpandedValue}>
                 {filteredDetailedServices.map((service) => {
                   const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
                   return (
-                    <AccordionItem key={service.id} value={`service-${service.id}`} className="bg-white rounded-lg border-2 hover:border-primary/50 transition-all">
-                      <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                    <AccordionItem key={service.id} value={`service-${service.id}`} className="glass-card rounded-lg border-2 border-primary/10 hover:border-primary/30 transition-all animate-slide-up">
+                      <AccordionTrigger className="px-6 py-4 hover:no-underline group">
                         <div className="flex items-center gap-4 text-left">
-                          <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center flex-shrink-0">
+                          <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
                             <IconComponent className="w-7 h-7 text-white" />
                           </div>
                           <div>
                             <div className="flex items-center gap-3 mb-1">
-                              <h3 className="text-xl font-bold font-poppins">{service.title}</h3>
+                              <h3 className="text-xl font-bold font-poppins group-hover:text-primary transition-colors">{service.title}</h3>
                               <span className="text-sm font-bold text-primary/40">{service.number}</span>
                             </div>
                             <p className="text-sm text-muted-foreground">{service.description}</p>
@@ -151,7 +153,7 @@ export default function Knight21Services() {
               {categoryFilter && (
                 <div className="text-center mt-8">
                   <Link to="/services">
-                    <Button variant="outline">View All Services</Button>
+                    <Button variant="outline" className="shadow-card hover:shadow-card-hover hover:scale-105 transition-all">View All Services</Button>
                   </Link>
                 </div>
               )}
@@ -161,21 +163,22 @@ export default function Knight21Services() {
       )}
 
       {/* Services Grid */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gradient-hero pattern-dots relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredServices.map((service, index) => {
               const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
               return (
-                <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                    <IconComponent className="w-7 h-7 text-primary" />
+                <Card key={service.id} className="p-6 glass-card hover:shadow-card-hover transition-all group hover:scale-105 animate-slide-up" style={{animationDelay: `${index * 0.05}s`}}>
+                  <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <IconComponent className="w-7 h-7 text-white" />
                   </div>
                   <div className="text-sm font-bold text-primary/40 mb-2">{service.number || `0${index + 1}`}</div>
-                  <h3 className="text-xl font-semibold font-poppins mb-3">{service.title}</h3>
+                  <h3 className="text-xl font-semibold font-poppins mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
                   <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <Link to="/contact" className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all">
-                    GET STARTED <ArrowRight className="w-4 h-4 ml-1" />
+                  <Link to="/contact" className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all group">
+                    GET STARTED <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Card>
               );
