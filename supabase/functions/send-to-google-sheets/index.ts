@@ -24,8 +24,11 @@ serve(async (req) => {
       throw new Error('Missing Google Sheets configuration');
     }
 
-    // Format the private key (replace literal \n with actual newlines)
-    const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+    // Format the private key (handle both \n and actual newlines)
+    let formattedPrivateKey = privateKey;
+    if (formattedPrivateKey.includes('\\n')) {
+      formattedPrivateKey = formattedPrivateKey.replace(/\\n/g, '\n');
+    }
 
     // Create JWT for Google Sheets API
     const header = {
@@ -42,18 +45,35 @@ serve(async (req) => {
       iat: now
     };
 
-    // Encode header and claim
-    const encodedHeader = btoa(JSON.stringify(header));
-    const encodedClaim = btoa(JSON.stringify(claim));
+    // Encode header and claim using base64url
+    const base64url = (str: string) => {
+      return btoa(str)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
+    };
+
+    const encodedHeader = base64url(JSON.stringify(header));
+    const encodedClaim = base64url(JSON.stringify(claim));
     const message_to_sign = `${encodedHeader}.${encodedClaim}`;
 
     // Import the private key
     const pemHeader = "-----BEGIN PRIVATE KEY-----";
     const pemFooter = "-----END PRIVATE KEY-----";
-    const pemContents = formattedPrivateKey.substring(
-      pemHeader.length,
-      formattedPrivateKey.length - pemFooter.length
-    ).trim();
+    
+    // Extract key content - handle various formats
+    let pemContents = formattedPrivateKey;
+    
+    if (pemContents.includes(pemHeader)) {
+      const startIndex = pemContents.indexOf(pemHeader) + pemHeader.length;
+      const endIndex = pemContents.indexOf(pemFooter);
+      pemContents = pemContents.substring(startIndex, endIndex);
+    }
+    
+    // Remove all whitespace and newlines from the base64 content
+    pemContents = pemContents.replace(/\s/g, '');
+
+    console.log('PEM contents length:', pemContents.length);
 
     const binaryDer = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
 
@@ -76,8 +96,13 @@ serve(async (req) => {
       encoder.encode(message_to_sign)
     );
 
-    const encodedSignature = btoa(String.fromCharCode(...new Uint8Array(signature)));
-    const jwt = `${message_to_sign}.${encodedSignature}`;
+    // Convert signature to base64url
+    const base64urlSignature = btoa(String.fromCharCode(...new Uint8Array(signature)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    
+    const jwt = `${message_to_sign}.${base64urlSignature}`;
 
     console.log('JWT created, requesting access token');
 
