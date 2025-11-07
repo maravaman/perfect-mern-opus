@@ -58,6 +58,7 @@ export default function Knight21Services() {
     : detailedServices;
   
   const showDetailedServices = filteredDetailedServices.length > 0;
+  const defaultExpandedValue = categoryFilter ? `service-${filteredDetailedServices[0]?.id}` : undefined;
 
   return (
     <div className="font-outfit">
@@ -80,7 +81,7 @@ export default function Knight21Services() {
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <Accordion type="single" collapsible className="space-y-4">
+              <Accordion type="single" collapsible className="space-y-4" defaultValue={defaultExpandedValue}>
                 {filteredDetailedServices.map((service) => {
                   const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
                   return (
