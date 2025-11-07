@@ -5,15 +5,31 @@ import { ArrowRight, Globe, Search, Megaphone, Share2, FileText, Smartphone, Cod
 import { Link, useSearchParams } from "react-router-dom";
 
 const serviceIcons = {
-  "Website Designing": Globe,
-  "SEO Management": Search,
-  "Google Ads": Megaphone,
-  "Social Media Marketing": Share2,
-  "Content Marketing": FileText,
-  "Mobile App Development": Smartphone,
+  // Main categories
   "App & Software Development": Code,
   "Digital Marketing": TrendingUp,
-  "Business Certificates": FileText
+  "Business Certificates": FileText,
+  
+  // App & Software Development services
+  "Mobile Apps (Android/iOS)": Smartphone,
+  "Web Applications": Globe,
+  "CRM & ERP Software": Code,
+  "UI/UX Design": Globe,
+  "API Integration": Code,
+  
+  // Digital Marketing services
+  "Social Media Marketing": Share2,
+  "SEO Optimization": Search,
+  "Google Ads (PPC)": Megaphone,
+  "Content Marketing": FileText,
+  "Email & WhatsApp Marketing": Megaphone,
+  
+  // Business Certificates services
+  "GST & MSME Registration": FileText,
+  "Company Formation": FileText,
+  "Tax & Compliance": FileText,
+  "Import-Export Licenses": FileText,
+  "Business Consultancy": FileText
 } as const;
 
 const detailedServices = [
@@ -41,16 +57,26 @@ const detailedServices = [
 ];
 
 const services = [
-  { id: 1, number: "01", title: "Website Designing", description: "Professional, responsive websites tailored to your business needs", display_order: 1, active: true, category: "App & Software Development" },
-  { id: 2, number: "02", title: "SEO Management", description: "Boost your visibility and rank higher on search engines", display_order: 2, active: true, category: "Digital Marketing" },
-  { id: 3, number: "03", title: "Google Ads", description: "Targeted advertising campaigns that drive real results", display_order: 3, active: true, category: "Digital Marketing" },
-  { id: 4, number: "04", title: "Social Media Marketing", description: "Engage your audience and build your brand across social platforms", display_order: 4, active: true, category: "Digital Marketing" },
-  { id: 5, number: "05", title: "Content Marketing", description: "Compelling content that converts visitors into customers", display_order: 5, active: true, category: "Digital Marketing" },
-  { id: 6, number: "06", title: "Mobile App Development", description: "Native and cross-platform mobile applications", display_order: 6, active: true, category: "App & Software Development" },
-  { id: 7, number: "07", title: "GST Registration", description: "Complete GST registration and compliance services", display_order: 7, active: true, category: "Business Certificates" },
-  { id: 8, number: "08", title: "MSME Registration", description: "Get MSME/Udyam registration with expert guidance", display_order: 8, active: true, category: "Business Certificates" },
-  { id: 9, number: "09", title: "Company Formation", description: "Private Limited, LLP, and other company formations", display_order: 9, active: true, category: "Business Certificates" },
-  { id: 10, number: "10", title: "Import-Export License", description: "IEC code and import-export documentation", display_order: 10, active: true, category: "Business Certificates" }
+  // App & Software Development
+  { id: 1, number: "01", title: "Mobile Apps (Android/iOS)", description: "Native and cross-platform mobile applications for all devices", display_order: 1, active: true, category: "App & Software Development" },
+  { id: 2, number: "02", title: "Web Applications", description: "Professional, responsive web applications tailored to your business", display_order: 2, active: true, category: "App & Software Development" },
+  { id: 3, number: "03", title: "CRM & ERP Software", description: "Custom CRM and ERP solutions to streamline your operations", display_order: 3, active: true, category: "App & Software Development" },
+  { id: 4, number: "04", title: "UI/UX Design", description: "Beautiful, user-friendly designs that enhance user experience", display_order: 4, active: true, category: "App & Software Development" },
+  { id: 5, number: "05", title: "API Integration", description: "Seamless API integration and development services", display_order: 5, active: true, category: "App & Software Development" },
+  
+  // Digital Marketing
+  { id: 6, number: "06", title: "Social Media Marketing", description: "Engage your audience and build your brand across social platforms", display_order: 6, active: true, category: "Digital Marketing" },
+  { id: 7, number: "07", title: "SEO Optimization", description: "Boost your visibility and rank higher on search engines", display_order: 7, active: true, category: "Digital Marketing" },
+  { id: 8, number: "08", title: "Google Ads (PPC)", description: "Targeted advertising campaigns that drive real results", display_order: 8, active: true, category: "Digital Marketing" },
+  { id: 9, number: "09", title: "Content Marketing", description: "Compelling content that converts visitors into customers", display_order: 9, active: true, category: "Digital Marketing" },
+  { id: 10, number: "10", title: "Email & WhatsApp Marketing", description: "Direct marketing campaigns to reach your customers effectively", display_order: 10, active: true, category: "Digital Marketing" },
+  
+  // Business Certificates
+  { id: 11, number: "11", title: "GST & MSME Registration", description: "Complete GST and MSME/Udyam registration services", display_order: 11, active: true, category: "Business Certificates" },
+  { id: 12, number: "12", title: "Company Formation", description: "Private Limited, LLP, and other company formations", display_order: 12, active: true, category: "Business Certificates" },
+  { id: 13, number: "13", title: "Tax & Compliance", description: "Expert tax filing and compliance management services", display_order: 13, active: true, category: "Business Certificates" },
+  { id: 14, number: "14", title: "Import-Export Licenses", description: "IEC code and complete import-export documentation", display_order: 14, active: true, category: "Business Certificates" },
+  { id: 15, number: "15", title: "Business Consultancy", description: "Professional guidance for business growth and operations", display_order: 15, active: true, category: "Business Certificates" }
 ];
 
 export default function Knight21Services() {
