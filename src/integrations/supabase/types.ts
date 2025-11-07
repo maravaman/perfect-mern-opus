@@ -97,6 +97,7 @@ export type Database = {
           display_order: number | null
           features: Json | null
           id: string
+          image_url: string | null
           name: string
           payment_enabled: boolean | null
           popular: boolean | null
@@ -111,6 +112,7 @@ export type Database = {
           display_order?: number | null
           features?: Json | null
           id?: string
+          image_url?: string | null
           name: string
           payment_enabled?: boolean | null
           popular?: boolean | null
@@ -125,6 +127,7 @@ export type Database = {
           display_order?: number | null
           features?: Json | null
           id?: string
+          image_url?: string | null
           name?: string
           payment_enabled?: boolean | null
           popular?: boolean | null
@@ -310,6 +313,45 @@ export type Database = {
           number?: string | null
           title?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tools: {
+        Row: {
+          active: boolean | null
+          category: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          title: string
+          updated_at: string | null
+          url: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+          url?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+          url?: string | null
         }
         Relationships: []
       }
