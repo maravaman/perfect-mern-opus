@@ -41,12 +41,16 @@ const detailedServices = [
 ];
 
 const services = [
-  { id: 1, number: "01", title: "Website Designing", description: "Professional, responsive websites tailored to your business needs", display_order: 1, active: true },
-  { id: 2, number: "02", title: "SEO Management", description: "Boost your visibility and rank higher on search engines", display_order: 2, active: true },
-  { id: 3, number: "03", title: "Google Ads", description: "Targeted advertising campaigns that drive real results", display_order: 3, active: true },
-  { id: 4, number: "04", title: "Social Media Marketing", description: "Engage your audience and build your brand across social platforms", display_order: 4, active: true },
-  { id: 5, number: "05", title: "Content Marketing", description: "Compelling content that converts visitors into customers", display_order: 5, active: true },
-  { id: 6, number: "06", title: "Mobile App Development", description: "Native and cross-platform mobile applications", display_order: 6, active: true }
+  { id: 1, number: "01", title: "Website Designing", description: "Professional, responsive websites tailored to your business needs", display_order: 1, active: true, category: "App & Software Development" },
+  { id: 2, number: "02", title: "SEO Management", description: "Boost your visibility and rank higher on search engines", display_order: 2, active: true, category: "Digital Marketing" },
+  { id: 3, number: "03", title: "Google Ads", description: "Targeted advertising campaigns that drive real results", display_order: 3, active: true, category: "Digital Marketing" },
+  { id: 4, number: "04", title: "Social Media Marketing", description: "Engage your audience and build your brand across social platforms", display_order: 4, active: true, category: "Digital Marketing" },
+  { id: 5, number: "05", title: "Content Marketing", description: "Compelling content that converts visitors into customers", display_order: 5, active: true, category: "Digital Marketing" },
+  { id: 6, number: "06", title: "Mobile App Development", description: "Native and cross-platform mobile applications", display_order: 6, active: true, category: "App & Software Development" },
+  { id: 7, number: "07", title: "GST Registration", description: "Complete GST registration and compliance services", display_order: 7, active: true, category: "Business Certificates" },
+  { id: 8, number: "08", title: "MSME Registration", description: "Get MSME/Udyam registration with expert guidance", display_order: 8, active: true, category: "Business Certificates" },
+  { id: 9, number: "09", title: "Company Formation", description: "Private Limited, LLP, and other company formations", display_order: 9, active: true, category: "Business Certificates" },
+  { id: 10, number: "10", title: "Import-Export License", description: "IEC code and import-export documentation", display_order: 10, active: true, category: "Business Certificates" }
 ];
 
 export default function Knight21Services() {
@@ -56,6 +60,10 @@ export default function Knight21Services() {
   const filteredDetailedServices = categoryFilter 
     ? detailedServices.filter(s => s.title === categoryFilter)
     : detailedServices;
+  
+  const filteredServices = categoryFilter
+    ? services.filter(s => s.category === categoryFilter)
+    : services;
   
   const showDetailedServices = filteredDetailedServices.length > 0;
   const defaultExpandedValue = categoryFilter ? `service-${filteredDetailedServices[0]?.id}` : undefined;
@@ -130,7 +138,7 @@ export default function Knight21Services() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service, index) => {
+            {filteredServices.map((service, index) => {
               const IconComponent = serviceIcons[service.title as keyof typeof serviceIcons] || Globe;
               return (
                 <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow">
