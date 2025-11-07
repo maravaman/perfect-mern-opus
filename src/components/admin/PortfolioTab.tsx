@@ -12,27 +12,28 @@ import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
-export function PricingPlansTab() {
+export function PortfolioTab() {
   const [isOpen, setIsOpen] = useState(false);
-  const [editingPlan, setEditingPlan] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    features: "",
+    title: "",
+    description: "",
+    category: "",
+    client_name: "",
+    project_url: "",
     image_url: "",
-    popular: false,
     active: true,
     display_order: 0,
   });
 
   const queryClient = useQueryClient();
 
-  const { data: plans, isLoading } = useQuery({
-    queryKey: ["packages"],
+  const { data: portfolioItems, isLoading } = useQuery({
+    queryKey: ["portfolio"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("packages")
+        .from("portfolio_items")
         .select("*")
         .order("display_order", { ascending: true });
       if (error) throw error;
@@ -42,42 +43,36 @@ export function PricingPlansTab() {
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
-      const planData = {
-        ...data,
-        price: parseFloat(data.price),
-        features: data.features ? JSON.parse(data.features) : [],
-      };
-
-      if (editingPlan) {
+      if (editingItem) {
         const { error } = await supabase
-          .from("packages")
-          .update(planData)
-          .eq("id", editingPlan.id);
+          .from("portfolio_items")
+          .update(data)
+          .eq("id", editingItem.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("packages").insert(planData);
+        const { error } = await supabase.from("portfolio_items").insert(data);
         if (error) throw error;
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["packages"] });
-      toast.success(editingPlan ? "Package updated" : "Package created");
+      queryClient.invalidateQueries({ queryKey: ["portfolio"] });
+      toast.success(editingItem ? "Portfolio item updated" : "Portfolio item created");
       setIsOpen(false);
       resetForm();
     },
     onError: () => {
-      toast.error("Failed to save package");
+      toast.error("Failed to save portfolio item");
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("packages").delete().eq("id", id);
+      const { error } = await supabase.from("portfolio_items").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["packages"] });
-      toast.success("Package deleted");
+      queryClient.invalidateQueries({ queryKey: ["portfolio"] });
+      toast.success("Portfolio item deleted");
     },
   });
 
@@ -89,7 +84,7 @@ export function PricingPlansTab() {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `pricing/${fileName}`;
+      const filePath = `portfolio/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('knight21-uploads')
@@ -112,27 +107,29 @@ export function PricingPlansTab() {
 
   const resetForm = () => {
     setFormData({
-      name: "",
-      price: "",
-      features: "",
+      title: "",
+      description: "",
+      category: "",
+      client_name: "",
+      project_url: "",
       image_url: "",
-      popular: false,
       active: true,
       display_order: 0,
     });
-    setEditingPlan(null);
+    setEditingItem(null);
   };
 
-  const handleEdit = (plan: any) => {
-    setEditingPlan(plan);
+  const handleEdit = (item: any) => {
+    setEditingItem(item);
     setFormData({
-      name: plan.name,
-      price: plan.price,
-      features: JSON.stringify(plan.features || []),
-      image_url: plan.image_url || "",
-      popular: plan.popular,
-      active: plan.active,
-      display_order: plan.display_order || 0,
+      title: item.title,
+      description: item.description || "",
+      category: item.category,
+      client_name: item.client_name || "",
+      project_url: item.project_url || "",
+      image_url: item.image_url || "",
+      active: item.active,
+      display_order: item.display_order || 0,
     });
     setIsOpen(true);
   };
@@ -153,63 +150,77 @@ export function PricingPlansTab() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold font-poppins">Manage Pricing Plans</h2>
+        <h2 className="text-2xl font-bold font-poppins">Manage Portfolio</h2>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button onClick={resetForm}>
               <Plus className="w-4 h-4 mr-2" />
-              Add Plan
+              Add Portfolio Item
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>{editingPlan ? "Edit Plan" : "Add New Plan"}</DialogTitle>
+              <DialogTitle>{editingItem ? "Edit Portfolio Item" : "Add New Portfolio Item"}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label>Plan Name</Label>
+                <Label>Title</Label>
                 <Input
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
                 />
               </div>
               <div>
-                <Label>Price</Label>
-                <Input
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  required
-                  placeholder="₹ 8,500 +GST"
-                />
-              </div>
-              <div>
-                <Label>Features (JSON array)</Label>
+                <Label>Description</Label>
                 <Textarea
-                  value={formData.features}
-                  onChange={(e) => setFormData({ ...formData, features: e.target.value })}
-                  placeholder='["Feature 1", "Feature 2"]'
-                  rows={6}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Category</Label>
+                  <Input
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>Client Name</Label>
+                  <Input
+                    value={formData.client_name}
+                    onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label>Project URL</Label>
+                <Input
+                  value={formData.project_url}
+                  onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
+                  placeholder="https://..."
                 />
               </div>
               <div>
-                <Label>Plan Image</Label>
+                <Label>Image</Label>
                 <div className="flex gap-2 items-center">
                   <Input
                     value={formData.image_url}
                     onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    placeholder="Image URL or upload below"
+                    placeholder="Image URL"
                   />
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => document.getElementById('plan-upload')?.click()}
+                    onClick={() => document.getElementById('portfolio-upload')?.click()}
                     disabled={uploading}
                   >
                     {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                   </Button>
                   <input
-                    id="plan-upload"
+                    id="portfolio-upload"
                     type="file"
                     accept="image/*"
                     className="hidden"
@@ -240,25 +251,16 @@ export function PricingPlansTab() {
                     onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) })}
                   />
                 </div>
-                <div className="space-y-4 pt-2">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={formData.popular}
-                      onCheckedChange={(checked) => setFormData({ ...formData, popular: checked })}
-                    />
-                    <Label>Popular</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={formData.active}
-                      onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
-                    />
-                    <Label>Active</Label>
-                  </div>
+                <div className="flex items-center space-x-2 pt-6">
+                  <Switch
+                    checked={formData.active}
+                    onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
+                  />
+                  <Label>Active</Label>
                 </div>
               </div>
               <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
-                {saveMutation.isPending ? "Saving..." : "Save Plan"}
+                {saveMutation.isPending ? "Saving..." : "Save Portfolio Item"}
               </Button>
             </form>
           </DialogContent>
@@ -269,29 +271,29 @@ export function PricingPlansTab() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Popular</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Client</TableHead>
               <TableHead>Active</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {plans?.map((plan) => (
-              <TableRow key={plan.id}>
-                <TableCell className="font-medium">{plan.name}</TableCell>
-                <TableCell>{plan.price}</TableCell>
-                <TableCell>{plan.popular ? "Yes" : "No"}</TableCell>
-                <TableCell>{plan.active ? "Yes" : "No"}</TableCell>
+            {portfolioItems?.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">{item.title}</TableCell>
+                <TableCell>{item.category}</TableCell>
+                <TableCell>{item.client_name}</TableCell>
+                <TableCell>{item.active ? "Yes" : "No"}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(plan)}>
+                    <Button size="sm" variant="outline" onClick={() => handleEdit(item)}>
                       <Edit className="w-4 h-4" />
                     </Button>
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => deleteMutation.mutate(plan.id)}
+                      onClick={() => deleteMutation.mutate(item.id)}
                     >
                       <Trash className="w-4 h-4" />
                     </Button>
@@ -299,10 +301,10 @@ export function PricingPlansTab() {
                 </TableCell>
               </TableRow>
             ))}
-            {!plans?.length && (
+            {!portfolioItems?.length && (
               <TableRow>
                 <TableCell colSpan={5} className="text-center text-muted-foreground">
-                  No pricing plans yet
+                  No portfolio items yet
                 </TableCell>
               </TableRow>
             )}

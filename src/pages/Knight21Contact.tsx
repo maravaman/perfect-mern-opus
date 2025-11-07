@@ -35,49 +35,37 @@ export default function Knight21Contact() {
       const validatedData = contactSchema.parse(formData);
 
       // Save to database
-      const { error: dbError } = await (supabase as any)
-        .from('contact_submissions')
+      const { error: dbError } = await supabase
+        .from('contact_inquiries')
         .insert([{
           name: validatedData.name,
           phone: validatedData.phone,
           email: validatedData.email,
+          subject: 'Contact Form Submission',
           message: validatedData.message,
-          zapier_webhook_url: formData.zapierWebhook || null,
-          zapier_sent: false
         }]);
 
       if (dbError) throw dbError;
 
-      // Send to Zapier if webhook URL is provided
-      if (formData.zapierWebhook) {
-        try {
-          await fetch(formData.zapierWebhook, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            mode: "no-cors",
-            body: JSON.stringify({
-              name: validatedData.name,
-              phone: validatedData.phone,
-              email: validatedData.email,
-              message: validatedData.message,
-              timestamp: new Date().toISOString(),
-            }),
-          });
+      // Send to Google Sheets automatically
+      try {
+        const { data, error: functionError } = await supabase.functions.invoke('send-to-google-sheets', {
+          body: {
+            name: validatedData.name,
+            email: validatedData.email,
+            phone: validatedData.phone,
+            message: validatedData.message,
+          }
+        });
 
-          // Update zapier_sent status
-          await (supabase as any)
-            .from('contact_submissions')
-            .update({ zapier_sent: true })
-            .eq('email', validatedData.email)
-            .order('created_at', { ascending: false })
-            .limit(1);
-
-        } catch (zapierError) {
-          console.warn('Zapier webhook failed:', zapierError);
-          // Don't fail the entire submission if Zapier fails
+        if (functionError) {
+          console.error('Google Sheets function error:', functionError);
+        } else {
+          console.log('Successfully sent to Google Sheets:', data);
         }
+      } catch (sheetsError) {
+        console.error('Failed to send to Google Sheets:', sheetsError);
+        // Don't fail the entire submission if Google Sheets fails
       }
 
       toast.success("Message sent successfully! We'll get back to you soon.");
@@ -253,19 +241,6 @@ export default function Knight21Contact() {
                   />
                 </div>
 
-                <div>
-                  <Label>Zapier Webhook URL (Optional)</Label>
-                  <Input
-                    name="zapierWebhook"
-                    type="url"
-                    value={formData.zapierWebhook}
-                    onChange={handleChange}
-                    placeholder="https://hooks.zapier.com/..."
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Add your Zapier webhook to automatically send this to Google Sheets
-                  </p>
-                </div>
 
                 <Button type="submit" className="w-full shadow-card hover:shadow-card-hover" disabled={isSubmitting}>
                   {isSubmitting ? "Sending..." : "Submit Message"}

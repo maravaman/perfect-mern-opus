@@ -5,6 +5,7 @@ import { CoursesTab } from "@/components/admin/CoursesTab";
 import { ServicesTab } from "@/components/admin/ServicesTab";
 import { PricingPlansTab } from "@/components/admin/PricingPlansTab";
 import { ToolsTab } from "@/components/admin/ToolsTab";
+import { PortfolioTab } from "@/components/admin/PortfolioTab";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,10 +59,11 @@ export default function AdminDashboard() {
 
         <Card className="glass-card p-6">
           <Tabs defaultValue="contacts" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="contacts">Contact Submissions</TabsTrigger>
               <TabsTrigger value="courses">Courses</TabsTrigger>
               <TabsTrigger value="services">Services</TabsTrigger>
+              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
               <TabsTrigger value="pricing">Pricing Plans</TabsTrigger>
               <TabsTrigger value="tools">Tools</TabsTrigger>
             </TabsList>
@@ -76,6 +78,10 @@ export default function AdminDashboard() {
 
             <TabsContent value="services">
               <ServicesTab />
+            </TabsContent>
+
+            <TabsContent value="portfolio">
+              <PortfolioTab />
             </TabsContent>
 
             <TabsContent value="pricing">
