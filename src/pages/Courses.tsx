@@ -1,6 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Code, TrendingUp, Clock, Award, Users, BookOpen } from "lucide-react";
+import webDevBg from "@/assets/courses/web-dev-bg.png";
+import digitalMarketingBg from "@/assets/courses/digital-marketing-bg.png";
 
 const Courses = () => {
   const courses = [
@@ -9,6 +11,7 @@ const Courses = () => {
       title: "Web Development Course",
       description: "Master modern web development with hands-on projects and industry-relevant skills",
       icon: Code,
+      bgImage: webDevBg,
       duration: "3-6 Months",
       level: "Beginner to Advanced",
       students: "500+ Enrolled",
@@ -34,6 +37,7 @@ const Courses = () => {
       title: "Digital Marketing Course",
       description: "Learn cutting-edge digital marketing strategies to grow businesses online",
       icon: TrendingUp,
+      bgImage: digitalMarketingBg,
       duration: "2-4 Months",
       level: "Beginner to Advanced",
       students: "300+ Enrolled",
@@ -78,7 +82,13 @@ const Courses = () => {
               <Card key={course.id} className="overflow-hidden">
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Left side - Course Info with Image */}
-                  <div className="md:col-span-1 bg-gradient-to-br from-pink-50 to-pink-100/50 p-8 flex flex-col justify-center items-center text-center relative">
+                  <div 
+                    className="md:col-span-1 bg-gradient-to-br from-pink-50 to-pink-100/50 p-8 flex flex-col justify-center items-center text-center relative bg-cover bg-center bg-no-repeat"
+                    style={{
+                      backgroundImage: `url(${course.bgImage})`,
+                      backgroundBlendMode: 'overlay'
+                    }}
+                  >
                     <div className="w-32 h-32 rounded-2xl bg-white shadow-lg flex items-center justify-center mb-6">
                       <course.icon className="w-16 h-16 text-primary" />
                     </div>
