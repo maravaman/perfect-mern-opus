@@ -10,77 +10,88 @@ const portfolioData = {
       title: "Anvika Computers Services", 
       category: "Computer Services", 
       url: "https://anvikacomputersservices.com",
-      description: "Professional computer services and IT solutions"
+      description: "Professional computer services and IT solutions",
+      image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&q=80"
     },
     { 
       id: 2, 
       title: "Sri Academy", 
       category: "Education", 
       url: "https://sriacademy111.com",
-      description: "Educational institution providing quality learning"
+      description: "Educational institution providing quality learning",
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
     },
     { 
       id: 3, 
       title: "Vedha Software Solutions", 
       category: "Software", 
       url: "https://vedhasoftwaresolutions.com",
-      description: "Complete software development and IT consulting"
+      description: "Complete software development and IT consulting",
+      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
     },
     { 
       id: 4, 
       title: "Dine Empire", 
       category: "Restaurant", 
       url: "https://dineempire.com",
-      description: "Fine dining restaurant and culinary experiences"
+      description: "Fine dining restaurant and culinary experiences",
+      image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
     },
     { 
       id: 5, 
       title: "Jireh Melodies", 
       category: "Music", 
       url: "https://www.jirehmelodies.com",
-      description: "Music production and entertainment services"
+      description: "Music production and entertainment services",
+      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&q=80"
     },
     { 
       id: 6, 
       title: "Saduvu Mallesh Mudhiraj", 
       category: "Personal", 
       url: "https://saduvumalleshmudhiraj.com",
-      description: "Personal portfolio and professional profile"
+      description: "Personal portfolio and professional profile",
+      image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80"
     },
     { 
       id: 7, 
       title: "MB Prime Projects", 
       category: "Real Estate", 
       url: "https://mbprimeprojects.com",
-      description: "Prime real estate and construction projects"
+      description: "Prime real estate and construction projects",
+      image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
     },
     { 
       id: 8, 
       title: "Decorative & Return Gifts", 
       category: "E-commerce", 
       url: "https://decorativeandreturngifts.com",
-      description: "Unique decorative items and gift solutions"
+      description: "Unique decorative items and gift solutions",
+      image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80"
     },
     { 
       id: 9, 
       title: "Next Gens Store", 
       category: "E-commerce", 
       url: "https://nextgensstore.com",
-      description: "Modern online store with latest products"
+      description: "Modern online store with latest products",
+      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80"
     },
     { 
       id: 10, 
       title: "New Gen Elevators", 
       category: "Industrial", 
       url: "https://newgenelevators.in",
-      description: "Elevator installation and maintenance services"
+      description: "Elevator installation and maintenance services",
+      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80"
     },
     { 
       id: 11, 
       title: "Leelavathi Designer", 
       category: "Fashion", 
       url: "https://leelavathidesigner.com",
-      description: "Custom fashion design and styling services"
+      description: "Custom fashion design and styling services",
+      image: "https://images.unsplash.com/photo-1558769132-cb1aea6c8b05?w=800&q=80"
     }
   ],
   logos: [
@@ -172,19 +183,24 @@ export default function Portfolio() {
                     className="block"
                   >
                     <Card className="overflow-hidden group cursor-pointer hover:shadow-xl transition-all hover:border-primary/50 border-2 h-full">
-                      <div className="aspect-video overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center relative">
-                        <div className="text-center p-6">
-                          <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                      <div className="aspect-video overflow-hidden relative bg-gray-100">
+                        <img 
+                          src={item.image} 
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center">
                             <ExternalLink className="w-8 h-8 text-primary" />
                           </div>
-                          <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                          <p className="text-sm text-muted-foreground line-clamp-2">{item.description}</p>
                         </div>
                         <div className="absolute top-3 right-3 bg-primary text-white text-xs px-3 py-1 rounded-full">
                           Live
                         </div>
                       </div>
                       <div className="p-4 border-t">
+                        <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium text-primary">{item.category}</span>
                           <span className="text-xs text-muted-foreground hover:text-primary transition-colors">

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart, Code, TrendingUp, Bot, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { TrustedClients } from "@/components/TrustedClients";
 
 const serviceIcons = {
   "App & Software Development": Code,
@@ -136,6 +137,9 @@ export default function Knight21Home() {
           </div>
         </div>
       </section>
+
+      {/* Trusted Clients */}
+      <TrustedClients />
 
       {/* Stats Section */}
       <section className="py-16 bg-white pattern-grid relative">

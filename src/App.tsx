@@ -11,6 +11,7 @@ import Knight21Services from "./pages/Knight21Services";
 import Knight21Contact from "./pages/Knight21Contact";
 import Portfolio from "./pages/Portfolio";
 import Reviews from "./pages/Reviews";
+import Career from "./pages/Career";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -41,6 +42,7 @@ const App = () => (
               <Route path="/contact" element={<Knight21Contact />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/reviews" element={<Reviews />} />
+              <Route path="/career" element={<Career />} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/auth" element={<Auth />} />

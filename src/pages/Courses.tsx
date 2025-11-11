@@ -77,9 +77,11 @@ const Courses = () => {
             {courses.map((course, index) => (
               <Card key={course.id} className="overflow-hidden">
                 <div className="grid md:grid-cols-3 gap-6">
-                  {/* Left side - Course Info */}
-                  <div className="md:col-span-1 bg-primary/5 p-8 flex flex-col justify-center items-center text-center">
-                    <course.icon className="w-16 h-16 text-primary mb-4" />
+                  {/* Left side - Course Info with Image */}
+                  <div className="md:col-span-1 bg-gradient-to-br from-pink-50 to-pink-100/50 p-8 flex flex-col justify-center items-center text-center relative">
+                    <div className="w-32 h-32 rounded-2xl bg-white shadow-lg flex items-center justify-center mb-6">
+                      <course.icon className="w-16 h-16 text-primary" />
+                    </div>
                     <h2 className="text-2xl font-bold mb-2">{course.title}</h2>
                     <p className="text-muted-foreground mb-6">{course.description}</p>
                     
