@@ -3,6 +3,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 
+import anvikaImg from "@/assets/portfolio/anvika.png";
+import sriAcademyImg from "@/assets/portfolio/sri-academy.png";
+import vedhaImg from "@/assets/portfolio/vedha.png";
+import dineEmpireImg from "@/assets/portfolio/dine-empire.png";
+import jirehMelodiesImg from "@/assets/portfolio/jireh-melodies.png";
+import mbPrimeImg from "@/assets/portfolio/mb-prime.png";
+import nextgenImg from "@/assets/portfolio/nextgen.png";
+import newGenElevatorsImg from "@/assets/portfolio/new-gen-elevators.png";
+import leelavathiImg from "@/assets/portfolio/leelavathi.png";
+
 const portfolioData = {
   websites: [
     { 
@@ -11,7 +21,7 @@ const portfolioData = {
       category: "Computer Services", 
       url: "https://anvikacomputersservices.com",
       description: "Professional computer services and IT solutions",
-      image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&q=80"
+      image: anvikaImg
     },
     { 
       id: 2, 
@@ -19,7 +29,7 @@ const portfolioData = {
       category: "Education", 
       url: "https://sriacademy111.com",
       description: "Educational institution providing quality learning",
-      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
+      image: sriAcademyImg
     },
     { 
       id: 3, 
@@ -27,7 +37,7 @@ const portfolioData = {
       category: "Software", 
       url: "https://vedhasoftwaresolutions.com",
       description: "Complete software development and IT consulting",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
+      image: vedhaImg
     },
     { 
       id: 4, 
@@ -35,7 +45,7 @@ const portfolioData = {
       category: "Restaurant", 
       url: "https://dineempire.com",
       description: "Fine dining restaurant and culinary experiences",
-      image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
+      image: dineEmpireImg
     },
     { 
       id: 5, 
@@ -43,7 +53,7 @@ const portfolioData = {
       category: "Music", 
       url: "https://www.jirehmelodies.com",
       description: "Music production and entertainment services",
-      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&q=80"
+      image: jirehMelodiesImg
     },
     { 
       id: 7, 
@@ -51,15 +61,7 @@ const portfolioData = {
       category: "Real Estate", 
       url: "https://mbprimeprojects.com",
       description: "Prime real estate and construction projects",
-      image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
-    },
-    { 
-      id: 9, 
-      title: "Decorative & Return Gifts",
-      category: "E-commerce", 
-      url: "https://decorativeandreturngifts.com",
-      description: "Unique decorative items and gift solutions",
-      image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80"
+      image: mbPrimeImg
     },
     { 
       id: 10, 
@@ -67,7 +69,7 @@ const portfolioData = {
       category: "E-commerce", 
       url: "https://nextgensstore.com",
       description: "Modern online store with latest products",
-      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80"
+      image: nextgenImg
     },
     { 
       id: 11, 
@@ -75,7 +77,7 @@ const portfolioData = {
       category: "Industrial", 
       url: "https://newgenelevators.in",
       description: "Elevator installation and maintenance services",
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80"
+      image: newGenElevatorsImg
     },
     { 
       id: 8, 
@@ -83,7 +85,7 @@ const portfolioData = {
       category: "Fashion", 
       url: "https://leelavathidesigner.com",
       description: "Custom fashion design and styling services",
-      image: "https://images.unsplash.com/photo-1558769132-cb1aea6c8b05?w=800&q=80"
+      image: leelavathiImg
     }
   ],
   logos: [
