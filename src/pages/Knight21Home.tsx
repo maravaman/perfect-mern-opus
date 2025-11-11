@@ -594,6 +594,95 @@ export default function Knight21Home() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
+              Frequently Asked <span className="text-primary">Questions</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Get answers to common questions about our services
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto">
+            <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="faq-1" className="border rounded-lg px-6">
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="text-left font-semibold">What services does Knight21 offer?</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Knight21 offers comprehensive digital marketing services including website design & development, SEO optimization, Google Ads management, social media marketing, mobile app development, content marketing, and business certificate services.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="faq-2" className="border rounded-lg px-6">
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="text-left font-semibold">How long does it take to build a website?</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  The timeline varies based on project complexity. A basic website typically takes 2-3 weeks, while more complex websites with custom features can take 4-8 weeks. We'll provide a detailed timeline during our initial consultation.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="faq-3" className="border rounded-lg px-6">
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="text-left font-semibold">What are your pricing plans?</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  We offer flexible pricing plans starting from our Free Plan (YouTube tutorials), 45 Days Plan at ₹8,500 + GST, and 3 Months Plan at ₹18,500 + GST with comprehensive features. Custom packages are also available based on your specific requirements.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="faq-4" className="border rounded-lg px-6">
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="text-left font-semibold">Do you provide SEO services?</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Yes! We offer comprehensive SEO services including on-page optimization, technical SEO, keyword research, content optimization, link building, and local SEO. Our SEO strategies are designed to improve your search rankings and drive organic traffic.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="faq-5" className="border rounded-lg px-6">
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="text-left font-semibold">Can you help with social media marketing?</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Absolutely! We manage social media accounts across Facebook, Instagram, LinkedIn, and YouTube. Our services include content creation, posting schedules, paid advertising, engagement management, and detailed analytics reporting.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="faq-6" className="border rounded-lg px-6">
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="text-left font-semibold">Do you offer training courses?</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Yes! We offer professional courses in Web Development (3-6 months) and Digital Marketing (2-4 months). Both courses include hands-on training, industry certifications, and job placement assistance.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="faq-7" className="border rounded-lg px-6">
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="text-left font-semibold">What is your refund policy?</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Refunds are considered on a case-by-case basis. Once work has commenced, advance payments are non-refundable. Any refund requests must be made in writing within 7 days of project initiation. Please refer to our Terms & Conditions for complete details.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="faq-8" className="border rounded-lg px-6">
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="text-left font-semibold">How can I get started with Knight21?</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Simply contact us through our website, WhatsApp, or phone. We'll schedule a free consultation to discuss your needs, provide a customized quote, and outline a project timeline. You can reach us at +91 8187007475.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-primary via-secondary to-primary text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>

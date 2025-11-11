@@ -46,48 +46,40 @@ const portfolioData = {
       image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&q=80"
     },
     { 
-      id: 6, 
-      title: "Saduvu Mallesh Mudhiraj", 
-      category: "Personal", 
-      url: "https://saduvumalleshmudhiraj.com",
-      description: "Personal portfolio and professional profile",
-      image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80"
-    },
-    { 
       id: 7, 
-      title: "MB Prime Projects", 
+      title: "MB Prime Projects",
       category: "Real Estate", 
       url: "https://mbprimeprojects.com",
       description: "Prime real estate and construction projects",
       image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
     },
     { 
-      id: 8, 
-      title: "Decorative & Return Gifts", 
+      id: 9, 
+      title: "Decorative & Return Gifts",
       category: "E-commerce", 
       url: "https://decorativeandreturngifts.com",
       description: "Unique decorative items and gift solutions",
       image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80"
     },
     { 
-      id: 9, 
-      title: "Next Gens Store", 
+      id: 10, 
+      title: "Next Gens Store",
       category: "E-commerce", 
       url: "https://nextgensstore.com",
       description: "Modern online store with latest products",
       image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80"
     },
     { 
-      id: 10, 
-      title: "New Gen Elevators", 
+      id: 11, 
+      title: "New Gen Elevators",
       category: "Industrial", 
       url: "https://newgenelevators.in",
       description: "Elevator installation and maintenance services",
       image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80"
     },
     { 
-      id: 11, 
-      title: "Leelavathi Designer", 
+      id: 8, 
+      title: "Leelavathi Designer",
       category: "Fashion", 
       url: "https://leelavathidesigner.com",
       description: "Custom fashion design and styling services",

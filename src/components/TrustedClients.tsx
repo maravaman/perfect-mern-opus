@@ -1,12 +1,24 @@
 import { useEffect, useRef } from "react";
+import anvikaLogo from "@/assets/clients/anvika.png";
+import sriAcademyLogo from "@/assets/clients/sri-academy.png";
+import vedhaLogo from "@/assets/clients/vedha.png";
+import dineEmpireLogo from "@/assets/clients/dine-empire.png";
+import jirehMelodiesLogo from "@/assets/clients/jireh-melodies.png";
+import mbPrimeLogo from "@/assets/clients/mb-prime.png";
+import nextgenLogo from "@/assets/clients/nextgen.png";
+import newGenElevatorsLogo from "@/assets/clients/new-gen-elevators.png";
+import leelavathiLogo from "@/assets/clients/leelavathi.png";
 
 const clients = [
-  { name: "Anvika Computers", logo: "https://anvikacomputersservices.com/wp-content/uploads/2024/11/cropped-ANVIKA-LOGO-1-removebg-preview.png" },
-  { name: "Sri Academy", logo: "https://sriacademy111.com/wp-content/uploads/2024/06/cropped-srii-academy-1.png" },
-  { name: "Vedha Software", logo: "https://vedhasoftwaresolutions.com/wp-content/uploads/2024/11/vedha-software-solutions-logo.png" },
-  { name: "Dine Empire", logo: "https://dineempire.com/wp-content/uploads/2024/12/Dine-Empire-Logo-1.png" },
-  { name: "MB Prime Projects", logo: "https://mbprimeprojects.com/wp-content/uploads/2024/11/cropped-MB-Prime-Projects-1.png" },
-  { name: "New Gen Elevators", logo: "https://newgenelevators.in/wp-content/uploads/2024/10/new-gen-elevator-logo.png" },
+  { name: "Anvika Computers", logo: anvikaLogo },
+  { name: "Sri Academy", logo: sriAcademyLogo },
+  { name: "Vedha Software", logo: vedhaLogo },
+  { name: "Dine Empire", logo: dineEmpireLogo },
+  { name: "Jireh Melodies", logo: jirehMelodiesLogo },
+  { name: "MB Prime Projects", logo: mbPrimeLogo },
+  { name: "Next Gens Store", logo: nextgenLogo },
+  { name: "New Gen Elevators", logo: newGenElevatorsLogo },
+  { name: "Leelavathi Designer", logo: leelavathiLogo },
 ];
 
 export const TrustedClients = () => {
