@@ -61,14 +61,14 @@ const Courses = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 font-outfit">
       {/* Hero Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 font-poppins">
             Professional <span className="text-primary">Courses</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-outfit">
             Upgrade your skills with our comprehensive courses designed by industry experts
           </p>
         </div>
@@ -92,19 +92,19 @@ const Courses = () => {
                     <div className="w-32 h-32 rounded-2xl bg-white shadow-lg flex items-center justify-center mb-6">
                       <course.icon className="w-16 h-16 text-primary" />
                     </div>
-                    <h2 className="text-2xl font-bold mb-2">{course.title}</h2>
-                    <p className="text-muted-foreground mb-6">{course.description}</p>
+                    <h2 className="text-2xl font-bold mb-2 font-poppins">{course.title}</h2>
+                    <p className="text-muted-foreground mb-6 font-outfit">{course.description}</p>
                     
                     <div className="space-y-3 w-full">
-                      <div className="flex items-center justify-center gap-2 text-sm">
+                      <div className="flex items-center justify-center gap-2 text-sm font-outfit">
                         <Clock className="w-4 h-4 text-primary" />
                         <span>{course.duration}</span>
                       </div>
-                      <div className="flex items-center justify-center gap-2 text-sm">
+                      <div className="flex items-center justify-center gap-2 text-sm font-outfit">
                         <Award className="w-4 h-4 text-primary" />
                         <span>{course.level}</span>
                       </div>
-                      <div className="flex items-center justify-center gap-2 text-sm">
+                      <div className="flex items-center justify-center gap-2 text-sm font-outfit">
                         <Users className="w-4 h-4 text-primary" />
                         <span>{course.students}</span>
                       </div>
@@ -115,7 +115,7 @@ const Courses = () => {
                   <CardContent className="md:col-span-2 p-8">
                     <div className="space-y-6">
                       <div>
-                        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2 font-poppins">
                           <BookOpen className="w-5 h-5 text-primary" />
                           Course Curriculum
                         </h3>
@@ -123,19 +123,19 @@ const Courses = () => {
                           {course.features.map((feature, idx) => (
                             <li key={idx} className="flex items-start gap-2">
                               <span className="text-primary mt-1">✓</span>
-                              <span className="text-sm">{feature}</span>
+                              <span className="text-sm font-outfit">{feature}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
 
                       <div>
-                        <h3 className="text-xl font-semibold mb-4">Course Highlights</h3>
+                        <h3 className="text-xl font-semibold mb-4 font-poppins">Course Highlights</h3>
                         <div className="grid grid-cols-2 gap-4">
                           {course.highlights.map((highlight, idx) => (
                             <div key={idx} className="flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
                               <span className="text-primary">★</span>
-                              <span className="text-sm font-medium">{highlight}</span>
+                              <span className="text-sm font-medium font-outfit">{highlight}</span>
                             </div>
                           ))}
                         </div>
@@ -157,11 +157,11 @@ const Courses = () => {
       <section className="py-16 px-4">
         <div className="container mx-auto text-center">
           <Card className="bg-primary text-primary-foreground p-8">
-            <h2 className="text-3xl font-bold mb-4">Ready to Start Learning?</h2>
-            <p className="text-lg mb-6 opacity-90">
+            <h2 className="text-3xl font-bold mb-4 font-poppins">Ready to Start Learning?</h2>
+            <p className="text-lg mb-6 opacity-90 font-outfit">
               Join hundreds of students who have transformed their careers with our courses
             </p>
-            <Button variant="secondary" size="lg">
+            <Button variant="secondary" size="lg" className="font-outfit">
               Contact Us for More Information
             </Button>
           </Card>
