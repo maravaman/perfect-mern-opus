@@ -242,6 +242,7 @@ export default function Knight21Home() {
                         <Link 
                           to={`/services?category=${encodeURIComponent(service.title)}`}
                           className="inline-flex items-center text-primary font-semibold hover:gap-2 transition-all group mt-4"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           VIEW DETAILS <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                         </Link>

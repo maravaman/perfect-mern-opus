@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
 const serviceDetails = {
-  "mobile-apps": {
+  "mobile-apps-androidios": {
     title: "Mobile Apps (Android / iOS)",
     hero: "Transform Your Business with a Powerful Mobile App",
     about: "From idea to app launch, our expert developers handle UI design, backend integration, testing, and Play Store/App Store publishing.",
@@ -51,6 +51,78 @@ const serviceDetails = {
       "Knight21 Admin Portal — Business Management System",
       "EduPortal — Learning Management System",
       "ShopHub — E-commerce Platform"
+    ]
+  },
+  "crm-erp-software": {
+    title: "CRM & ERP Software",
+    hero: "Streamline Your Business Operations with Custom CRM & ERP Solutions",
+    about: "Our team builds powerful CRM and ERP systems tailored to your business needs, helping you manage customers, inventory, sales, and operations efficiently.",
+    whyChooseUs: [
+      "Custom-built solutions",
+      "Cloud-based & on-premise options",
+      "Integration with existing systems",
+      "User-friendly interfaces",
+      "Ongoing support & maintenance"
+    ],
+    process: [
+      "Business process analysis",
+      "System design & architecture",
+      "Development & customization",
+      "Data migration & integration",
+      "Training & deployment"
+    ],
+    projects: [
+      "Manufacturing ERP — Complete production management",
+      "Sales CRM — Customer relationship tracking system",
+      "Hospital Management System — Patient & billing management"
+    ]
+  },
+  "uiux-design": {
+    title: "UI/UX Design",
+    hero: "Create Beautiful, User-Friendly Designs That Convert",
+    about: "Our design team creates stunning, intuitive interfaces that enhance user experience and drive engagement across web and mobile platforms.",
+    whyChooseUs: [
+      "User-centered design approach",
+      "Wireframing & prototyping",
+      "Responsive design for all devices",
+      "Brand consistency",
+      "Usability testing"
+    ],
+    process: [
+      "User research & analysis",
+      "Information architecture",
+      "Wireframing & mockups",
+      "Interactive prototypes",
+      "Design handoff & support"
+    ],
+    projects: [
+      "E-commerce Platform — Complete UI redesign",
+      "Mobile Banking App — User experience optimization",
+      "SaaS Dashboard — Enterprise UI/UX design"
+    ]
+  },
+  "api-integration": {
+    title: "API Integration",
+    hero: "Seamless API Integration & Development Services",
+    about: "Connect your applications with third-party services, payment gateways, and business tools through expert API integration and custom API development.",
+    whyChooseUs: [
+      "RESTful & GraphQL APIs",
+      "Payment gateway integration",
+      "Third-party service connections",
+      "Custom API development",
+      "Secure & scalable solutions"
+    ],
+    process: [
+      "Requirements analysis",
+      "API selection & planning",
+      "Integration development",
+      "Testing & debugging",
+      "Documentation & support"
+    ],
+    projects: [
+      "Payment Integration — Razorpay, Stripe, PayPal",
+      "Shipping API — Delivery tracking system",
+      "Social Media API — Multi-platform posting"
     ]
   },
   "gst-msme-registration": {
@@ -221,7 +293,7 @@ const serviceDetails = {
       "Service Provider — National SEO success"
     ]
   },
-  "google-ads": {
+  "google-ads-ppc": {
     title: "Google Ads (PPC)",
     hero: "Drive Results with Targeted Google Ads Campaigns",
     about: "Generate quality leads and maximize ROI with expertly managed Google Ads campaigns.",

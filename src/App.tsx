@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header } from "./components/knight21/Header";
 import { Footer } from "./components/knight21/Footer";
+import { ScrollToTop } from "./components/ScrollToTop";
 import Knight21Home from "./pages/Knight21Home";
 import Knight21About from "./pages/Knight21About";
 import Knight21Services from "./pages/Knight21Services";
@@ -33,6 +34,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <Header />
           <main className="flex-1">

@@ -177,7 +177,7 @@ export default function Knight21Services() {
                   <div className="text-sm font-bold text-primary/40 mb-2">{service.number || `0${index + 1}`}</div>
                   <h3 className="text-xl font-semibold font-poppins mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
                   <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <Link to={`/service/${service.title.toLowerCase().replace(/\s+/g, '-').replace(/[()&]/g, '').replace(/--+/g, '-')}`} className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all group">
+                  <Link to={`/service/${service.title.toLowerCase().replace(/\s+/g, '-').replace(/[()&/]/g, '').replace(/--+/g, '-')}`} className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all group">
                     VIEW DETAILS <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Card>
@@ -196,11 +196,11 @@ export default function Knight21Services() {
           <p className="text-xl mb-8 opacity-90">
             Let's discuss how our services can help your business grow
           </p>
-          <a href="/contact">
+          <Link to="/contact">
             <button className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
               Contact Us Today
             </button>
-          </a>
+          </Link>
         </div>
       </section>
     </div>

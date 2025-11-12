@@ -8,6 +8,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "react-router-dom";
 
 export default function Career() {
   const [formData, setFormData] = useState({
@@ -444,11 +445,11 @@ export default function Career() {
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
             We're always looking for talented individuals. Send us your resume and we'll reach out when suitable opportunities arise.
           </p>
-          <a href="/contact">
+          <Link to="/contact">
             <Button size="lg" variant="secondary">
               Contact Us
             </Button>
-          </a>
+          </Link>
         </div>
       </section>
     </div>
