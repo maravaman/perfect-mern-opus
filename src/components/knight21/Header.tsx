@@ -27,9 +27,9 @@ export const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center group">
             <img 
-              src={new URL('@/assets/knight21-logo.png', import.meta.url).href} 
-              alt="Knight21 Logo" 
-              className="h-14 transition-transform group-hover:scale-105"
+              src={new URL('@/assets/knight21-logo-new.png', import.meta.url).href} 
+              alt="Knight21 - Your success is our mission" 
+              className="h-16 md:h-20 w-auto transition-all duration-300 group-hover:scale-105 drop-shadow-md"
               loading="eager"
             />
           </Link>
