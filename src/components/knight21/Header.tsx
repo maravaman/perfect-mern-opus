@@ -29,7 +29,7 @@ export const Header = () => {
             <img 
               src={new URL('@/assets/knight21-logo-new.png', import.meta.url).href} 
               alt="Knight21 - Your success is our mission" 
-              className="h-16 md:h-20 w-auto transition-all duration-300 group-hover:scale-105 drop-shadow-md"
+              className="h-20 md:h-24 w-auto transition-all duration-300 group-hover:scale-105 drop-shadow-lg"
               loading="eager"
             />
           </Link>
