@@ -56,7 +56,7 @@ export const TrustedClients = () => {
                 <img
                   src={client.logo}
                   alt={client.name}
-                  className="max-h-16 max-w-full object-contain grayscale hover:grayscale-0 transition-all"
+                  className="max-h-16 max-w-full object-contain transition-all hover:scale-110"
                   loading="lazy"
                 />
               </div>

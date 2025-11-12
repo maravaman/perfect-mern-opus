@@ -4,6 +4,16 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart, Code, TrendingUp, Bot, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TrustedClients } from "@/components/TrustedClients";
+import { useEffect, useRef } from "react";
+import anvikaImg from "@/assets/portfolio/anvika.png";
+import sriAcademyImg from "@/assets/portfolio/sri-academy.png";
+import vedhaImg from "@/assets/portfolio/vedha.png";
+import dineEmpireImg from "@/assets/portfolio/dine-empire.png";
+import jirehMelodiesImg from "@/assets/portfolio/jireh-melodies.png";
+import mbPrimeImg from "@/assets/portfolio/mb-prime.png";
+import nextgenImg from "@/assets/portfolio/nextgen.png";
+import newGenElevatorsImg from "@/assets/portfolio/new-gen-elevators.png";
+import leelavathiImg from "@/assets/portfolio/leelavathi.png";
 
 const serviceIcons = {
   "App & Software Development": Code,
@@ -85,13 +95,32 @@ export default function Knight21Home() {
   ];
 
   const portfolioItems = [
-    { id: 1, title: "E-Commerce Website", category: "Web Development", image_url: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80", display_order: 1 },
-    { id: 2, title: "Digital Marketing Campaign", category: "Marketing", image_url: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80", display_order: 2 },
-    { id: 3, title: "Mobile App Design", category: "App Development", image_url: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80", display_order: 3 },
-    { id: 4, title: "SEO Optimization Project", category: "SEO", image_url: "https://images.unsplash.com/photo-1571677205640-d1c4e73f1d09?w=800&q=80", display_order: 4 },
-    { id: 5, title: "Social Media Strategy", category: "Social Media", image_url: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80", display_order: 5 },
-    { id: 6, title: "Brand Identity Design", category: "Branding", image_url: "https://images.unsplash.com/photo-1626785774625-ddcddc3445e9?w=800&q=80", display_order: 6 }
+    { id: 1, title: "Anvika Computers", category: "Computer Store", image_url: anvikaImg, display_order: 1 },
+    { id: 2, title: "Sri Academy", category: "Educational Institute", image_url: sriAcademyImg, display_order: 2 },
+    { id: 3, title: "Vedha Software", category: "Software Company", image_url: vedhaImg, display_order: 3 },
+    { id: 4, title: "Dine Empire", category: "Restaurant", image_url: dineEmpireImg, display_order: 4 },
+    { id: 5, title: "Jireh Melodies", category: "Music Studio", image_url: jirehMelodiesImg, display_order: 5 },
+    { id: 6, title: "MB Prime Projects", category: "Construction", image_url: mbPrimeImg, display_order: 6 },
+    { id: 7, title: "Next Gens Store", category: "E-commerce", image_url: nextgenImg, display_order: 7 },
+    { id: 8, title: "New Gen Elevators", category: "Elevator Service", image_url: newGenElevatorsImg, display_order: 8 },
+    { id: 9, title: "Leelavathi Designer", category: "Fashion Design", image_url: leelavathiImg, display_order: 9 }
   ];
+
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const scrollerInner = scroller.querySelector(".portfolio-scroller-inner");
+    if (scrollerInner) {
+      const scrollerContent = Array.from(scrollerInner.children);
+      scrollerContent.forEach((item) => {
+        const duplicatedItem = item.cloneNode(true);
+        scrollerInner.appendChild(duplicatedItem);
+      });
+    }
+  }, []);
 
   const reviews = [
     { id: 1, name: "Rajesh Kumar", role: "CEO, TechStart Solutions", rating: 5, comment: "Knight21 transformed our online presence completely. Their SEO and digital marketing strategies increased our traffic by 300%. Highly recommended!", image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150", display_order: 1 },
@@ -374,7 +403,7 @@ export default function Knight21Home() {
       </section>
 
       {/* Portfolio Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-4">
@@ -384,26 +413,31 @@ export default function Knight21Home() {
               Check out some of our recent projects and success stories
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {portfolioItems.map((item) => (
-              <Link key={item.id} to="/portfolio">
-                <Card className="overflow-hidden group cursor-pointer hover:shadow-xl transition-all hover:border-primary/50 border-2 h-full">
-                  <div className="aspect-video overflow-hidden">
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.category}</p>
-                  </div>
-                </Card>
-              </Link>
-            ))}
+          
+          <div ref={scrollerRef} className="portfolio-scroller" data-animated="true">
+            <div className="portfolio-scroller-inner flex gap-8 animate-scroll">
+              {portfolioItems.map((item, index) => (
+                <Link key={index} to="/portfolio" className="flex-shrink-0">
+                  <Card className="overflow-hidden group cursor-pointer hover:shadow-xl transition-all hover:border-primary/50 border-2 w-[350px]">
+                    <div className="aspect-video overflow-hidden">
+                      <img
+                        src={item.image_url}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground">{item.category}</p>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           </div>
-          <div className="text-center mt-8">
+
+          <div className="text-center mt-12">
             <Link to="/portfolio">
               <Button variant="outline" size="lg">
                 View All Projects <ArrowRight className="ml-2 w-4 h-4" />
@@ -411,6 +445,40 @@ export default function Knight21Home() {
             </Link>
           </div>
         </div>
+
+        <style>{`
+          .portfolio-scroller {
+            max-width: 100%;
+          }
+
+          .portfolio-scroller[data-animated="true"] {
+            overflow: hidden;
+            -webkit-mask: linear-gradient(
+              90deg,
+              transparent,
+              white 10%,
+              white 90%,
+              transparent
+            );
+            mask: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
+          }
+
+          .portfolio-scroller[data-animated="true"] .portfolio-scroller-inner {
+            width: max-content;
+            flex-wrap: nowrap;
+            animation: scroll 40s linear infinite;
+          }
+
+          .portfolio-scroller-inner:hover {
+            animation-play-state: paused;
+          }
+
+          @keyframes scroll {
+            to {
+              transform: translateX(-50%);
+            }
+          }
+        `}</style>
       </section>
 
       {/* Our Packages Section */}
