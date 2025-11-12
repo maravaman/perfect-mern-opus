@@ -177,8 +177,8 @@ export default function Knight21Services() {
                   <div className="text-sm font-bold text-primary/40 mb-2">{service.number || `0${index + 1}`}</div>
                   <h3 className="text-xl font-semibold font-poppins mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
                   <p className="text-muted-foreground mb-4">{service.description}</p>
-                  <Link to="/contact" className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all group">
-                    GET STARTED <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  <Link to={`/service/${service.title.toLowerCase().replace(/\s+/g, '-').replace(/[()&]/g, '').replace(/--+/g, '-')}`} className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all group">
+                    VIEW DETAILS <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Card>
               );

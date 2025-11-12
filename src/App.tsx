@@ -18,6 +18,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminSetup from "./pages/AdminSetup";
 import Courses from "./pages/Courses";
 import Tools from "./pages/Tools";
+import ServiceDetail from "./pages/ServiceDetail";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/" element={<Knight21Home />} />
               <Route path="/about" element={<Knight21About />} />
               <Route path="/services" element={<Knight21Services />} />
+              <Route path="/service/:slug" element={<ServiceDetail />} />
               <Route path="/contact" element={<Knight21Contact />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/reviews" element={<Reviews />} />

@@ -26,10 +26,12 @@ export const Header = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center group">
-            <div className="font-bold text-2xl transition-transform group-hover:scale-105">
-              <span className="text-foreground">Knight</span>
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">21</span>
-            </div>
+            <img 
+              src={new URL('@/assets/knight21-logo.png', import.meta.url).href} 
+              alt="Knight21 Logo" 
+              className="h-14 transition-transform group-hover:scale-105"
+              loading="eager"
+            />
           </Link>
 
           {/* Desktop Navigation */}

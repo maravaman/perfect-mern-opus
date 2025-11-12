@@ -466,7 +466,7 @@ export default function Knight21Home() {
           .portfolio-scroller[data-animated="true"] .portfolio-scroller-inner {
             width: max-content;
             flex-wrap: nowrap;
-            animation: scroll 40s linear infinite;
+            animation: scroll 80s linear infinite;
           }
 
           .portfolio-scroller-inner:hover {
