@@ -13,6 +13,7 @@ import Knight21Contact from "./pages/Knight21Contact";
 import Portfolio from "./pages/Portfolio";
 import Reviews from "./pages/Reviews";
 import Career from "./pages/Career";
+import Blog from "./pages/Blog";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -47,6 +48,7 @@ const App = () => (
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/reviews" element={<Reviews />} />
               <Route path="/career" element={<Career />} />
+              <Route path="/blog" element={<Blog />} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/auth" element={<Auth />} />
