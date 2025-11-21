@@ -8,7 +8,7 @@ const CancellationRefunds = () => {
         <section>
           <h2 className="text-2xl font-semibold mb-3">Cancellation Policy</h2>
           <p className="text-muted-foreground mb-4">
-            At Knight21, we understand that circumstances may change. Our cancellation policy is designed to be fair to both our clients and our team.
+            At Digi Hub, we understand that circumstances may change. Our cancellation policy is designed to be fair to both our clients and our team.
           </p>
           <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
             <li>Services can be cancelled within 48 hours of order placement for a full refund</li>
