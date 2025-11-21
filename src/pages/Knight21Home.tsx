@@ -123,10 +123,10 @@ export default function Knight21Home() {
   }, []);
 
   const reviews = [
-    { id: 1, name: "Rajesh Kumar", role: "CEO, TechStart Solutions", rating: 5, comment: "Knight21 transformed our online presence completely. Their SEO and digital marketing strategies increased our traffic by 300%. Highly recommended!", image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150", display_order: 1 },
+    { id: 1, name: "Rajesh Kumar", role: "CEO, TechStart Solutions", rating: 5, comment: "Digi Hub transformed our online presence completely. Their SEO and digital marketing strategies increased our traffic by 300%. Highly recommended!", image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150", display_order: 1 },
     { id: 2, name: "Priya Sharma", role: "Founder, EcoLife Products", rating: 5, comment: "Excellent work on our e-commerce website. The team was professional, responsive, and delivered beyond our expectations. Our sales have doubled since launch!", image_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150", display_order: 2 },
     { id: 3, name: "Arun Patel", role: "Marketing Director, FashionHub", rating: 5, comment: "Their social media marketing campaigns are outstanding. We saw a 250% increase in engagement within just 2 months. The ROI speaks for itself!", image_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150", display_order: 3 },
-    { id: 4, name: "Sneha Reddy", role: "Owner, Café Delight", rating: 5, comment: "Knight21 created a beautiful website and helped us rank on first page of Google. Their Google Ads management brought us so many new customers!", image_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150", display_order: 4 },
+    { id: 4, name: "Sneha Reddy", role: "Owner, Café Delight", rating: 5, comment: "Digi Hub created a beautiful website and helped us rank on first page of Google. Their Google Ads management brought us so many new customers!", image_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150", display_order: 4 },
     { id: 5, name: "Vikram Singh", role: "Director, BuildPro Construction", rating: 5, comment: "Professional team with great expertise. They handled everything from website to complete digital marketing. Our business visibility has increased tremendously.", image_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150", display_order: 5 },
     { id: 6, name: "Meera Desai", role: "CEO, EduLearn Platform", rating: 5, comment: "Amazing results! Their content marketing and SEO strategies helped us reach thousands of students. The team is knowledgeable and always available to help.", image_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150", display_order: 6 }
   ];
@@ -143,7 +143,7 @@ export default function Knight21Home() {
               Enterprise-Grade Digital Marketing
             </div>
             <h1 className="text-4xl md:text-6xl font-bold font-poppins">
-              We Are <span className="text-gradient">Knight 21</span>
+              We Are <span className="text-gradient">Digi Hub</span>
               <br />
               Digital Marketing Agency
             </h1>
