@@ -1,7 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 export const Header = () => {
   const location = useLocation();
@@ -12,12 +20,16 @@ export const Header = () => {
   const navLinks = [
     { path: "/", label: "Home" },
     { path: "/about", label: "About Us" },
-    { path: "/services", label: "Services" },
-    { path: "/courses", label: "Courses" },
-    { path: "/tools", label: "Tools" },
     { path: "/portfolio", label: "Portfolio" },
     { path: "/career", label: "Career" },
+    { path: "/blog", label: "Blog" },
     { path: "/contact", label: "Contact Us" },
+  ];
+
+  const servicesDropdown = [
+    { path: "/services", label: "All Services" },
+    { path: "/courses", label: "Courses" },
+    { path: "/tools", label: "Tools" },
   ];
 
   return (
@@ -50,6 +62,33 @@ export const Header = () => {
                 )}
               </Link>
             ))}
+            
+            {/* Services Dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="font-semibold">
+                    Services
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="w-[200px] p-2">
+                      {servicesDropdown.map((item) => (
+                        <li key={item.path}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to={item.path}
+                              className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">{item.label}</div>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </nav>
 
           {/* Desktop CTA */}
@@ -82,6 +121,24 @@ export const Header = () => {
                   {link.label}
                 </Link>
               ))}
+              
+              {/* Mobile Services Submenu */}
+              <div className="space-y-2">
+                <div className="font-medium text-foreground">Services</div>
+                <div className="pl-4 space-y-2">
+                  {servicesDropdown.map((item) => (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block font-medium text-sm transition-colors hover:text-primary text-muted-foreground"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              
               <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>
                 <Button className="w-full" variant="secondary">Get Started</Button>
               </a>
