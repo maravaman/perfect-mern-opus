@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Header } from "@/components/knight21/Header";
-import { Footer } from "@/components/knight21/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, User } from "lucide-react";
@@ -50,20 +48,17 @@ export default function BlogPost() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-hero pattern-dots">
-        <Header />
+      <div className="bg-gradient-hero pattern-dots">
         <div className="container mx-auto px-4 py-20">
           <div className="text-center">Loading...</div>
         </div>
-        <Footer />
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-gradient-hero pattern-dots">
-        <Header />
+      <div className="bg-gradient-hero pattern-dots">
         <div className="container mx-auto px-4 py-20">
           <div className="text-center">
             <h1 className="text-4xl font-bold mb-4">Post Not Found</h1>
@@ -75,14 +70,12 @@ export default function BlogPost() {
             </Link>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero pattern-dots">
-      <Header />
+    <div className="bg-gradient-hero pattern-dots">
       
       <div className="container mx-auto px-4 py-12">
         <Link to="/blog">
@@ -165,8 +158,6 @@ export default function BlogPost() {
           </Link>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }
