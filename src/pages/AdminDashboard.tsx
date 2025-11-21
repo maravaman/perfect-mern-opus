@@ -7,6 +7,8 @@ import { PricingPlansTab } from "@/components/admin/PricingPlansTab";
 import { ToolsTab } from "@/components/admin/ToolsTab";
 import { PortfolioTab } from "@/components/admin/PortfolioTab";
 import { BlogsTab } from "@/components/admin/BlogsTab";
+import { AppDevelopmentTab } from "@/components/admin/AppDevelopmentTab";
+import { WebApplicationsTab } from "@/components/admin/WebApplicationsTab";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -60,7 +62,7 @@ export default function AdminDashboard() {
 
         <Card className="glass-card p-6">
           <Tabs defaultValue="contacts" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 gap-1">
               <TabsTrigger value="contacts">Contact Submissions</TabsTrigger>
               <TabsTrigger value="courses">Courses</TabsTrigger>
               <TabsTrigger value="services">Services</TabsTrigger>
@@ -68,6 +70,8 @@ export default function AdminDashboard() {
               <TabsTrigger value="pricing">Pricing Plans</TabsTrigger>
               <TabsTrigger value="tools">Tools</TabsTrigger>
               <TabsTrigger value="blogs">Blogs</TabsTrigger>
+              <TabsTrigger value="apps">App Development</TabsTrigger>
+              <TabsTrigger value="web">Web Applications</TabsTrigger>
             </TabsList>
 
             <TabsContent value="contacts">
@@ -96,6 +100,14 @@ export default function AdminDashboard() {
 
             <TabsContent value="blogs">
               <BlogsTab />
+            </TabsContent>
+
+            <TabsContent value="apps">
+              <AppDevelopmentTab />
+            </TabsContent>
+
+            <TabsContent value="web">
+              <WebApplicationsTab />
             </TabsContent>
           </Tabs>
         </Card>
