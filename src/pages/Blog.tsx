@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { Header } from "@/components/knight21/Header";
-import { Footer } from "@/components/knight21/Footer";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -76,9 +74,7 @@ const Blog = () => {
   ) as string[];
 
   return (
-    <div className="min-h-screen bg-gradient-hero pattern-dots">
-      <Header />
-      
+    <div className="bg-gradient-hero pattern-dots">
       {/* Hero Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-6xl text-center">
@@ -214,8 +210,6 @@ const Blog = () => {
           </Link>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };
