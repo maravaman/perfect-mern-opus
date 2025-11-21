@@ -143,14 +143,14 @@ const Blog = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPosts.map((post) => (
-                <Link key={post.id} to={`/blog/${post.id}`}>
-                  <Card className="glass-card hover:shadow-lg transition-all hover:scale-[1.02] h-full">
+                <Link key={post.id} to={`/blog/${post.id}`} className="block group">
+                  <Card className="glass-card hover:shadow-lg transition-all group-hover:scale-[1.02] h-full cursor-pointer">
                     {post.image_url && (
                       <div className="overflow-hidden rounded-t-lg">
                         <img
                           src={post.image_url}
                           alt={post.title}
-                          className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                     )}
@@ -162,7 +162,7 @@ const Blog = () => {
                           {new Date(post.created_at).toLocaleDateString()}
                         </span>
                       </div>
-                      <CardTitle className="text-xl line-clamp-2">{post.title}</CardTitle>
+                      <CardTitle className="text-xl line-clamp-2 group-hover:text-primary transition-colors">{post.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground mb-4 line-clamp-3">
@@ -173,13 +173,13 @@ const Blog = () => {
                           <User className="w-3 h-3" />
                           {post.author_name}
                         </span>
-                        <Button variant="ghost" size="sm">
+                        <span className="text-sm text-primary flex items-center gap-1 font-medium">
                           Read More
-                          <ArrowRight className="w-4 h-4 ml-1" />
-                        </Button>
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
                       </div>
                       {post.tags && post.tags.length > 0 && (
-                        <div className="flex gap-1 mt-3">
+                        <div className="flex gap-1 mt-3 flex-wrap">
                           {post.tags.slice(0, 3).map((tag, index) => (
                             <Badge key={index} variant="outline" className="text-xs">
                               {tag}

@@ -18,7 +18,6 @@ export const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const navLinks = [
-    { path: "/", label: "Home" },
     { path: "/about", label: "About Us" },
     { path: "/portfolio", label: "Portfolio" },
     { path: "/career", label: "Career" },
@@ -48,20 +47,17 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`font-semibold transition-all hover:text-primary relative ${
-                  isActive(link.path) ? "text-primary" : "text-foreground"
-                }`}
-              >
-                {link.label}
-                {isActive(link.path) && (
-                  <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-secondary"></span>
-                )}
-              </Link>
-            ))}
+            <Link
+              to="/"
+              className={`font-semibold transition-all hover:text-primary relative ${
+                isActive("/") ? "text-primary" : "text-foreground"
+              }`}
+            >
+              Home
+              {isActive("/") && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-secondary"></span>
+              )}
+            </Link>
             
             {/* Services Dropdown */}
             <NavigationMenu>
@@ -89,6 +85,21 @@ export const Header = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`font-semibold transition-all hover:text-primary relative ${
+                  isActive(link.path) ? "text-primary" : "text-foreground"
+                }`}
+              >
+                {link.label}
+                {isActive(link.path) && (
+                  <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-secondary"></span>
+                )}
+              </Link>
+            ))}
           </nav>
 
           {/* Desktop CTA */}
@@ -109,18 +120,15 @@ export const Header = () => {
         {mobileMenuOpen && (
           <div className="md:hidden border-t py-4">
             <nav className="flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`font-medium transition-colors hover:text-primary ${
-                    isActive(link.path) ? "text-primary" : "text-foreground"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`font-medium transition-colors hover:text-primary ${
+                  isActive("/") ? "text-primary" : "text-foreground"
+                }`}
+              >
+                Home
+              </Link>
               
               {/* Mobile Services Submenu */}
               <div className="space-y-2">
@@ -138,6 +146,19 @@ export const Header = () => {
                   ))}
                 </div>
               </div>
+
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`font-medium transition-colors hover:text-primary ${
+                    isActive(link.path) ? "text-primary" : "text-foreground"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
               
               <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>
                 <Button className="w-full" variant="secondary">Get Started</Button>
