@@ -9,8 +9,8 @@ export const Footer = () => {
           {/* About Column */}
           <div>
           <div className="font-bold text-2xl mb-4">
-            <span>Digi </span>
-            <span className="text-primary">Hub</span>
+            <span>Knight</span>
+            <span className="text-primary">21</span>
           </div>
             <p className="text-gray-400 text-sm">
               Ready to take your business to the next level? Let's work together to achieve your goals.
@@ -91,7 +91,7 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Digi Hub. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Knight21. All rights reserved.</p>
           <Link to="/auth" className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors">
             <LogIn className="w-4 h-4" />
             Admin Login

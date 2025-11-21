@@ -39,7 +39,7 @@ export const Header = () => {
           <Link to="/" className="flex items-center group">
             <img 
               src={new URL('@/assets/knight21-logo-new.png', import.meta.url).href} 
-              alt="Digi Hub - Your success is our mission" 
+              alt="Knight21 - Your success is our mission" 
               className="h-20 md:h-24 w-auto transition-all duration-300 group-hover:scale-105 drop-shadow-lg"
               loading="eager"
             />

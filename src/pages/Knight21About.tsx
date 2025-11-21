@@ -25,7 +25,7 @@ export default function Knight21About() {
           <div className="max-w-4xl mx-auto space-y-8">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-6">
-                Welcome to <span className="text-primary">Digi Hub</span>
+                Welcome to <span className="text-primary">Knight21</span>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-4">
                 Where creativity meets strategy, and innovation powers results. We are a passionate team of Digital Marketing, designers, and strategists with over 3 years of proven experience in helping businesses grow online.
@@ -39,7 +39,7 @@ export default function Knight21About() {
               <Card className="p-6">
                 <h3 className="text-2xl font-bold font-poppins mb-4">Who We Are</h3>
                 <p className="text-muted-foreground">
-                  Founded in 2023, Digi Hub was born out of a vision to help brands navigate the ever-evolving digital landscape. In just a few years, we've grown from a small team with big dreams to a full-fledged Digital Marketing agency offering end-to-end solutions in website design, SEO, Google Ads, social media marketing, Digital Marketing courses, and more.
+                  Founded in 2023, Knight21 was born out of a vision to help brands navigate the ever-evolving digital landscape. In just a few years, we've grown from a small team with big dreams to a full-fledged Digi Hub offering end-to-end solutions in website design, SEO, Google Ads, social media marketing, Digital Marketing courses, and more.
                 </p>
                 <p className="text-muted-foreground mt-4">
                   Every member of our team brings a unique skill set to the table, from UI/UX designers to performance marketers, working together to craft powerful digital experiences that drive real, measurable results.

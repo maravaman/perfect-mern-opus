@@ -112,10 +112,10 @@ export default function Knight21Contact() {
             <div className="space-y-8 animate-slide-up">
               <div>
                 <h2 className="text-3xl font-bold font-poppins mb-8 text-gradient">
-                  Get in touch with Digi Hub
+                  Get in touch with Knight21
                 </h2>
                 <p className="text-muted-foreground mb-8">
-                  Get in touch with Digi Hub today and let's create something amazing together!
+                  Get in touch with Knight21 today and let's create something amazing together!
                 </p>
               </div>
 
