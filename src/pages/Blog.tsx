@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
+import { Header } from "@/components/knight21/Header";
+import { Footer } from "@/components/knight21/Footer";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Calendar, User, Tag } from "lucide-react";
-import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Calendar, User, ArrowRight } from "lucide-react";
 
 interface BlogPost {
   id: string;
   title: string;
   content: string;
+  excerpt: string;
   author_name: string;
-  category: string | null;
+  category: string;
   created_at: string;
-  tags: string[] | null;
+  tags: string[];
+  image_url: string;
 }
 
 const Blog = () => {
@@ -71,11 +76,13 @@ const Blog = () => {
   ) as string[];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-gradient-hero pattern-dots">
+      <Header />
+      
       {/* Hero Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-6xl text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 font-poppins text-gradient">
             Digital Marketing Blog
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
@@ -83,14 +90,13 @@ const Blog = () => {
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+          <div className="max-w-2xl mx-auto">
             <Input
               type="text"
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-14 text-lg"
+              className="h-12"
             />
           </div>
         </div>
@@ -139,39 +145,55 @@ const Blog = () => {
               </p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPosts.map((post) => (
-                <Card
-                  key={post.id}
-                  className="overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
-                >
-                  <CardHeader className="space-y-2">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {post.category && (
-                        <Badge variant="secondary" className="text-xs">
-                          <Tag className="w-3 h-3 mr-1" />
-                          {post.category}
-                        </Badge>
-                      )}
-                      <div className="flex items-center text-xs text-muted-foreground">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        {format(new Date(post.created_at), "MMM dd, yyyy")}
+                <Link key={post.id} to={`/blog/${post.id}`}>
+                  <Card className="glass-card hover:shadow-lg transition-all hover:scale-[1.02] h-full">
+                    {post.image_url && (
+                      <div className="overflow-hidden rounded-t-lg">
+                        <img
+                          src={post.image_url}
+                          alt={post.title}
+                          className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+                        />
                       </div>
-                    </div>
-                    <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2">
-                      {post.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground line-clamp-3 mb-4">
-                      {post.content}
-                    </p>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <User className="w-4 h-4 mr-1" />
-                      <span>{post.author_name}</span>
-                    </div>
-                  </CardContent>
-                </Card>
+                    )}
+                    <CardHeader>
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="secondary">{post.category}</Badge>
+                        <span className="text-sm text-muted-foreground flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(post.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <CardTitle className="text-xl line-clamp-2">{post.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground mb-4 line-clamp-3">
+                        {post.excerpt || post.content.substring(0, 150)}...
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground flex items-center gap-1">
+                          <User className="w-3 h-3" />
+                          {post.author_name}
+                        </span>
+                        <Button variant="ghost" size="sm">
+                          Read More
+                          <ArrowRight className="w-4 h-4 ml-1" />
+                        </Button>
+                      </div>
+                      {post.tags && post.tags.length > 0 && (
+                        <div className="flex gap-1 mt-3">
+                          {post.tags.slice(0, 3).map((tag, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           )}
@@ -179,20 +201,21 @@ const Blog = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-primary/10 to-secondary/10">
+      <section className="py-16 px-4 glass-card mx-4 mb-8 rounded-lg">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-bold mb-4">Want to Contribute?</h2>
+          <h2 className="text-3xl font-bold mb-4 font-poppins">Want to Contribute?</h2>
           <p className="text-lg text-muted-foreground mb-6">
             Share your insights and expertise with our community. Submit your blog post today!
           </p>
-          <a
-            href="/career#application-form"
-            className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-          >
-            Submit Your Article
-          </a>
+          <Link to="/career#application-form">
+            <Button size="lg" className="glow-effect">
+              Submit Your Article
+            </Button>
+          </Link>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };

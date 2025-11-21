@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/knight21/Header";
-import Footer from "@/components/knight21/Footer";
+import { Header } from "@/components/knight21/Header";
+import { Footer } from "@/components/knight21/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, User } from "lucide-react";
