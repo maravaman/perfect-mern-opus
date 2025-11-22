@@ -11,9 +11,9 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, phone, message } = await req.json();
+    const { name, email, phone, message, type, position, experience, resumeUrl } = await req.json();
 
-    console.log('Received contact submission:', { name, email, phone });
+    console.log('Received submission:', { name, email, phone, type: type || 'contact' });
 
     // Get Google Sheets credentials from environment
     const privateKey = Deno.env.get('GOOGLE_SHEETS_PRIVATE_KEY');
@@ -128,10 +128,21 @@ serve(async (req) => {
 
     // Append data to Google Sheets
     const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-    const values = [[timestamp, name, email, phone, message]];
+
+    // Determine which sheet and data based on type
+    let sheetName = 'Sheet1'; // Default for contact
+    let values: any[][];
+
+    if (type === 'career') {
+      sheetName = 'Career Applications'; // Career submissions go to different sheet
+      values = [[timestamp, name, email, phone, position || '', experience || '', message || '', resumeUrl || '']];
+    } else {
+      sheetName = 'Contact Submissions'; // Contact submissions
+      values = [[timestamp, name, email, phone, message || '']];
+    }
 
     const sheetsResponse = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A:E:append?valueInputOption=RAW`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}!A:H:append?valueInputOption=RAW`,
       {
         method: 'POST',
         headers: {

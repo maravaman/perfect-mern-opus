@@ -70,18 +70,45 @@ export default function Career() {
         resumeUrl = publicUrl;
       }
 
-      // Save application to contact_inquiries
-      const { error } = await supabase.from("contact_inquiries").insert({
+      // Save application to career_applications table
+      const { error: dbError } = await supabase.from("career_applications").insert({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        subject: `Career Application - ${formData.position}`,
-        message: `Position: ${formData.position}\nExperience: ${formData.experience}\n\nMessage: ${formData.message}\n\nResume: ${resumeUrl}`,
+        position: formData.position,
+        experience: formData.experience,
+        message: formData.message,
+        resume_url: resumeUrl,
       });
 
-      if (error) throw error;
+      if (dbError) throw dbError;
 
-      toast.success("Application submitted successfully!");
+      // Send to Google Sheets
+      try {
+        const { data, error: functionError } = await supabase.functions.invoke('send-to-google-sheets', {
+          body: {
+            type: 'career',
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            position: formData.position,
+            experience: formData.experience,
+            message: formData.message,
+            resumeUrl: resumeUrl,
+          }
+        });
+
+        if (functionError) {
+          console.error('Google Sheets function error:', functionError);
+        } else {
+          console.log('Successfully sent to Google Sheets:', data);
+        }
+      } catch (sheetsError) {
+        console.error('Failed to send to Google Sheets:', sheetsError);
+        // Don't fail the entire submission if Google Sheets fails
+      }
+
+      toast.success("Application submitted successfully! We'll review your application and get back to you soon.");
       setFormData({
         name: "",
         email: "",
