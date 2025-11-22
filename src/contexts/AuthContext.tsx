@@ -64,11 +64,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (error) throw error;
 
-    const { data: roleData } = await supabase
+    const { data: roleData, error: roleError } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', data.user.id)
-      .single();
+      .maybeSingle();
+
+    console.log('Role check:', { roleData, roleError, userId: data.user.id });
+
+    if (roleError) {
+      console.error('Role check error:', roleError);
+      await supabase.auth.signOut();
+      throw new Error('Unable to verify admin privileges. Please contact support.');
+    }
 
     if (roleData?.role !== 'admin') {
       await supabase.auth.signOut();
