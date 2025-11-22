@@ -6,9 +6,11 @@ import { ServicesTab } from "@/components/admin/ServicesTab";
 import { PricingPlansTab } from "@/components/admin/PricingPlansTab";
 import { ToolsTab } from "@/components/admin/ToolsTab";
 import { PortfolioTab } from "@/components/admin/PortfolioTab";
-import { BlogsTab } from "@/components/admin/BlogsTab";
+import { BlogsTabNew } from "@/components/admin/BlogsTabNew";
 import { AppDevelopmentTab } from "@/components/admin/AppDevelopmentTab";
 import { WebApplicationsTab } from "@/components/admin/WebApplicationsTab";
+import { SiteSettingsTab } from "@/components/admin/SiteSettingsTab";
+import { TrustedClientsTab } from "@/components/admin/TrustedClientsTab";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,18 +63,24 @@ export default function AdminDashboard() {
         </div>
 
         <Card className="glass-card p-6">
-          <Tabs defaultValue="contacts" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 gap-1">
-              <TabsTrigger value="contacts">Contact Submissions</TabsTrigger>
-              <TabsTrigger value="courses">Courses</TabsTrigger>
-              <TabsTrigger value="services">Services</TabsTrigger>
-              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-              <TabsTrigger value="pricing">Pricing Plans</TabsTrigger>
-              <TabsTrigger value="tools">Tools</TabsTrigger>
+          <Tabs defaultValue="settings" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-11 gap-1">
+              <TabsTrigger value="settings">Settings</TabsTrigger>
               <TabsTrigger value="blogs">Blogs</TabsTrigger>
-              <TabsTrigger value="apps">App Development</TabsTrigger>
-              <TabsTrigger value="web">Web Applications</TabsTrigger>
+              <TabsTrigger value="services">Services</TabsTrigger>
+              <TabsTrigger value="tools">Tools</TabsTrigger>
+              <TabsTrigger value="courses">Courses</TabsTrigger>
+              <TabsTrigger value="apps">Apps</TabsTrigger>
+              <TabsTrigger value="web">Web Apps</TabsTrigger>
+              <TabsTrigger value="clients">Clients</TabsTrigger>
+              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+              <TabsTrigger value="pricing">Pricing</TabsTrigger>
+              <TabsTrigger value="contacts">Contacts</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="settings">
+              <SiteSettingsTab />
+            </TabsContent>
 
             <TabsContent value="contacts">
               <ContactSubmissionsTab />
@@ -99,7 +107,11 @@ export default function AdminDashboard() {
             </TabsContent>
 
             <TabsContent value="blogs">
-              <BlogsTab />
+              <BlogsTabNew />
+            </TabsContent>
+
+            <TabsContent value="clients">
+              <TrustedClientsTab />
             </TabsContent>
 
             <TabsContent value="apps">

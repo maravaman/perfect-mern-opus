@@ -1,64 +1,63 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bot, Sparkles, Zap, MessageSquare, Image, Code } from "lucide-react";
+import { Bot, Sparkles, Zap, MessageSquare, Image, Code, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+const iconMap: Record<string, any> = {
+  Bot,
+  Sparkles,
+  Zap,
+  MessageSquare,
+  Image,
+  Code
+};
 
 const Tools = () => {
-  const tools = [
-    {
-      id: "openai",
-      name: "OpenAI",
-      description: "Harness the power of GPT models for advanced AI solutions",
-      icon: Bot,
-      color: "from-green-500 to-emerald-600",
-      features: [
-        "Natural language processing",
-        "Content generation and copywriting",
-        "Code generation and debugging",
-        "Conversation AI and chatbots",
-        "Language translation",
-        "Text summarization and analysis"
-      ],
-      capabilities: [
-        { icon: MessageSquare, text: "Chat & Conversational AI" },
-        { icon: Code, text: "Code Generation" },
-        { icon: Sparkles, text: "Creative Writing" },
-        { icon: Image, text: "DALL-E Image Generation" }
-      ],
-      useCases: [
-        "Customer support automation",
-        "Content creation at scale",
-        "Software development assistance",
-        "Educational tutoring systems"
-      ]
-    },
-    {
-      id: "gemini",
-      name: "Gemini AI",
-      description: "Google's most capable AI model for multimodal understanding",
-      icon: Sparkles,
-      color: "from-blue-500 to-cyan-600",
-      features: [
-        "Multimodal processing (text, images, video)",
-        "Advanced reasoning and problem-solving",
-        "Long-context understanding",
-        "Real-time information processing",
-        "Code understanding and generation",
-        "Document analysis and extraction"
-      ],
-      capabilities: [
-        { icon: Zap, text: "Lightning Fast Processing" },
-        { icon: Image, text: "Image & Video Analysis" },
-        { icon: Code, text: "Advanced Code Understanding" },
-        { icon: MessageSquare, text: "Contextual Conversations" }
-      ],
-      useCases: [
-        "Complex data analysis",
-        "Multimodal content creation",
-        "Research and document processing",
-        "Advanced automation workflows"
-      ]
+  const [tools, setTools] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTools();
+
+    const channel = supabase
+      .channel('tools-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tools' }, () => {
+        fetchTools();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const fetchTools = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('tools')
+        .select('*')
+        .eq('active', true)
+        .order('display_order', { ascending: true });
+
+      if (error) throw error;
+      setTools(data || []);
+    } catch (error) {
+      console.error('Error fetching tools:', error);
+      toast.error('Failed to load tools');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
@@ -78,18 +77,22 @@ const Tools = () => {
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="space-y-16">
-            {tools.map((tool, index) => (
+            {tools.map((tool) => {
+              const IconComponent = iconMap[tool.icon] || Bot;
+              const capabilities = Array.isArray(tool.capabilities) ? tool.capabilities : [];
+
+              return (
               <div key={tool.id} className="relative">
                 <Card className="overflow-hidden">
                   {/* Gradient Header */}
-                  <div className={`h-2 bg-gradient-to-r ${tool.color}`} />
-                  
+                  <div className={`h-2 bg-gradient-to-r from-${tool.color_from} to-${tool.color_to}`} />
+
                   <div className="grid md:grid-cols-5 gap-8 p-8">
                     {/* Left - Tool Info */}
                     <div className="md:col-span-2 space-y-6">
                       <div className="flex items-start gap-4">
-                        <div className={`p-4 rounded-lg bg-gradient-to-br ${tool.color} text-white`}>
-                          <tool.icon className="w-8 h-8" />
+                        <div className={`p-4 rounded-lg bg-gradient-to-br from-${tool.color_from} to-${tool.color_to} text-white`}>
+                          <IconComponent className="w-8 h-8" />
                         </div>
                         <div>
                           <h2 className="text-3xl font-bold mb-2">{tool.name}</h2>
@@ -100,12 +103,15 @@ const Tools = () => {
                       <div>
                         <h3 className="font-semibold mb-3 text-lg">Key Capabilities</h3>
                         <div className="grid grid-cols-2 gap-3">
-                          {tool.capabilities.map((cap, idx) => (
-                            <div key={idx} className="flex flex-col items-center gap-2 p-4 bg-secondary/50 rounded-lg text-center">
-                              <cap.icon className="w-6 h-6 text-primary" />
-                              <span className="text-sm font-semibold text-foreground leading-tight">{cap.text}</span>
-                            </div>
-                          ))}
+                          {capabilities.map((cap: any, idx: number) => {
+                            const CapIcon = iconMap[cap.icon] || Bot;
+                            return (
+                              <div key={idx} className="flex flex-col items-center gap-2 p-4 bg-secondary/50 rounded-lg text-center">
+                                <CapIcon className="w-6 h-6 text-primary" />
+                                <span className="text-sm font-semibold text-foreground leading-tight">{cap.text}</span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
 
@@ -119,7 +125,7 @@ const Tools = () => {
                       <div>
                         <h3 className="text-xl font-semibold mb-4">Features</h3>
                         <ul className="space-y-2">
-                          {tool.features.map((feature, idx) => (
+                          {tool.features?.map((feature: string, idx: number) => (
                             <li key={idx} className="flex items-start gap-3">
                               <span className="text-primary mt-1">✓</span>
                               <span>{feature}</span>
@@ -131,7 +137,7 @@ const Tools = () => {
                       <div>
                         <h3 className="text-xl font-semibold mb-4">Use Cases</h3>
                         <div className="grid md:grid-cols-2 gap-3">
-                          {tool.useCases.map((useCase, idx) => (
+                          {tool.use_cases?.map((useCase: string, idx: number) => (
                             <div key={idx} className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg">
                               <span className="text-primary">→</span>
                               <span className="text-sm">{useCase}</span>
@@ -143,7 +149,8 @@ const Tools = () => {
                   </div>
                 </Card>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
