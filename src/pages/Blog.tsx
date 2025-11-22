@@ -28,6 +28,17 @@ const Blog = () => {
 
   useEffect(() => {
     fetchPosts();
+
+    const channel = supabase
+      .channel('blogs-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'blogs' }, () => {
+        fetchPosts();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -37,13 +48,23 @@ const Blog = () => {
   const fetchPosts = async () => {
     try {
       const { data, error } = await supabase
-        .from("blog_posts")
-        .select("*")
+        .from("blogs")
+        .select(`
+          *,
+          category:blog_categories(name)
+        `)
         .eq("published", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setPosts(data || []);
+
+      const formattedData = data?.map(post => ({
+        ...post,
+        category: post.category?.name || '',
+        author_name: post.author || 'Knight21'
+      })) || [];
+
+      setPosts(formattedData);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
