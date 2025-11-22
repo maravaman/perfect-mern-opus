@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Youtube, Linkedin, MessageCircle, Mail, Phone, MapPin, LogIn } from "lucide-react";
+import { Facebook, Instagram, Youtube, Linkedin, MessageCircle, Mail, Phone, MapPin, Shield } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -92,9 +92,12 @@ export const Footer = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
           <p>&copy; {new Date().getFullYear()} Knight21. All rights reserved.</p>
-          <Link to="/auth" className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors">
-            <LogIn className="w-4 h-4" />
-            Admin Login
+          <Link
+            to="/admin/login"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            <Shield className="w-4 h-4" />
+            <span className="font-semibold">Admin Access</span>
           </Link>
         </div>
       </div>
