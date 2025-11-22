@@ -98,12 +98,12 @@ const Tools = () => {
                       </div>
 
                       <div>
-                        <h3 className="font-semibold mb-3">Key Capabilities</h3>
+                        <h3 className="font-semibold mb-3 text-lg">Key Capabilities</h3>
                         <div className="grid grid-cols-2 gap-3">
                           {tool.capabilities.map((cap, idx) => (
-                            <div key={idx} className="flex flex-col items-center gap-2 p-3 bg-secondary/50 rounded-lg text-center">
-                              <cap.icon className="w-5 h-5 text-primary" />
-                              <span className="text-xs font-medium">{cap.text}</span>
+                            <div key={idx} className="flex flex-col items-center gap-2 p-4 bg-secondary/50 rounded-lg text-center">
+                              <cap.icon className="w-6 h-6 text-primary" />
+                              <span className="text-sm font-semibold text-foreground leading-tight">{cap.text}</span>
                             </div>
                           ))}
                         </div>
