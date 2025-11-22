@@ -85,13 +85,23 @@ const Tools = () => {
               <div key={tool.id} className="relative">
                 <Card className="overflow-hidden">
                   {/* Gradient Header */}
-                  <div className={`h-2 bg-gradient-to-r from-${tool.color_from} to-${tool.color_to}`} />
+                  <div
+                    className="h-2"
+                    style={{
+                      background: `linear-gradient(to right, ${tool.color_from || '#3b82f6'}, ${tool.color_to || '#06b6d4'})`
+                    }}
+                  />
 
                   <div className="grid md:grid-cols-5 gap-8 p-8">
                     {/* Left - Tool Info */}
                     <div className="md:col-span-2 space-y-6">
                       <div className="flex items-start gap-4">
-                        <div className={`p-4 rounded-lg bg-gradient-to-br from-${tool.color_from} to-${tool.color_to} text-white`}>
+                        <div
+                          className="p-4 rounded-lg text-white shadow-lg"
+                          style={{
+                            background: `linear-gradient(to bottom right, ${tool.color_from || '#3b82f6'}, ${tool.color_to || '#06b6d4'})`
+                          }}
+                        >
                           <IconComponent className="w-8 h-8" />
                         </div>
                         <div>
@@ -106,9 +116,9 @@ const Tools = () => {
                           {capabilities.map((cap: any, idx: number) => {
                             const CapIcon = iconMap[cap.icon] || Bot;
                             return (
-                              <div key={idx} className="flex flex-col items-center gap-2 p-4 bg-secondary/50 rounded-lg text-center">
+                              <div key={idx} className="flex flex-col items-center gap-2 p-4 bg-secondary/50 rounded-lg text-center hover:bg-secondary/70 transition-colors">
                                 <CapIcon className="w-6 h-6 text-primary" />
-                                <span className="text-sm font-semibold text-foreground leading-tight">{cap.text}</span>
+                                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight">{cap.text}</span>
                               </div>
                             );
                           })}
