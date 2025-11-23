@@ -71,12 +71,7 @@ export function BlogsTabNew() {
 
     const blogsChannel = supabase
       .channel('blogs-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'blogs' }, fetchBlogs)
-      .subscribe();
-
-    const categoriesChannel = supabase
-      .channel('categories-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_categories' }, fetchCategories)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_posts' }, fetchBlogs)
       .subscribe();
 
     return () => {
@@ -92,7 +87,7 @@ export function BlogsTabNew() {
 
   const fetchBlogs = async () => {
     const { data, error } = await supabase
-      .from("blogs")
+      .from("blog_posts")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -105,17 +100,8 @@ export function BlogsTabNew() {
   };
 
   const fetchCategories = async () => {
-    const { data, error } = await supabase
-      .from("blog_categories")
-      .select("*")
-      .order("display_order", { ascending: true });
-
-    if (error) {
-      console.error(error);
-      toast.error("Failed to fetch categories");
-    } else {
-      setCategories(data || []);
-    }
+    // Categories feature not yet implemented
+    setCategories([]);
   };
 
   const generateSlug = (title: string) => {
@@ -194,7 +180,7 @@ export function BlogsTabNew() {
 
       if (editingBlog) {
         const { error } = await supabase
-          .from("blogs")
+          .from("blog_posts")
           .update(blogData)
           .eq("id", editingBlog.id);
 
@@ -202,7 +188,7 @@ export function BlogsTabNew() {
         toast.success("Blog updated successfully");
       } else {
         const { error } = await supabase
-          .from("blogs")
+          .from("blog_posts")
           .insert([blogData]);
 
         if (error) throw error;
@@ -237,7 +223,7 @@ export function BlogsTabNew() {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      const { error } = await supabase.from("blogs").delete().eq("id", id);
+      const { error } = await supabase.from("blog_posts").delete().eq("id", id);
       if (error) throw error;
       toast.success("Blog deleted successfully");
     } catch (error) {
@@ -249,7 +235,7 @@ export function BlogsTabNew() {
   const handleTogglePublished = async (id: string, published: boolean) => {
     try {
       const { error } = await supabase
-        .from("blogs")
+        .from("blog_posts")
         .update({
           published,
           published_at: published ? new Date().toISOString() : null
@@ -290,27 +276,8 @@ export function BlogsTabNew() {
     try {
       const slug = categoryForm.slug || generateSlug(categoryForm.name);
 
-      if (editingCategory) {
-        const { error } = await supabase
-          .from("blog_categories")
-          .update({ name: categoryForm.name, slug, description: categoryForm.description })
-          .eq("id", editingCategory.id);
-
-        if (error) throw error;
-        toast.success("Category updated");
-      } else {
-        const { error } = await supabase
-          .from("blog_categories")
-          .insert([{
-            name: categoryForm.name,
-            slug,
-            description: categoryForm.description,
-            display_order: categories.length
-          }]);
-
-        if (error) throw error;
-        toast.success("Category created");
-      }
+      // Categories feature not yet implemented
+      toast.error("Categories feature coming soon");
 
       setCategoryDialogOpen(false);
       setEditingCategory(null);
@@ -322,16 +289,8 @@ export function BlogsTabNew() {
   };
 
   const handleDeleteCategory = async (id: string) => {
-    if (!confirm("Delete this category? Blogs in this category will be uncategorized.")) return;
-
-    try {
-      const { error } = await supabase.from("blog_categories").delete().eq("id", id);
-      if (error) throw error;
-      toast.success("Category deleted");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to delete category");
-    }
+    // Categories feature not yet implemented
+    toast.error("Categories feature coming soon");
   };
 
   const filteredBlogs = blogs.filter(blog =>

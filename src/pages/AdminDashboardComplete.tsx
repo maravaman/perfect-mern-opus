@@ -7,10 +7,8 @@ import { LogOut, Shield } from 'lucide-react';
 import ServicesTabComplete from '@/components/admin/ServicesTabComplete';
 import CoursesTabComplete from '@/components/admin/CoursesTabComplete';
 import PortfolioTabComplete from '@/components/admin/PortfolioTabComplete';
-import { BlogsTabNew } from '@/components/admin/BlogsTabNew';
+import BlogsTab from '@/components/admin/BlogsTab';
 import { ToolsTab } from '@/components/admin/ToolsTab';
-import { SiteSettingsTab } from '@/components/admin/SiteSettingsTab';
-import { TrustedClientsTab } from '@/components/admin/TrustedClientsTab';
 import { PricingPlansTab } from '@/components/admin/PricingPlansTab';
 import { ContactSubmissionsTab } from '@/components/admin/ContactSubmissionsTab';
 
@@ -62,22 +60,16 @@ export default function AdminDashboardComplete() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="settings" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-9 mb-8 h-auto">
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+        <Tabs defaultValue="services" className="w-full">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-7 mb-8 h-auto">
             <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
             <TabsTrigger value="blogs">Blogs</TabsTrigger>
             <TabsTrigger value="tools">Tools</TabsTrigger>
-            <TabsTrigger value="clients">Clients</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="contacts">Contacts</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="settings">
-            <SiteSettingsTab />
-          </TabsContent>
 
           <TabsContent value="services">
             <ServicesTabComplete />
@@ -92,15 +84,11 @@ export default function AdminDashboardComplete() {
           </TabsContent>
 
           <TabsContent value="blogs">
-            <BlogsTabNew />
+            <BlogsTab />
           </TabsContent>
 
           <TabsContent value="tools">
             <ToolsTab />
-          </TabsContent>
-
-          <TabsContent value="clients">
-            <TrustedClientsTab />
           </TabsContent>
 
           <TabsContent value="pricing">
