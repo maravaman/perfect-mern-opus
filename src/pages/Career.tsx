@@ -70,18 +70,10 @@ export default function Career() {
         resumeUrl = publicUrl;
       }
 
-      // Save application to career_applications table
-      const { error: dbError } = await supabase.from("career_applications").insert({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        position: formData.position,
-        experience: formData.experience,
-        message: formData.message,
-        resume_url: resumeUrl,
-      });
-
-      if (dbError) throw dbError;
+      // Career applications table doesn't exist - show warning
+      toast.error("Career application feature not yet configured - database table missing");
+      setUploading(false);
+      return;
 
       // Send to Google Sheets
       try {

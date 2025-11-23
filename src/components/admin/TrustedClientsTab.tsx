@@ -108,31 +108,14 @@ export function TrustedClientsTab() {
   useEffect(() => {
     fetchClients();
 
-    const channel = supabase
-      .channel('trusted-clients-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'trusted_clients' },
-        () => {
-          fetchClients();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    // trusted_clients table doesn't exist
   }, []);
 
   const fetchClients = async () => {
     try {
-      const { data, error } = await supabase
-        .from('trusted_clients')
-        .select('*')
-        .order('display_order', { ascending: true });
-
-      if (error) throw error;
-      setClients(data || []);
+      // trusted_clients table doesn't exist in schema
+      setClients([]);
+      toast.info('Trusted clients feature not yet configured');
     } catch (error) {
       console.error('Error fetching clients:', error);
       toast.error('Failed to load clients');
@@ -152,15 +135,8 @@ export function TrustedClientsTab() {
       setClients(newClients);
 
       try {
-        const updates = newClients.map((client, index) =>
-          supabase
-            .from('trusted_clients')
-            .update({ display_order: index })
-            .eq('id', client.id)
-        );
-
-        await Promise.all(updates);
-        toast.success('Order updated successfully');
+        toast.error('Trusted clients feature not yet configured');
+        fetchClients();
       } catch (error) {
         console.error('Error updating order:', error);
         toast.error('Failed to update order');
@@ -171,29 +147,7 @@ export function TrustedClientsTab() {
 
   const handleSave = async () => {
     try {
-      if (editingClient) {
-        const { error } = await supabase
-          .from('trusted_clients')
-          .update(formData)
-          .eq('id', editingClient.id);
-
-        if (error) throw error;
-        toast.success('Client updated successfully');
-      } else {
-        const { error } = await supabase
-          .from('trusted_clients')
-          .insert({
-            ...formData,
-            display_order: clients.length
-          });
-
-        if (error) throw error;
-        toast.success('Client added successfully');
-      }
-
-      setOpen(false);
-      setEditingClient(null);
-      setFormData({ name: "", logo_url: "", website_url: "", category: "general" });
+      toast.error('Trusted clients feature not yet configured - database table missing');
     } catch (error) {
       console.error('Error saving client:', error);
       toast.error('Failed to save client');
@@ -215,13 +169,7 @@ export function TrustedClientsTab() {
     if (!confirm('Are you sure you want to delete this client?')) return;
 
     try {
-      const { error } = await supabase
-        .from('trusted_clients')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      toast.success('Client deleted successfully');
+      toast.error('Trusted clients feature not yet configured');
     } catch (error) {
       console.error('Error deleting client:', error);
       toast.error('Failed to delete client');
@@ -230,13 +178,7 @@ export function TrustedClientsTab() {
 
   const handleToggleActive = async (id: string, active: boolean) => {
     try {
-      const { error } = await supabase
-        .from('trusted_clients')
-        .update({ active })
-        .eq('id', id);
-
-      if (error) throw error;
-      toast.success(`Client ${active ? 'activated' : 'deactivated'}`);
+      toast.error('Trusted clients feature not yet configured');
     } catch (error) {
       console.error('Error toggling client:', error);
       toast.error('Failed to update client');
