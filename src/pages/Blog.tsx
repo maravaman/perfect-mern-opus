@@ -31,7 +31,7 @@ const Blog = () => {
 
     const channel = supabase
       .channel('blogs-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_posts' }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'blogs' }, () => {
         fetchPosts();
       })
       .subscribe();

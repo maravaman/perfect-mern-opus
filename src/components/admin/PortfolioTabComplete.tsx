@@ -21,7 +21,7 @@ export default function PortfolioTabComplete() {
 
   const fetchPortfolio = async () => {
     const { data, error } = await supabase
-      .from('portfolio_items')
+      .from('portfolio')
       .select('*')
       .order('display_order');
 
@@ -78,7 +78,7 @@ export default function PortfolioTabComplete() {
     try {
       if (editingItem?.id) {
         const { error } = await supabase
-          .from('portfolio_items')
+          .from('portfolio')
           .update(formData)
           .eq('id', editingItem.id);
 
@@ -86,7 +86,7 @@ export default function PortfolioTabComplete() {
         toast.success('Portfolio item updated successfully');
       } else {
         const { error } = await supabase
-          .from('portfolio_items')
+          .from('portfolio')
           .insert([formData]);
 
         if (error) throw error;
@@ -106,7 +106,7 @@ export default function PortfolioTabComplete() {
 
     try {
       const { error } = await supabase
-        .from('portfolio_items')
+        .from('portfolio')
         .delete()
         .eq('id', id);
 

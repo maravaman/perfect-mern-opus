@@ -26,18 +26,19 @@ interface BlogCategory {
 interface Blog {
   id: string;
   title: string;
+  slug: string;
   content: string;
   excerpt: string | null;
-  image_url: string | null;
-  category: string | null;
+  feature_image: string | null;
+  category_id: string | null;
   tags: string[];
   meta_title: string | null;
   meta_description: string | null;
-  author_name: string;
-  author_email: string;
+  author_id: string | null;
   published: boolean;
+  published_at: string | null;
+  views: number;
   created_at: string;
-  updated_at: string;
 }
 
 export function BlogsTabNew() {
@@ -54,10 +55,11 @@ export function BlogsTabNew() {
 
   const [formData, setFormData] = useState({
     title: "",
+    slug: "",
     content: "",
     excerpt: "",
-    image_url: "",
-    category: "",
+    feature_image: "",
+    category_id: "",
     tags: "",
     meta_title: "",
     meta_description: "",
@@ -69,22 +71,28 @@ export function BlogsTabNew() {
 
     const blogsChannel = supabase
       .channel('blogs-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_posts' }, fetchBlogs)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'blogs' }, fetchBlogs)
+      .subscribe();
+
+    const categoriesChannel = supabase
+      .channel('categories-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_categories' }, fetchCategories)
       .subscribe();
 
     return () => {
       supabase.removeChannel(blogsChannel);
+      supabase.removeChannel(categoriesChannel);
     };
   }, []);
 
   const fetchData = async () => {
-    await fetchBlogs();
+    await Promise.all([fetchBlogs(), fetchCategories()]);
     setLoading(false);
   };
 
   const fetchBlogs = async () => {
     const { data, error } = await supabase
-      .from("blog_posts")
+      .from("blogs")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -97,8 +105,17 @@ export function BlogsTabNew() {
   };
 
   const fetchCategories = async () => {
-    // Categories table doesn't exist in schema - removed
-    setCategories([]);
+    const { data, error } = await supabase
+      .from("blog_categories")
+      .select("*")
+      .order("display_order", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      toast.error("Failed to fetch categories");
+    } else {
+      setCategories(data || []);
+    }
   };
 
   const generateSlug = (title: string) => {
@@ -138,7 +155,7 @@ export function BlogsTabNew() {
         .from("knight21-uploads")
         .getPublicUrl(filePath);
 
-      setFormData({ ...formData, image_url: publicUrl });
+      setFormData({ ...formData, feature_image: publicUrl });
       toast.success("Image uploaded successfully");
     } catch (error) {
       console.error(error);
@@ -177,7 +194,7 @@ export function BlogsTabNew() {
 
       if (editingBlog) {
         const { error } = await supabase
-          .from("blog_posts")
+          .from("blogs")
           .update(blogData)
           .eq("id", editingBlog.id);
 
@@ -185,7 +202,7 @@ export function BlogsTabNew() {
         toast.success("Blog updated successfully");
       } else {
         const { error } = await supabase
-          .from("blog_posts")
+          .from("blogs")
           .insert([blogData]);
 
         if (error) throw error;
@@ -203,10 +220,11 @@ export function BlogsTabNew() {
     setEditingBlog(blog);
     setFormData({
       title: blog.title,
+      slug: blog.slug,
       content: blog.content,
       excerpt: blog.excerpt || "",
-      image_url: blog.image_url || "",
-      category: blog.category || "",
+      feature_image: blog.feature_image || "",
+      category_id: blog.category_id || "",
       tags: blog.tags.join(", "),
       meta_title: blog.meta_title || "",
       meta_description: blog.meta_description || "",
@@ -219,7 +237,7 @@ export function BlogsTabNew() {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      const { error } = await supabase.from("blog_posts").delete().eq("id", id);
+      const { error } = await supabase.from("blogs").delete().eq("id", id);
       if (error) throw error;
       toast.success("Blog deleted successfully");
     } catch (error) {
@@ -231,8 +249,11 @@ export function BlogsTabNew() {
   const handleTogglePublished = async (id: string, published: boolean) => {
     try {
       const { error } = await supabase
-        .from("blog_posts")
-        .update({ published })
+        .from("blogs")
+        .update({
+          published,
+          published_at: published ? new Date().toISOString() : null
+        })
         .eq("id", id);
 
       if (error) throw error;
@@ -246,10 +267,11 @@ export function BlogsTabNew() {
   const resetForm = () => {
     setFormData({
       title: "",
+      slug: "",
       content: "",
       excerpt: "",
-      image_url: "",
-      category: "",
+      feature_image: "",
+      category_id: "",
       tags: "",
       meta_title: "",
       meta_description: "",
@@ -260,13 +282,56 @@ export function BlogsTabNew() {
   };
 
   const handleCategorySubmit = async () => {
-    toast.error("Categories feature not available - table doesn't exist");
-    return;
+    if (!categoryForm.name.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+
+    try {
+      const slug = categoryForm.slug || generateSlug(categoryForm.name);
+
+      if (editingCategory) {
+        const { error } = await supabase
+          .from("blog_categories")
+          .update({ name: categoryForm.name, slug, description: categoryForm.description })
+          .eq("id", editingCategory.id);
+
+        if (error) throw error;
+        toast.success("Category updated");
+      } else {
+        const { error } = await supabase
+          .from("blog_categories")
+          .insert([{
+            name: categoryForm.name,
+            slug,
+            description: categoryForm.description,
+            display_order: categories.length
+          }]);
+
+        if (error) throw error;
+        toast.success("Category created");
+      }
+
+      setCategoryDialogOpen(false);
+      setEditingCategory(null);
+      setCategoryForm({ name: "", slug: "", description: "" });
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "Failed to save category");
+    }
   };
 
   const handleDeleteCategory = async (id: string) => {
-    toast.error("Categories feature not available - table doesn't exist");
-    return;
+    if (!confirm("Delete this category? Blogs in this category will be uncategorized.")) return;
+
+    try {
+      const { error } = await supabase.from("blog_categories").delete().eq("id", id);
+      if (error) throw error;
+      toast.success("Category deleted");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete category");
+    }
   };
 
   const filteredBlogs = blogs.filter(blog =>
