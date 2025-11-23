@@ -29,33 +29,13 @@ export function SiteSettingsTab() {
   useEffect(() => {
     fetchSettings();
 
-    const channel = supabase
-      .channel('site-settings-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'site_settings' },
-        () => {
-          fetchSettings();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    // site_settings table doesn't exist
   }, []);
 
   const fetchSettings = async () => {
     try {
-      const { data, error } = await supabase
-        .from('site_settings')
-        .select('*')
-        .single();
-
-      if (error) throw error;
-      if (data) {
-        setSettings(data);
-      }
+      // site_settings table doesn't exist in schema
+      toast.info('Site settings feature not yet configured');
     } catch (error) {
       console.error('Error fetching settings:', error);
       toast.error('Failed to load settings');
@@ -67,24 +47,8 @@ export function SiteSettingsTab() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('site_settings')
-        .update({
-          display_name: settings.display_name,
-          logo_url: settings.logo_url,
-          favicon_url: settings.favicon_url,
-          theme_color: settings.theme_color,
-          background_type: settings.background_type,
-          background_value: settings.background_value,
-          meta_title: settings.meta_title,
-          meta_description: settings.meta_description,
-          meta_keywords: settings.meta_keywords,
-          google_analytics_id: settings.google_analytics_id
-        })
-        .eq('id', settings.id);
-
-      if (error) throw error;
-      toast.success('Settings saved successfully! Changes will reflect across the site.');
+      // site_settings table doesn't exist in schema
+      toast.error('Site settings feature not yet configured - database table missing');
     } catch (error) {
       console.error('Error saving settings:', error);
       toast.error('Failed to save settings');
