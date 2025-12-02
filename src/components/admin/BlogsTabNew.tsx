@@ -4,95 +4,68 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Pencil, Trash2, Plus, X, Search, Upload, Folder, Eye, EyeOff } from "lucide-react";
+import { Pencil, Trash2, Plus, X, Search, Upload, Eye, EyeOff } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
-interface BlogCategory {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  display_order: number;
-  active: boolean;
-}
 
 interface Blog {
   id: string;
   title: string;
-  slug: string;
   content: string;
   excerpt: string | null;
-  feature_image: string | null;
-  category_id: string | null;
-  tags: string[];
+  image_url: string | null;
+  category: string | null;
+  tags: string[] | null;
   meta_title: string | null;
   meta_description: string | null;
-  author_id: string | null;
-  published: boolean;
-  published_at: string | null;
-  views: number;
+  author_name: string;
+  author_email: string;
+  published: boolean | null;
   created_at: string;
+  updated_at: string;
 }
 
 export function BlogsTabNew() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<BlogCategory | null>(null);
-  const [categoryForm, setCategoryForm] = useState({ name: "", slug: "", description: "" });
 
   const [formData, setFormData] = useState({
     title: "",
-    slug: "",
     content: "",
     excerpt: "",
-    feature_image: "",
-    category_id: "",
+    image_url: "",
+    category: "",
     tags: "",
     meta_title: "",
     meta_description: "",
+    author_name: "",
+    author_email: "",
     published: false,
   });
 
   useEffect(() => {
-    fetchData();
+    fetchBlogs();
 
     const blogsChannel = supabase
-      .channel('blogs-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'blogs' }, fetchBlogs)
-      .subscribe();
-
-    const categoriesChannel = supabase
-      .channel('categories-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_categories' }, fetchCategories)
+      .channel('blog-posts-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_posts' }, fetchBlogs)
       .subscribe();
 
     return () => {
       supabase.removeChannel(blogsChannel);
-      supabase.removeChannel(categoriesChannel);
     };
   }, []);
 
-  const fetchData = async () => {
-    await Promise.all([fetchBlogs(), fetchCategories()]);
-    setLoading(false);
-  };
-
   const fetchBlogs = async () => {
     const { data, error } = await supabase
-      .from("blogs")
+      .from("blog_posts")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -102,27 +75,7 @@ export function BlogsTabNew() {
     } else {
       setBlogs(data || []);
     }
-  };
-
-  const fetchCategories = async () => {
-    const { data, error } = await supabase
-      .from("blog_categories")
-      .select("*")
-      .order("display_order", { ascending: true });
-
-    if (error) {
-      console.error(error);
-      toast.error("Failed to fetch categories");
-    } else {
-      setCategories(data || []);
-    }
-  };
-
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+    setLoading(false);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,7 +108,7 @@ export function BlogsTabNew() {
         .from("knight21-uploads")
         .getPublicUrl(filePath);
 
-      setFormData({ ...formData, feature_image: publicUrl });
+      setFormData({ ...formData, image_url: publicUrl });
       toast.success("Image uploaded successfully");
     } catch (error) {
       console.error(error);
@@ -173,28 +126,29 @@ export function BlogsTabNew() {
       return;
     }
 
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      const slug = formData.slug || generateSlug(formData.title);
+    if (!formData.author_name.trim() || !formData.author_email.trim()) {
+      toast.error("Author name and email are required");
+      return;
+    }
 
+    try {
       const blogData = {
         title: formData.title,
-        slug,
         content: formData.content,
         excerpt: formData.excerpt || null,
-        feature_image: formData.feature_image || null,
-        category_id: formData.category_id || null,
+        image_url: formData.image_url || null,
+        category: formData.category || null,
         tags: formData.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
         meta_title: formData.meta_title || formData.title,
         meta_description: formData.meta_description || formData.excerpt || null,
-        author_id: user?.id || null,
+        author_name: formData.author_name,
+        author_email: formData.author_email,
         published: formData.published,
-        published_at: formData.published ? new Date().toISOString() : null,
       };
 
       if (editingBlog) {
         const { error } = await supabase
-          .from("blogs")
+          .from("blog_posts")
           .update(blogData)
           .eq("id", editingBlog.id);
 
@@ -202,7 +156,7 @@ export function BlogsTabNew() {
         toast.success("Blog updated successfully");
       } else {
         const { error } = await supabase
-          .from("blogs")
+          .from("blog_posts")
           .insert([blogData]);
 
         if (error) throw error;
@@ -220,15 +174,16 @@ export function BlogsTabNew() {
     setEditingBlog(blog);
     setFormData({
       title: blog.title,
-      slug: blog.slug,
       content: blog.content,
       excerpt: blog.excerpt || "",
-      feature_image: blog.feature_image || "",
-      category_id: blog.category_id || "",
-      tags: blog.tags.join(", "),
+      image_url: blog.image_url || "",
+      category: blog.category || "",
+      tags: blog.tags?.join(", ") || "",
       meta_title: blog.meta_title || "",
       meta_description: blog.meta_description || "",
-      published: blog.published,
+      author_name: blog.author_name,
+      author_email: blog.author_email,
+      published: blog.published || false,
     });
     setIsEditing(true);
   };
@@ -237,7 +192,7 @@ export function BlogsTabNew() {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      const { error } = await supabase.from("blogs").delete().eq("id", id);
+      const { error } = await supabase.from("blog_posts").delete().eq("id", id);
       if (error) throw error;
       toast.success("Blog deleted successfully");
     } catch (error) {
@@ -249,11 +204,8 @@ export function BlogsTabNew() {
   const handleTogglePublished = async (id: string, published: boolean) => {
     try {
       const { error } = await supabase
-        .from("blogs")
-        .update({
-          published,
-          published_at: published ? new Date().toISOString() : null
-        })
+        .from("blog_posts")
+        .update({ published })
         .eq("id", id);
 
       if (error) throw error;
@@ -267,76 +219,24 @@ export function BlogsTabNew() {
   const resetForm = () => {
     setFormData({
       title: "",
-      slug: "",
       content: "",
       excerpt: "",
-      feature_image: "",
-      category_id: "",
+      image_url: "",
+      category: "",
       tags: "",
       meta_title: "",
       meta_description: "",
+      author_name: "",
+      author_email: "",
       published: false,
     });
     setEditingBlog(null);
     setIsEditing(false);
   };
 
-  const handleCategorySubmit = async () => {
-    if (!categoryForm.name.trim()) {
-      toast.error("Category name is required");
-      return;
-    }
-
-    try {
-      const slug = categoryForm.slug || generateSlug(categoryForm.name);
-
-      if (editingCategory) {
-        const { error } = await supabase
-          .from("blog_categories")
-          .update({ name: categoryForm.name, slug, description: categoryForm.description })
-          .eq("id", editingCategory.id);
-
-        if (error) throw error;
-        toast.success("Category updated");
-      } else {
-        const { error } = await supabase
-          .from("blog_categories")
-          .insert([{
-            name: categoryForm.name,
-            slug,
-            description: categoryForm.description,
-            display_order: categories.length
-          }]);
-
-        if (error) throw error;
-        toast.success("Category created");
-      }
-
-      setCategoryDialogOpen(false);
-      setEditingCategory(null);
-      setCategoryForm({ name: "", slug: "", description: "" });
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error.message || "Failed to save category");
-    }
-  };
-
-  const handleDeleteCategory = async (id: string) => {
-    if (!confirm("Delete this category? Blogs in this category will be uncategorized.")) return;
-
-    try {
-      const { error } = await supabase.from("blog_categories").delete().eq("id", id);
-      if (error) throw error;
-      toast.success("Category deleted");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to delete category");
-    }
-  };
-
   const filteredBlogs = blogs.filter(blog =>
     blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    blog.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    blog.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const quillModules = {
@@ -355,261 +255,216 @@ export function BlogsTabNew() {
   }
 
   return (
-    <Tabs defaultValue="blogs" className="space-y-6">
-      <TabsList>
-        <TabsTrigger value="blogs">Blogs</TabsTrigger>
-        <TabsTrigger value="categories">Categories</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="blogs" className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold">Blog Management</h2>
-            <p className="text-sm text-muted-foreground">Create and manage blog posts with SEO</p>
-          </div>
-          <Button onClick={() => setIsEditing(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            New Blog
-          </Button>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Blog Management</h2>
+          <p className="text-sm text-muted-foreground">Create and manage blog posts with SEO</p>
         </div>
+        <Button onClick={() => setIsEditing(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          New Blog
+        </Button>
+      </div>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search blogs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Search blogs..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
 
-        {isEditing && (
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>{editingBlog ? "Edit Blog" : "Create New Blog"}</CardTitle>
-                <Button variant="ghost" size="icon" onClick={resetForm}>
-                  <X className="w-4 h-4" />
+      {isEditing && (
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle>{editingBlog ? "Edit Blog" : "Create New Blog"}</CardTitle>
+              <Button variant="ghost" size="icon" onClick={resetForm}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label>Title *</Label>
+                <Input
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="Blog title"
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Author Name *</Label>
+                  <Input
+                    value={formData.author_name}
+                    onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <Label>Author Email *</Label>
+                  <Input
+                    type="email"
+                    value={formData.author_email}
+                    onChange={(e) => setFormData({ ...formData, author_email: e.target.value })}
+                    placeholder="john@example.com"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Category</Label>
+                  <Input
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    placeholder="Technology, Marketing, etc."
+                  />
+                </div>
+
+                <div>
+                  <Label>Tags</Label>
+                  <Input
+                    value={formData.tags}
+                    onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                    placeholder="seo, marketing, design"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label>Feature Image</Label>
+                {formData.image_url && (
+                  <div className="mb-2">
+                    <img src={formData.image_url} alt="Preview" className="h-32 w-full object-cover rounded" />
+                  </div>
+                )}
+                <Button type="button" variant="outline" onClick={() => document.getElementById("blog-image")?.click()} disabled={uploadingImage}>
+                  <Upload className="w-4 h-4 mr-2" />
+                  {uploadingImage ? "Uploading..." : "Upload Image"}
+                </Button>
+                <Input id="blog-image" type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              </div>
+
+              <div>
+                <Label>Excerpt</Label>
+                <Input
+                  value={formData.excerpt}
+                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                  placeholder="Short summary"
+                />
+              </div>
+
+              <div>
+                <Label>Content *</Label>
+                <ReactQuill
+                  theme="snow"
+                  value={formData.content}
+                  onChange={(value) => setFormData({ ...formData, content: value })}
+                  modules={quillModules}
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Meta Title</Label>
+                  <Input
+                    value={formData.meta_title}
+                    onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
+                    placeholder="SEO title"
+                    maxLength={60}
+                  />
+                </div>
+
+                <div>
+                  <Label>Meta Description</Label>
+                  <Input
+                    value={formData.meta_description}
+                    onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
+                    placeholder="SEO description"
+                    maxLength={160}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={formData.published}
+                  onCheckedChange={(checked) => setFormData({ ...formData, published: checked })}
+                />
+                <Label>Published</Label>
+              </div>
+
+              <div className="flex gap-2">
+                <Button type="submit">
+                  {editingBlog ? "Update Blog" : "Create Blog"}
+                </Button>
+                <Button type="button" variant="outline" onClick={resetForm}>
+                  Cancel
                 </Button>
               </div>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label>Title *</Label>
-                  <Input
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: generateSlug(e.target.value) })}
-                    placeholder="Blog title"
-                  />
-                </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
-                <div>
-                  <Label>Slug</Label>
-                  <Input
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    placeholder="url-friendly-slug"
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid gap-4">
+        {filteredBlogs.map((blog) => (
+          <Card key={blog.id} className="overflow-hidden">
+            <div className="flex">
+              {blog.image_url && (
+                <img src={blog.image_url} alt={blog.title} className="w-40 h-32 object-cover" />
+              )}
+              <div className="flex-1 p-4">
+                <div className="flex justify-between items-start">
                   <div>
-                    <Label>Category</Label>
-                    <Select value={formData.category_id} onValueChange={(value) => setFormData({ ...formData, category_id: value })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>Tags</Label>
-                    <Input
-                      value={formData.tags}
-                      onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                      placeholder="seo, marketing, design"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label>Feature Image</Label>
-                  {formData.feature_image && (
-                    <div className="mb-2">
-                      <img src={formData.feature_image} alt="Preview" className="h-32 w-full object-cover rounded" />
-                    </div>
-                  )}
-                  <Button type="button" variant="outline" onClick={() => document.getElementById("blog-image")?.click()} disabled={uploadingImage}>
-                    <Upload className="w-4 h-4 mr-2" />
-                    {uploadingImage ? "Uploading..." : "Upload Image"}
-                  </Button>
-                  <Input id="blog-image" type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                </div>
-
-                <div>
-                  <Label>Excerpt</Label>
-                  <Input
-                    value={formData.excerpt}
-                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                    placeholder="Short summary"
-                  />
-                </div>
-
-                <div>
-                  <Label>Content *</Label>
-                  <ReactQuill
-                    theme="snow"
-                    value={formData.content}
-                    onChange={(value) => setFormData({ ...formData, content: value })}
-                    modules={quillModules}
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label>Meta Title</Label>
-                    <Input
-                      value={formData.meta_title}
-                      onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
-                      placeholder="SEO title"
-                      maxLength={60}
-                    />
-                  </div>
-
-                  <div>
-                    <Label>Meta Description</Label>
-                    <Input
-                      value={formData.meta_description}
-                      onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
-                      placeholder="SEO description"
-                      maxLength={160}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={formData.published}
-                    onCheckedChange={(checked) => setFormData({ ...formData, published: checked })}
-                  />
-                  <Label>Publish immediately</Label>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button type="submit">{editingBlog ? "Update" : "Create"}</Button>
-                  <Button type="button" variant="outline" onClick={resetForm}>Cancel</Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="space-y-4">
-          {filteredBlogs.map((blog) => (
-            <Card key={blog.id}>
-              <CardContent className="p-6">
-                <div className="flex gap-4">
-                  {blog.feature_image && (
-                    <img src={blog.feature_image} alt={blog.title} className="w-32 h-32 object-cover rounded" />
-                  )}
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-xl font-semibold">{blog.title}</h3>
-                      <Badge variant={blog.published ? "default" : "secondary"}>
-                        {blog.published ? "Published" : "Draft"}
-                      </Badge>
-                    </div>
-                    {blog.excerpt && <p className="text-sm text-muted-foreground mt-2">{blog.excerpt}</p>}
-                    <div className="flex gap-2 mt-3 flex-wrap">
-                      {blog.tags.map((tag, i) => (
-                        <Badge key={i} variant="outline">{tag}</Badge>
+                    <h3 className="font-semibold text-lg">{blog.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      By {blog.author_name} • {new Date(blog.created_at).toLocaleDateString()}
+                    </p>
+                    {blog.excerpt && (
+                      <p className="text-sm mt-1 line-clamp-2">{blog.excerpt}</p>
+                    )}
+                    <div className="flex gap-2 mt-2">
+                      {blog.category && <Badge variant="secondary">{blog.category}</Badge>}
+                      {blog.tags?.slice(0, 3).map((tag) => (
+                        <Badge key={tag} variant="outline">{tag}</Badge>
                       ))}
                     </div>
-                    <div className="flex gap-2 mt-4">
-                      <Button size="sm" variant="outline" onClick={() => handleEdit(blog)}>
-                        <Pencil className="w-3 h-3 mr-1" />
-                        Edit
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleTogglePublished(blog.id, !blog.published)}>
-                        {blog.published ? <EyeOff className="w-3 h-3 mr-1" /> : <Eye className="w-3 h-3 mr-1" />}
-                        {blog.published ? "Unpublish" : "Publish"}
-                      </Button>
-                      <Button size="sm" variant="destructive" onClick={() => handleDelete(blog.id)}>
-                        <Trash2 className="w-3 h-3 mr-1" />
-                        Delete
-                      </Button>
-                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleTogglePublished(blog.id, !blog.published)}
+                    >
+                      {blog.published ? <Eye className="w-4 h-4 text-green-600" /> : <EyeOff className="w-4 h-4 text-gray-400" />}
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(blog)}>
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button variant="destructive" size="icon" onClick={() => handleDelete(blog.id)}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </TabsContent>
-
-      <TabsContent value="categories" className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Blog Categories</h2>
-          <Dialog open={categoryDialogOpen} onOpenChange={setCategoryDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => { setEditingCategory(null); setCategoryForm({ name: "", slug: "", description: "" }); }}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Category
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{editingCategory ? "Edit Category" : "New Category"}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label>Name *</Label>
-                  <Input value={categoryForm.name} onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })} />
-                </div>
-                <div>
-                  <Label>Slug</Label>
-                  <Input value={categoryForm.slug} onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })} />
-                </div>
-                <div>
-                  <Label>Description</Label>
-                  <Input value={categoryForm.description} onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })} />
-                </div>
               </div>
-              <DialogFooter>
-                <Button onClick={handleCategorySubmit}>Save</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
+            </div>
+          </Card>
+        ))}
 
-        <div className="grid gap-4">
-          {categories.map((cat) => (
-            <Card key={cat.id}>
-              <CardContent className="p-4 flex justify-between items-center">
-                <div>
-                  <h3 className="font-semibold">{cat.name}</h3>
-                  <p className="text-sm text-muted-foreground">{cat.slug}</p>
-                  {cat.description && <p className="text-sm mt-1">{cat.description}</p>}
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => { setEditingCategory(cat); setCategoryForm({ name: cat.name, slug: cat.slug, description: cat.description || "" }); setCategoryDialogOpen(true); }}>
-                    <Pencil className="w-3 h-3" />
-                  </Button>
-                  <Button size="sm" variant="destructive" onClick={() => handleDeleteCategory(cat.id)}>
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </TabsContent>
-    </Tabs>
+        {filteredBlogs.length === 0 && (
+          <Card className="p-8 text-center text-muted-foreground">
+            No blogs found. Click "New Blog" to create your first blog post.
+          </Card>
+        )}
+      </div>
+    </div>
   );
 }
