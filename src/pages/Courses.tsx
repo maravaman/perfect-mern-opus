@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Code, TrendingUp, Clock, Award, Users, BookOpen, Loader2 } from "lucide-react";
+import { Clock, BookOpen, Loader2, GraduationCap, Users, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import webDevBg from "@/assets/courses/web-dev-bg.png";
-import digitalMarketingBg from "@/assets/courses/digital-marketing-bg.png";
 
-const iconMap: Record<string, any> = {
-  Code,
-  TrendingUp,
-  BookOpen,
-  Award
-};
+interface Course {
+  id: string;
+  title: string;
+  description: string | null;
+  duration: string | null;
+  price: number | null;
+  image_url: string | null;
+  active: boolean | null;
+  display_order: number | null;
+}
 
 const Courses = () => {
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,154 +55,118 @@ const Courses = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-pink-50/20 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 font-outfit">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-pink-50/20">
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="py-16 md:py-24 px-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 font-poppins">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
+            <GraduationCap className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Learn from Experts</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-poppins text-gray-900">
             Professional <span className="text-primary">Courses</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-outfit">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-outfit">
             Upgrade your skills with our comprehensive courses designed by industry experts
           </p>
         </div>
       </section>
 
-      {/* Courses Section */}
-      <section className="py-12 px-4">
+      {/* Courses Grid */}
+      <section className="py-12 px-4 pb-24">
         <div className="container mx-auto max-w-6xl">
-          <div className="space-y-12">
-            {courses.map((course, index) => {
-              const IconComponent = iconMap[course.icon] || Code;
-              const features = Array.isArray(course.features) ? course.features : [];
-              const highlights = Array.isArray(course.highlights) ? course.highlights : [];
-              const learningOutcomes = Array.isArray(course.learning_outcomes) ? course.learning_outcomes : [];
+          {courses.length === 0 ? (
+            <Card className="p-12 text-center">
+              <BookOpen className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-muted-foreground">No courses available yet</h3>
+              <p className="text-muted-foreground mt-2">Check back soon for exciting new courses!</p>
+            </Card>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {courses.map((course) => (
+                <Card key={course.id} className="overflow-hidden group hover:shadow-xl transition-all duration-300 border-0 bg-white">
+                  {/* Course Image */}
+                  <div className="relative h-48 bg-gradient-to-br from-primary/20 via-pink-100 to-blue-100 overflow-hidden">
+                    {course.image_url ? (
+                      <img 
+                        src={course.image_url} 
+                        alt={course.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="w-20 h-20 rounded-2xl bg-white/80 backdrop-blur shadow-lg flex items-center justify-center">
+                          <BookOpen className="w-10 h-10 text-primary" />
+                        </div>
+                      </div>
+                    )}
+                    {course.price && (
+                      <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                        ₹{course.price.toLocaleString()}
+                      </div>
+                    )}
+                  </div>
 
-              return (
-              <Card key={course.id} className="overflow-hidden">
-                <div className="grid md:grid-cols-3 gap-6">
-                  {/* Left side - Course Info with Image */}
-                  <div
-                    className="md:col-span-1 bg-gradient-to-br from-pink-50 to-pink-100/50 p-8 flex flex-col justify-center items-center text-center relative bg-cover bg-center bg-no-repeat"
-                    style={{
-                      backgroundImage: course.image_url ? `url(${course.image_url})` : `url(${webDevBg})`,
-                      backgroundBlendMode: 'overlay'
-                    }}
-                  >
-                    <div className="w-32 h-32 rounded-2xl bg-white shadow-lg flex items-center justify-center mb-6">
-                      <IconComponent className="w-16 h-16 text-primary" />
-                    </div>
-                    <h2 className="text-2xl font-bold mb-2 font-poppins">{course.title}</h2>
-                    <p className="text-muted-foreground mb-6 font-outfit">{course.short_description || course.description}</p>
+                  {/* Course Content */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-3 font-poppins text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
+                      {course.title}
+                    </h3>
+                    
+                    {course.description && (
+                      <p className="text-muted-foreground text-sm mb-4 line-clamp-3 font-outfit">
+                        {course.description}
+                      </p>
+                    )}
 
-                    <div className="space-y-3 w-full">
+                    {/* Course Meta */}
+                    <div className="flex items-center gap-4 mb-6 text-sm text-muted-foreground">
                       {course.duration && (
-                        <div className="flex items-center justify-center gap-2 text-sm font-outfit">
+                        <div className="flex items-center gap-1.5">
                           <Clock className="w-4 h-4 text-primary" />
                           <span>{course.duration}</span>
                         </div>
                       )}
-                      {course.level && (
-                        <div className="flex items-center justify-center gap-2 text-sm font-outfit">
-                          <Award className="w-4 h-4 text-primary" />
-                          <span className="capitalize">{course.level}</span>
-                        </div>
-                      )}
-                      {course.enrolled_count && (
-                        <div className="flex items-center justify-center gap-2 text-sm font-outfit">
-                          <Users className="w-4 h-4 text-primary" />
-                          <span>{course.enrolled_count}+ Enrolled</span>
-                        </div>
-                      )}
-                      {course.price && (
-                        <div className="text-xl font-bold text-primary">
-                          {course.discount_price ? (
-                            <>
-                              <span className="line-through text-muted-foreground text-sm mr-2">
-                                ${course.price}
-                              </span>
-                              ${course.discount_price}
-                            </>
-                          ) : (
-                            `$${course.price}`
-                          )}
-                        </div>
-                      )}
+                      <div className="flex items-center gap-1.5">
+                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                        <span>4.8</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Users className="w-4 h-4 text-primary" />
+                        <span>100+</span>
+                      </div>
                     </div>
+
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-white font-semibold">
+                      Enroll Now
+                    </Button>
                   </div>
-
-                  {/* Right side - Course Details */}
-                  <CardContent className="md:col-span-2 p-8">
-                    <div className="space-y-6">
-                      {(learningOutcomes.length > 0 || features.length > 0) && (
-                        <div>
-                          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2 font-poppins">
-                            <BookOpen className="w-5 h-5 text-primary" />
-                            {learningOutcomes.length > 0 ? 'What You\'ll Learn' : 'Course Curriculum'}
-                          </h3>
-                          <ul className="grid md:grid-cols-2 gap-3">
-                            {(learningOutcomes.length > 0 ? learningOutcomes : features).map((item: string, idx: number) => (
-                              <li key={idx} className="flex items-start gap-2">
-                                <span className="text-primary mt-1">✓</span>
-                                <span className="text-sm font-outfit">{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {highlights.length > 0 && (
-                        <div>
-                          <h3 className="text-xl font-semibold mb-4 font-poppins">Course Highlights</h3>
-                          <div className="grid grid-cols-2 gap-4">
-                            {highlights.map((highlight: string, idx: number) => (
-                              <div key={idx} className="flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
-                                <span className="text-primary">★</span>
-                                <span className="text-sm font-medium font-outfit">{highlight}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {course.instructor && (
-                        <div className="text-sm text-muted-foreground">
-                          <strong>Instructor:</strong> {course.instructor}
-                        </div>
-                      )}
-
-                      <Button className="w-full md:w-auto" size="lg">
-                        Enroll Now {course.price && `- $${course.discount_price || course.price}`}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </div>
-              </Card>
-              );
-            })}
-          </div>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4">
+      <section className="py-16 px-4 bg-gradient-to-r from-primary to-pink-500">
         <div className="container mx-auto text-center">
-          <Card className="bg-primary text-primary-foreground p-8">
-            <h2 className="text-3xl font-bold mb-4 font-poppins">Ready to Start Learning?</h2>
-            <p className="text-lg mb-6 opacity-90 font-outfit">
-              Join hundreds of students who have transformed their careers with our courses
-            </p>
-            <Button variant="secondary" size="lg" className="font-outfit">
-              Contact Us for More Information
-            </Button>
-          </Card>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-poppins text-white">
+            Ready to Start Your Learning Journey?
+          </h2>
+          <p className="text-lg mb-8 text-white/90 font-outfit max-w-2xl mx-auto">
+            Join hundreds of students who have transformed their careers with our courses
+          </p>
+          <Button size="lg" variant="secondary" className="font-semibold">
+            Contact Us for More Information
+          </Button>
         </div>
       </section>
     </div>
