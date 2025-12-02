@@ -5,10 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { uploadImage } from '@/lib/storage';
 
 export default function CoursesTabComplete() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -40,8 +38,21 @@ export default function CoursesTabComplete() {
 
     setUploading(true);
     try {
-      const url = await uploadImage(file, 'courses');
-      setFormData({ ...formData, image_url: url });
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `courses/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('knight21-uploads')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('knight21-uploads')
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, image_url: publicUrl });
       toast.success('Image uploaded successfully');
     } catch (error: any) {
       toast.error('Failed to upload image');
@@ -51,20 +62,27 @@ export default function CoursesTabComplete() {
   };
 
   const handleSave = async () => {
-    if (!formData.title || !formData.description) {
-      toast.error('Please fill in required fields');
+    if (!formData.title) {
+      toast.error('Please fill in the title');
       return;
     }
 
-    if (!formData.slug) {
-      formData.slug = formData.title.toLowerCase().replace(/\s+/g, '-');
-    }
-
     try {
+      const saveData = {
+        title: formData.title,
+        description: formData.description || null,
+        duration: formData.duration || null,
+        price: formData.price ? parseFloat(formData.price) : null,
+        image_url: formData.image_url || null,
+        syllabus: formData.syllabus || null,
+        active: formData.active ?? true,
+        display_order: formData.display_order || 0,
+      };
+
       if (editingItem?.id) {
         const { error } = await supabase
           .from('courses')
-          .update(formData)
+          .update(saveData)
           .eq('id', editingItem.id);
 
         if (error) throw error;
@@ -72,7 +90,7 @@ export default function CoursesTabComplete() {
       } else {
         const { error } = await supabase
           .from('courses')
-          .insert([formData]);
+          .insert([saveData]);
 
         if (error) throw error;
         toast.success('Course created successfully');
@@ -90,7 +108,7 @@ export default function CoursesTabComplete() {
     if (!confirm('Are you sure you want to delete this course?')) return;
 
     try {
-      const { error} = await supabase
+      const { error } = await supabase
         .from('courses')
         .delete()
         .eq('id', id);
@@ -107,7 +125,7 @@ export default function CoursesTabComplete() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Courses Management</h2>
-        <Button onClick={() => { setEditingItem({}); setFormData({ active: true, level: 'beginner', display_order: 0 }); }}>
+        <Button onClick={() => { setEditingItem({}); setFormData({ active: true, display_order: 0 }); }}>
           <Plus className="w-4 h-4 mr-2" />
           Add Course
         </Button>
@@ -129,25 +147,7 @@ export default function CoursesTabComplete() {
             </div>
 
             <div>
-              <Label>Slug</Label>
-              <Input
-                value={formData.slug || ''}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                placeholder="complete-web-development"
-              />
-            </div>
-
-            <div>
-              <Label>Short Description</Label>
-              <Input
-                value={formData.short_description || ''}
-                onChange={(e) => setFormData({ ...formData, short_description: e.target.value })}
-                placeholder="Learn web development from scratch"
-              />
-            </div>
-
-            <div>
-              <Label>Description *</Label>
+              <Label>Description</Label>
               <Textarea
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -158,15 +158,6 @@ export default function CoursesTabComplete() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Instructor</Label>
-                <Input
-                  value={formData.instructor || ''}
-                  onChange={(e) => setFormData({ ...formData, instructor: e.target.value })}
-                  placeholder="John Doe"
-                />
-              </div>
-
-              <div>
                 <Label>Duration</Label>
                 <Input
                   value={formData.duration || ''}
@@ -174,23 +165,17 @@ export default function CoursesTabComplete() {
                   placeholder="12 weeks"
                 />
               </div>
-            </div>
 
-            <div>
-              <Label>Level</Label>
-              <Select
-                value={formData.level || 'beginner'}
-                onValueChange={(value) => setFormData({ ...formData, level: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="beginner">Beginner</SelectItem>
-                  <SelectItem value="intermediate">Intermediate</SelectItem>
-                  <SelectItem value="advanced">Advanced</SelectItem>
-                </SelectContent>
-              </Select>
+              <div>
+                <Label>Price (₹)</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={formData.price || ''}
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  placeholder="15000"
+                />
+              </div>
             </div>
 
             <div>
@@ -211,48 +196,6 @@ export default function CoursesTabComplete() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Price</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.price || ''}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-                  placeholder="299.99"
-                />
-              </div>
-
-              <div>
-                <Label>Discount Price</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.discount_price || ''}
-                  onChange={(e) => setFormData({ ...formData, discount_price: parseFloat(e.target.value) })}
-                  placeholder="199.99"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label>Enrollment Link</Label>
-              <Input
-                value={formData.enrollment_link || ''}
-                onChange={(e) => setFormData({ ...formData, enrollment_link: e.target.value })}
-                placeholder="https://..."
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Category</Label>
-                <Input
-                  value={formData.category || ''}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  placeholder="Development"
-                />
-              </div>
-
-              <div>
                 <Label>Display Order</Label>
                 <Input
                   type="number"
@@ -260,10 +203,8 @@ export default function CoursesTabComplete() {
                   onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) })}
                 />
               </div>
-            </div>
 
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 pt-6">
                 <input
                   type="checkbox"
                   id="active"
@@ -272,17 +213,6 @@ export default function CoursesTabComplete() {
                   className="rounded"
                 />
                 <Label htmlFor="active">Active</Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  checked={formData.featured ?? false}
-                  onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                  className="rounded"
-                />
-                <Label htmlFor="featured">Featured</Label>
               </div>
             </div>
 
@@ -306,14 +236,11 @@ export default function CoursesTabComplete() {
                 )}
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg">{course.title}</h3>
-                  <p className="text-sm text-gray-600">{course.slug}</p>
-                  <p className="text-muted-foreground mt-1">{course.short_description}</p>
+                  <p className="text-muted-foreground mt-1 line-clamp-2">{course.description}</p>
                   <div className="flex gap-4 mt-2 text-sm text-gray-500">
-                    <span>Level: {course.level}</span>
                     {course.duration && <span>Duration: {course.duration}</span>}
-                    {course.price && <span>Price: ${course.price}</span>}
+                    {course.price && <span>Price: ₹{course.price}</span>}
                     <span>{course.active ? '✓ Active' : '✗ Inactive'}</span>
-                    {course.featured && <span>⭐ Featured</span>}
                   </div>
                 </div>
               </div>
