@@ -70,15 +70,14 @@ export default function Career() {
         resumeUrl = publicUrl;
       }
 
-      // Save application to career_applications table
-      const { error: dbError } = await supabase.from("career_applications").insert({
+      // Save application to contact_inquiries table (repurposed for career applications)
+      const { error: dbError } = await supabase.from("contact_inquiries").insert({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        position: formData.position,
-        experience: formData.experience,
-        message: formData.message,
-        resume_url: resumeUrl,
+        subject: `Career Application: ${formData.position}`,
+        message: `Position: ${formData.position}\nExperience: ${formData.experience}\n\n${formData.message}\n\nResume: ${resumeUrl || 'Not provided'}`,
+        status: 'new',
       });
 
       if (dbError) throw dbError;
@@ -466,14 +465,14 @@ export default function Career() {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 font-poppins">
-            Don't See Your Role?
+          <h2 className="text-3xl font-bold mb-4 font-poppins">
+            Don't see a suitable position?
           </h2>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            We're always looking for talented individuals. Send us your resume and we'll reach out when suitable opportunities arise.
+          <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
+            We're always looking for talented individuals. Send us your resume and we'll keep you in mind for future opportunities.
           </p>
           <Link to="/contact">
-            <Button size="lg" variant="secondary">
+            <Button size="lg" variant="outline">
               Contact Us
             </Button>
           </Link>

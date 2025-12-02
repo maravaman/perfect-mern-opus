@@ -21,7 +21,7 @@ export default function PortfolioTabComplete() {
 
   const fetchPortfolio = async () => {
     const { data, error } = await supabase
-      .from('portfolio')
+      .from('portfolio_items')
       .select('*')
       .order('display_order');
 
@@ -49,45 +49,43 @@ export default function PortfolioTabComplete() {
     }
   };
 
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    try {
-      const url = await uploadImage(file, 'clients');
-      setFormData({ ...formData, client_logo: url });
-      toast.success('Logo uploaded successfully');
-    } catch (error: any) {
-      toast.error('Failed to upload logo');
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleSave = async () => {
-    if (!formData.title || !formData.description) {
-      toast.error('Please fill in required fields');
+    if (!formData.title || !formData.category) {
+      toast.error('Please fill in required fields (title, category)');
       return;
-    }
-
-    if (!formData.slug) {
-      formData.slug = formData.title.toLowerCase().replace(/\s+/g, '-');
     }
 
     try {
       if (editingItem?.id) {
         const { error } = await supabase
-          .from('portfolio')
-          .update(formData)
+          .from('portfolio_items')
+          .update({
+            title: formData.title,
+            category: formData.category,
+            description: formData.description || null,
+            client_name: formData.client_name || null,
+            project_url: formData.project_url || null,
+            image_url: formData.image_url || null,
+            display_order: formData.display_order || 0,
+            active: formData.active ?? true,
+          })
           .eq('id', editingItem.id);
 
         if (error) throw error;
         toast.success('Portfolio item updated successfully');
       } else {
         const { error } = await supabase
-          .from('portfolio')
-          .insert([formData]);
+          .from('portfolio_items')
+          .insert([{
+            title: formData.title,
+            category: formData.category,
+            description: formData.description || null,
+            client_name: formData.client_name || null,
+            project_url: formData.project_url || null,
+            image_url: formData.image_url || null,
+            display_order: formData.display_order || 0,
+            active: formData.active ?? true,
+          }]);
 
         if (error) throw error;
         toast.success('Portfolio item created successfully');
@@ -106,7 +104,7 @@ export default function PortfolioTabComplete() {
 
     try {
       const { error } = await supabase
-        .from('portfolio')
+        .from('portfolio_items')
         .delete()
         .eq('id', id);
 
@@ -122,7 +120,7 @@ export default function PortfolioTabComplete() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Portfolio Management</h2>
-        <Button onClick={() => { setEditingItem({}); setFormData({ active: true, display_order: 0 }); }}>
+        <Button onClick={() => { setEditingItem({}); setFormData({ active: true, display_order: 0, category: 'Web Development' }); }}>
           <Plus className="w-4 h-4 mr-2" />
           Add Project
         </Button>
@@ -144,25 +142,16 @@ export default function PortfolioTabComplete() {
             </div>
 
             <div>
-              <Label>Slug</Label>
+              <Label>Category *</Label>
               <Input
-                value={formData.slug || ''}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                placeholder="e-commerce-website"
+                value={formData.category || ''}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                placeholder="Web Development"
               />
             </div>
 
             <div>
-              <Label>Short Description</Label>
-              <Input
-                value={formData.short_description || ''}
-                onChange={(e) => setFormData({ ...formData, short_description: e.target.value })}
-                placeholder="Modern e-commerce solution"
-              />
-            </div>
-
-            <div>
-              <Label>Description *</Label>
+              <Label>Description</Label>
               <Textarea
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -192,22 +181,6 @@ export default function PortfolioTabComplete() {
             </div>
 
             <div>
-              <Label>Client Logo</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoUpload}
-                  disabled={uploading}
-                />
-                {uploading && <span className="text-sm text-gray-600">Uploading...</span>}
-              </div>
-              {formData.client_logo && (
-                <img src={formData.client_logo} alt="Logo" className="mt-2 w-32 h-32 object-contain bg-gray-100 rounded p-2" />
-              )}
-            </div>
-
-            <div>
               <Label>Project Image</Label>
               <div className="flex items-center gap-4">
                 <Input
@@ -216,6 +189,7 @@ export default function PortfolioTabComplete() {
                   onChange={handleImageUpload}
                   disabled={uploading}
                 />
+                {uploading && <span className="text-sm text-gray-600">Uploading...</span>}
               </div>
               {formData.image_url && (
                 <img src={formData.image_url} alt="Preview" className="mt-2 w-full h-48 object-cover rounded" />
@@ -224,15 +198,6 @@ export default function PortfolioTabComplete() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Category</Label>
-                <Input
-                  value={formData.category || ''}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  placeholder="Web Development"
-                />
-              </div>
-
-              <div>
                 <Label>Display Order</Label>
                 <Input
                   type="number"
@@ -240,10 +205,8 @@ export default function PortfolioTabComplete() {
                   onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) })}
                 />
               </div>
-            </div>
 
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 pt-6">
                 <input
                   type="checkbox"
                   id="active"
@@ -252,17 +215,6 @@ export default function PortfolioTabComplete() {
                   className="rounded"
                 />
                 <Label htmlFor="active">Active</Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  checked={formData.featured ?? false}
-                  onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                  className="rounded"
-                />
-                <Label htmlFor="featured">Featured</Label>
               </div>
             </div>
 
@@ -287,12 +239,11 @@ export default function PortfolioTabComplete() {
                 <div className="flex-1">
                   <h3 className="font-semibold text-lg">{item.title}</h3>
                   <p className="text-sm text-gray-600">{item.client_name}</p>
-                  <p className="text-muted-foreground mt-1">{item.short_description}</p>
+                  <p className="text-muted-foreground mt-1 line-clamp-2">{item.description}</p>
                   <div className="flex gap-4 mt-2 text-sm text-gray-500">
                     {item.category && <span>Category: {item.category}</span>}
                     <span>Order: {item.display_order}</span>
                     <span>{item.active ? '✓ Active' : '✗ Inactive'}</span>
-                    {item.featured && <span>⭐ Featured</span>}
                   </div>
                 </div>
               </div>

@@ -11,12 +11,12 @@ interface BlogPost {
   id: string;
   title: string;
   content: string;
-  excerpt: string;
+  excerpt: string | null;
   author_name: string;
-  category: string;
+  category: string | null;
   created_at: string;
-  tags: string[];
-  image_url: string;
+  tags: string[] | null;
+  image_url: string | null;
 }
 
 const Blog = () => {
@@ -30,8 +30,8 @@ const Blog = () => {
     fetchPosts();
 
     const channel = supabase
-      .channel('blogs-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'blogs' }, () => {
+      .channel('blog-posts-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'blog_posts' }, () => {
         fetchPosts();
       })
       .subscribe();
@@ -48,23 +48,14 @@ const Blog = () => {
   const fetchPosts = async () => {
     try {
       const { data, error } = await supabase
-        .from("blogs")
-        .select(`
-          *,
-          category:blog_categories(name)
-        `)
+        .from("blog_posts")
+        .select("*")
         .eq("published", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
 
-      const formattedData = data?.map(post => ({
-        ...post,
-        category: post.category?.name || '',
-        author_name: post.author || 'Knight21'
-      })) || [];
-
-      setPosts(formattedData);
+      setPosts(data || []);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
@@ -177,7 +168,7 @@ const Blog = () => {
                     )}
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="secondary">{post.category}</Badge>
+                        <Badge variant="secondary">{post.category || 'General'}</Badge>
                         <span className="text-sm text-muted-foreground flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {new Date(post.created_at).toLocaleDateString()}

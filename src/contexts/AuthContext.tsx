@@ -43,10 +43,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
+    // Use the has_role function to check if user is admin
     const { data, error } = await supabase
-      .rpc('get_user_role', { check_user_id: user.id });
+      .rpc('has_role', { _user_id: user.id, _role: 'admin' });
 
-    if (!error && data === 'admin') {
+    if (!error && data === true) {
       setIsAdmin(true);
     } else {
       setIsAdmin(false);
@@ -61,11 +62,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (error) throw error;
 
-    // Use the database function to check role
-    const { data: roleData, error: roleError } = await supabase
-      .rpc('get_user_role', { check_user_id: data.user.id });
+    // Use the has_role function to check role
+    const { data: isAdminUser, error: roleError } = await supabase
+      .rpc('has_role', { _user_id: data.user.id, _role: 'admin' });
 
-    console.log('Role check:', { roleData, roleError, userId: data.user.id });
+    console.log('Role check:', { isAdminUser, roleError, userId: data.user.id });
 
     if (roleError) {
       console.error('Role check error:', roleError);
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       throw new Error('Unable to verify admin privileges. Please contact support.');
     }
 
-    if (roleData !== 'admin') {
+    if (!isAdminUser) {
       await supabase.auth.signOut();
       throw new Error('Access denied. Admin privileges required.');
     }
