@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import anvikaLogo from "@/assets/clients/anvika.png";
 import sriAcademyLogo from "@/assets/clients/sri-academy.png";
@@ -30,13 +30,11 @@ const fallbackClients = [
 ];
 
 export const TrustedClients = () => {
-  const scrollerRef = useRef<HTMLDivElement>(null);
   const [clients, setClients] = useState<Client[]>(fallbackClients);
 
   useEffect(() => {
     fetchClients();
 
-    // Subscribe to real-time updates
     const channel = supabase
       .channel('trusted-clients-public')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'trusted_clients' }, fetchClients)
@@ -59,26 +57,8 @@ export const TrustedClients = () => {
     }
   };
 
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-
-    // Clear and re-duplicate items for seamless loop
-    const scrollerInner = scroller.querySelector(".scroller-inner");
-    if (scrollerInner) {
-      // Remove previously duplicated items
-      const originalItems = Array.from(scrollerInner.children).slice(0, clients.length);
-      scrollerInner.innerHTML = '';
-      originalItems.forEach(item => scrollerInner.appendChild(item.cloneNode(true)));
-      
-      // Duplicate items for seamless loop
-      const scrollerContent = Array.from(scrollerInner.children);
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        scrollerInner.appendChild(duplicatedItem);
-      });
-    }
-  }, [clients]);
+  // Duplicate clients for seamless scrolling using React state
+  const displayClients = [...clients, ...clients];
 
   return (
     <section className="py-16 bg-white overflow-hidden">
@@ -87,11 +67,11 @@ export const TrustedClients = () => {
           Our <span className="text-primary">Trusted Clients</span>
         </h2>
         
-        <div ref={scrollerRef} className="scroller" data-animated="true">
-          <div className="scroller-inner flex gap-8 animate-scroll">
-            {clients.map((client) => (
+        <div className="scroller" data-animated="true">
+          <div className="scroller-inner flex gap-8">
+            {displayClients.map((client, index) => (
               <div
-                key={client.id}
+                key={`${client.id}-${index}`}
                 className="flex items-center justify-center min-w-[200px] h-24 px-8 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
                 {client.website_url ? (
