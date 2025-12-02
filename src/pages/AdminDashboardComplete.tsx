@@ -14,6 +14,7 @@ import { TrustedClientsTab } from '@/components/admin/TrustedClientsTab';
 import { PricingPlansTab } from '@/components/admin/PricingPlansTab';
 import { ContactSubmissionsTab } from '@/components/admin/ContactSubmissionsTab';
 import { ReviewsTab } from '@/components/admin/ReviewsTab';
+import { CareerApplicationsTab } from '@/components/admin/CareerApplicationsTab';
 
 export default function AdminDashboardComplete() {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -64,7 +65,7 @@ export default function AdminDashboardComplete() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="settings" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 mb-8 h-auto">
+          <TabsList className="grid w-full grid-cols-6 lg:grid-cols-11 mb-8 h-auto">
             <TabsTrigger value="settings">Settings</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
@@ -75,6 +76,7 @@ export default function AdminDashboardComplete() {
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="contacts">Contacts</TabsTrigger>
+            <TabsTrigger value="careers">Careers</TabsTrigger>
           </TabsList>
 
           <TabsContent value="settings">
@@ -115,6 +117,10 @@ export default function AdminDashboardComplete() {
 
           <TabsContent value="contacts">
             <ContactSubmissionsTab />
+          </TabsContent>
+
+          <TabsContent value="careers">
+            <CareerApplicationsTab />
           </TabsContent>
         </Tabs>
       </div>
