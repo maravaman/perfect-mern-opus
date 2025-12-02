@@ -1,21 +1,43 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function ContactSubmissionsTab() {
+  const queryClient = useQueryClient();
+
   const { data: submissions, isLoading } = useQuery({
-    queryKey: ["contact-submissions"],
+    queryKey: ["contact-inquiries"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("contact_submissions")
+      const { data, error } = await supabase
+        .from("contact_inquiries")
         .select("*")
         .order("created_at", { ascending: false });
       
       if (error) throw error;
-      return data as any[];
+      return data;
+    },
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from("contact_inquiries")
+        .update({ status })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["contact-inquiries"] });
+      toast.success("Status updated");
+    },
+    onError: () => {
+      toast.error("Failed to update status");
     },
   });
 
@@ -27,9 +49,18 @@ export function ContactSubmissionsTab() {
     );
   }
 
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'new': return 'default';
+      case 'read': return 'secondary';
+      case 'replied': return 'outline';
+      default: return 'secondary';
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold font-poppins">Contact Form Submissions</h2>
+      <h2 className="text-2xl font-bold">Contact Inquiries</h2>
       <Card className="overflow-hidden">
         <Table>
           <TableHeader>
@@ -37,8 +68,9 @@ export function ContactSubmissionsTab() {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
+              <TableHead>Subject</TableHead>
               <TableHead>Message</TableHead>
-              <TableHead>Zapier Status</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
             </TableRow>
           </TableHeader>
@@ -48,21 +80,32 @@ export function ContactSubmissionsTab() {
                 <TableCell className="font-medium">{submission.name}</TableCell>
                 <TableCell>{submission.email}</TableCell>
                 <TableCell>{submission.phone || "N/A"}</TableCell>
+                <TableCell>{submission.subject}</TableCell>
                 <TableCell className="max-w-xs truncate">{submission.message}</TableCell>
                 <TableCell>
-                  <Badge variant={submission.zapier_sent ? "default" : "secondary"}>
-                    {submission.zapier_sent ? "Sent" : "Not Sent"}
-                  </Badge>
+                  <Select
+                    value={submission.status || 'new'}
+                    onValueChange={(value) => updateStatusMutation.mutate({ id: submission.id, status: value })}
+                  >
+                    <SelectTrigger className="w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="new">New</SelectItem>
+                      <SelectItem value="read">Read</SelectItem>
+                      <SelectItem value="replied">Replied</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell>
-                  {new Date(submission.created_at).toLocaleDateString()}
+                  {new Date(submission.created_at!).toLocaleDateString()}
                 </TableCell>
               </TableRow>
             ))}
             {!submissions?.length && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  No submissions yet
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                  No inquiries yet
                 </TableCell>
               </TableRow>
             )}
