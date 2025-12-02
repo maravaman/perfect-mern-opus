@@ -3,11 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Briefcase, Users, TrendingUp, Award, Upload, PenSquare } from "lucide-react";
+import { Briefcase, Users, TrendingUp, Award, Upload } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 
 export default function Career() {
@@ -21,15 +20,6 @@ export default function Career() {
   });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  
-  const [blogData, setBlogData] = useState({
-    title: "",
-    content: "",
-    author_name: "",
-    author_email: "",
-    category: "",
-  });
-  const [submittingBlog, setSubmittingBlog] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -70,7 +60,7 @@ export default function Career() {
         resumeUrl = publicUrl;
       }
 
-      // Save application to contact_inquiries table (repurposed for career applications)
+      // Save application to contact_inquiries table
       const { error: dbError } = await supabase.from("contact_inquiries").insert({
         name: formData.name,
         email: formData.email,
@@ -84,7 +74,7 @@ export default function Career() {
 
       // Send to Google Sheets
       try {
-        const { data, error: functionError } = await supabase.functions.invoke('send-to-google-sheets', {
+        await supabase.functions.invoke('send-to-google-sheets', {
           body: {
             type: 'career',
             name: formData.name,
@@ -96,15 +86,8 @@ export default function Career() {
             resumeUrl: resumeUrl,
           }
         });
-
-        if (functionError) {
-          console.error('Google Sheets function error:', functionError);
-        } else {
-          console.log('Successfully sent to Google Sheets:', data);
-        }
       } catch (sheetsError) {
         console.error('Failed to send to Google Sheets:', sheetsError);
-        // Don't fail the entire submission if Google Sheets fails
       }
 
       toast.success("Application submitted successfully! We'll review your application and get back to you soon.");
@@ -122,38 +105,6 @@ export default function Career() {
       toast.error("Failed to submit application. Please try again.");
     } finally {
       setUploading(false);
-    }
-  };
-
-  const handleBlogSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmittingBlog(true);
-
-    try {
-      const { error } = await supabase.from("blog_posts").insert({
-        title: blogData.title,
-        content: blogData.content,
-        author_name: blogData.author_name,
-        author_email: blogData.author_email,
-        category: blogData.category,
-        published: false,
-      });
-
-      if (error) throw error;
-
-      toast.success("Blog post submitted for review!");
-      setBlogData({
-        title: "",
-        content: "",
-        author_name: "",
-        author_email: "",
-        category: "",
-      });
-    } catch (error) {
-      console.error("Error submitting blog:", error);
-      toast.error("Failed to submit blog post.");
-    } finally {
-      setSubmittingBlog(false);
     }
   };
 
@@ -259,24 +210,17 @@ export default function Career() {
         </div>
       </section>
 
-      {/* Application Form & Blog Posting */}
+      {/* Application Form */}
       <section id="application-form" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
-            <Tabs defaultValue="apply" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="apply">Apply for Job</TabsTrigger>
-                <TabsTrigger value="blog"><PenSquare className="w-4 h-4 mr-2" />Post Blog</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="apply">
-                <h2 className="text-3xl font-bold text-center mb-4 font-poppins">
-                  Apply <span className="text-primary">Now</span>
-                </h2>
-                <p className="text-center text-muted-foreground mb-8">
-                  Fill out the form below and we'll get back to you soon
-                </p>
-            
+            <h2 className="text-3xl font-bold text-center mb-4 font-poppins">
+              Apply <span className="text-primary">Now</span>
+            </h2>
+            <p className="text-center text-muted-foreground mb-8">
+              Fill out the form below and we'll get back to you soon
+            </p>
+        
             <Card className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -382,97 +326,21 @@ export default function Career() {
                 </Button>
               </form>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="blog">
-            <h2 className="text-3xl font-bold text-center mb-4 font-poppins">
-              Submit a <span className="text-primary">Blog Post</span>
-            </h2>
-            <p className="text-center text-muted-foreground mb-8">
-              Share your knowledge and insights with our community
-            </p>
-            
-            <Card className="p-8">
-              <form onSubmit={handleBlogSubmit} className="space-y-6">
-                <div>
-                  <Label htmlFor="blog-title">Blog Title *</Label>
-                  <Input
-                    id="blog-title"
-                    value={blogData.title}
-                    onChange={(e) => setBlogData({...blogData, title: e.target.value})}
-                    required
-                    placeholder="Enter blog title"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="blog-content">Content *</Label>
-                  <Textarea
-                    id="blog-content"
-                    value={blogData.content}
-                    onChange={(e) => setBlogData({...blogData, content: e.target.value})}
-                    required
-                    rows={10}
-                    placeholder="Write your blog content here..."
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="blog-author">Author Name *</Label>
-                    <Input
-                      id="blog-author"
-                      value={blogData.author_name}
-                      onChange={(e) => setBlogData({...blogData, author_name: e.target.value})}
-                      required
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="blog-email">Email *</Label>
-                    <Input
-                      id="blog-email"
-                      type="email"
-                      value={blogData.author_email}
-                      onChange={(e) => setBlogData({...blogData, author_email: e.target.value})}
-                      required
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="blog-category">Category</Label>
-                  <Input
-                    id="blog-category"
-                    value={blogData.category}
-                    onChange={(e) => setBlogData({...blogData, category: e.target.value})}
-                    placeholder="e.g., Technology, Career Tips, Industry News"
-                  />
-                </div>
-
-                <Button type="submit" className="w-full" size="lg" disabled={submittingBlog}>
-                  {submittingBlog ? "Submitting..." : "Submit Blog Post"}
-                </Button>
-              </form>
-            </Card>
-          </TabsContent>
-        </Tabs>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10">
+      <section className="py-20 bg-gradient-to-br from-primary via-primary/90 to-secondary text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4 font-poppins">
-            Don't see a suitable position?
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 font-poppins">
+            Don't See a Suitable Position?
           </h2>
-          <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-            We're always looking for talented individuals. Send us your resume and we'll keep you in mind for future opportunities.
+          <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+            We're always looking for talented individuals. Send us your details and we'll keep you in mind for future opportunities.
           </p>
           <Link to="/contact">
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="secondary" className="text-primary">
               Contact Us
             </Button>
           </Link>
