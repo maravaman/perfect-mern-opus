@@ -3,16 +3,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Linkedin, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
+const inquiryCategories = [
+  { value: "general", label: "General Inquiry" },
+  { value: "courses", label: "Course Enrollment" },
+  { value: "web-development", label: "Website Development" },
+  { value: "digital-marketing", label: "Digital Marketing Services" },
+  { value: "app-development", label: "App Development" },
+  { value: "ca-services", label: "CA / Business Services" },
+  { value: "partnership", label: "Partnership / Collaboration" },
+  { value: "support", label: "Support / Help" },
+];
+
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   phone: z.string().trim().min(10, "Please enter a valid phone number").max(15, "Phone number too long"),
   email: z.string().trim().email("Please enter a valid email").max(255, "Email must be less than 255 characters"),
+  category: z.string().min(1, "Please select a category"),
   message: z.string().trim().min(1, "Message is required").max(1000, "Message must be less than 1000 characters"),
 });
 
@@ -21,8 +34,8 @@ export default function Knight21Contact() {
     name: "",
     phone: "",
     email: "",
+    category: "",
     message: "",
-    zapierWebhook: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,6 +47,9 @@ export default function Knight21Contact() {
       // Validate form data
       const validatedData = contactSchema.parse(formData);
 
+      // Get category label for subject
+      const categoryLabel = inquiryCategories.find(c => c.value === validatedData.category)?.label || validatedData.category;
+
       // Save to database
       const { error: dbError } = await supabase
         .from('contact_inquiries')
@@ -41,7 +57,7 @@ export default function Knight21Contact() {
           name: validatedData.name,
           phone: validatedData.phone,
           email: validatedData.email,
-          subject: 'Contact Form Submission',
+          subject: categoryLabel,
           message: validatedData.message,
         }]);
 
@@ -54,14 +70,13 @@ export default function Knight21Contact() {
             name: validatedData.name,
             email: validatedData.email,
             phone: validatedData.phone,
+            category: categoryLabel,
             message: validatedData.message,
           }
         });
 
         if (functionError) {
           console.error('Google Sheets function error:', functionError);
-        } else {
-          console.log('Successfully sent to Google Sheets:', data);
         }
       } catch (sheetsError) {
         console.error('Failed to send to Google Sheets:', sheetsError);
@@ -69,7 +84,7 @@ export default function Knight21Contact() {
       }
 
       toast.success("Message sent successfully! We'll get back to you soon.");
-      setFormData({ name: "", phone: "", email: "", message: "", zapierWebhook: "" });
+      setFormData({ name: "", phone: "", email: "", category: "", message: "" });
     } catch (error: any) {
       console.error('Error submitting form:', error);
       if (error instanceof z.ZodError) {
@@ -84,6 +99,10 @@ export default function Knight21Contact() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setFormData({ ...formData, category: value });
   };
 
   return (
@@ -226,6 +245,22 @@ export default function Knight21Contact() {
                     required
                     maxLength={255}
                   />
+                </div>
+
+                <div>
+                  <Label>Inquiry Category *</Label>
+                  <Select value={formData.category} onValueChange={handleCategoryChange}>
+                    <SelectTrigger className="w-full bg-white/80">
+                      <SelectValue placeholder="Select a category..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      {inquiryCategories.map((cat) => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
