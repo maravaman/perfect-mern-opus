@@ -125,20 +125,46 @@ export function CareerApplicationsTab() {
     }
   };
 
-  // Download a single resume
+  // Download a single resume using edge function
   const handleDownloadResume = async (resumeUrl: string, applicantName: string) => {
+    const filePath = extractFilePath(resumeUrl);
+    if (!filePath) {
+      toast.error("Invalid resume URL");
+      return;
+    }
+
     setLoadingResume(resumeUrl);
     try {
-      const signedUrl = await getSignedUrl(resumeUrl);
-      if (signedUrl) {
-        const link = document.createElement('a');
-        link.href = signedUrl;
-        link.download = `Resume_${applicantName.replace(/\s+/g, '_')}.pdf`;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData?.session?.access_token) {
+        toast.error("Please log in to download resumes");
+        return;
       }
+
+      // Use edge function to download the file directly
+      const response = await supabase.functions.invoke('get-signed-url', {
+        body: { filePath, bucket: 'knight21-uploads', download: true }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to download resume');
+      }
+
+      // The response.data is a Blob when download: true
+      const blob = response.data;
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `Resume_${applicantName.replace(/\s+/g, '_')}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+      toast.success("Resume downloaded successfully");
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      toast.error("Failed to download resume. Please try again.");
     } finally {
       setLoadingResume(null);
     }
