@@ -47,6 +47,7 @@ export function SiteSettingsTab() {
   const [teamFormData, setTeamFormData] = useState({
     name: "",
     role: "",
+    category: "Leadership",
     bio: "",
     image_url: "",
     rating: "",
@@ -54,6 +55,17 @@ export function SiteSettingsTab() {
     display_order: 0,
     active: true,
   });
+
+  const TEAM_CATEGORIES = [
+    "Leadership",
+    "Management",
+    "Development",
+    "Design",
+    "Marketing",
+    "Sales",
+    "Support",
+    "Operations",
+  ];
 
   const queryClient = useQueryClient();
 
@@ -163,6 +175,7 @@ export function SiteSettingsTab() {
     setTeamFormData({
       name: "",
       role: "",
+      category: "Leadership",
       bio: "",
       image_url: "",
       rating: "",
@@ -178,6 +191,7 @@ export function SiteSettingsTab() {
     setTeamFormData({
       name: member.name,
       role: member.role || "",
+      category: member.category || "Leadership",
       bio: member.bio || "",
       image_url: member.image_url || "",
       rating: member.rating || "",
@@ -290,6 +304,18 @@ export function SiteSettingsTab() {
                       </div>
                     </div>
                     <div>
+                      <Label>Category</Label>
+                      <select
+                        value={teamFormData.category}
+                        onChange={(e) => setTeamFormData({ ...teamFormData, category: e.target.value })}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {TEAM_CATEGORIES.map((cat) => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
                       <Label>Bio</Label>
                       <Textarea
                         value={teamFormData.bio}
@@ -392,7 +418,7 @@ export function SiteSettingsTab() {
                     <TableHead>Image</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Role</TableHead>
-                    <TableHead>Rating</TableHead>
+                    <TableHead>Category</TableHead>
                     <TableHead>Active</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
@@ -411,7 +437,11 @@ export function SiteSettingsTab() {
                       </TableCell>
                       <TableCell className="font-medium">{member.name}</TableCell>
                       <TableCell>{member.role}</TableCell>
-                      <TableCell>{member.rating}</TableCell>
+                      <TableCell>
+                        <span className="px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">
+                          {member.category || "Leadership"}
+                        </span>
+                      </TableCell>
                       <TableCell>{member.active ? "Yes" : "No"}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">

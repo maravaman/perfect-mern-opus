@@ -460,6 +460,7 @@ export type Database = {
         Row: {
           active: boolean | null
           bio: string | null
+          category: string | null
           created_at: string | null
           display_order: number | null
           id: string
@@ -473,6 +474,7 @@ export type Database = {
         Insert: {
           active?: boolean | null
           bio?: string | null
+          category?: string | null
           created_at?: string | null
           display_order?: number | null
           id?: string
@@ -486,6 +488,7 @@ export type Database = {
         Update: {
           active?: boolean | null
           bio?: string | null
+          category?: string | null
           created_at?: string | null
           display_order?: number | null
           id?: string
