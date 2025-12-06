@@ -11,8 +11,11 @@ import { Plus, Edit, Trash, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CareerOpeningsTab } from "./CareerOpeningsTab";
 
 export function CoursesTab() {
+  const [activeSection, setActiveSection] = useState<"courses" | "career">("courses");
   const [isOpen, setIsOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
@@ -154,15 +157,31 @@ export function CoursesTab() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold font-poppins">Manage Courses</h2>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Course
-            </Button>
-          </DialogTrigger>
+      <div className="flex justify-between items-center mb-6">
+        <Select value={activeSection} onValueChange={(value: "courses" | "career") => setActiveSection(value)}>
+          <SelectTrigger className="w-[250px] bg-background">
+            <SelectValue placeholder="Select section" />
+          </SelectTrigger>
+          <SelectContent className="bg-background z-50">
+            <SelectItem value="courses">Manage Courses</SelectItem>
+            <SelectItem value="career">Career Openings</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {activeSection === "career" ? (
+        <CareerOpeningsTab />
+      ) : (
+        <>
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold font-poppins">Manage Courses</h2>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={resetForm}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Course
+                </Button>
+              </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingCourse ? "Edit Course" : "Add New Course"}</DialogTitle>
@@ -315,7 +334,9 @@ export function CoursesTab() {
             )}
           </TableBody>
         </Table>
-      </Card>
+          </Card>
+        </>
+      )}
     </div>
   );
 }
