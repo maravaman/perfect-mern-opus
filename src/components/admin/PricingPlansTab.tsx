@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Card } from "@/components/ui/card";
-import { Plus, Edit, Trash, Loader2, Upload, X } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Edit, Trash, Loader2, Upload, X, Check, IndianRupee } from "lucide-react";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 export function PricingPlansTab() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,8 +19,10 @@ export function PricingPlansTab() {
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    description: "",
     price: "",
-    features: "",
+    features: [] as string[],
+    newFeature: "",
     image_url: "",
     popular: false,
     active: true,
@@ -43,9 +46,14 @@ export function PricingPlansTab() {
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
       const planData = {
-        ...data,
-        price: parseFloat(data.price),
-        features: data.features ? JSON.parse(data.features) : [],
+        name: data.name,
+        description: data.description,
+        price: parseFloat(data.price) || 0,
+        features: data.features,
+        image_url: data.image_url,
+        popular: data.popular,
+        active: data.active,
+        display_order: data.display_order,
       };
 
       if (editingPlan) {
@@ -65,8 +73,8 @@ export function PricingPlansTab() {
       setIsOpen(false);
       resetForm();
     },
-    onError: () => {
-      toast.error("Failed to save package");
+    onError: (error: any) => {
+      toast.error("Failed to save package: " + error.message);
     },
   });
 
@@ -113,8 +121,10 @@ export function PricingPlansTab() {
   const resetForm = () => {
     setFormData({
       name: "",
+      description: "",
       price: "",
-      features: "",
+      features: [],
+      newFeature: "",
       image_url: "",
       popular: false,
       active: true,
@@ -125,10 +135,13 @@ export function PricingPlansTab() {
 
   const handleEdit = (plan: any) => {
     setEditingPlan(plan);
+    const features = Array.isArray(plan.features) ? plan.features : [];
     setFormData({
       name: plan.name,
-      price: plan.price,
-      features: JSON.stringify(plan.features || []),
+      description: plan.description || "",
+      price: plan.price?.toString() || "",
+      features: features,
+      newFeature: "",
       image_url: plan.image_url || "",
       popular: plan.popular,
       active: plan.active,
@@ -142,6 +155,23 @@ export function PricingPlansTab() {
     saveMutation.mutate(formData);
   };
 
+  const addFeature = () => {
+    if (formData.newFeature.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        features: [...prev.features, prev.newFeature.trim()],
+        newFeature: "",
+      }));
+    }
+  };
+
+  const removeFeature = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      features: prev.features.filter((_, i) => i !== index),
+    }));
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -151,9 +181,12 @@ export function PricingPlansTab() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold font-poppins">Manage Pricing Plans</h2>
+        <div>
+          <h2 className="text-2xl font-bold font-poppins">Manage Pricing Plans</h2>
+          <p className="text-muted-foreground">Edit your service packages and pricing</p>
+        </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button onClick={resetForm}>
@@ -172,28 +205,64 @@ export function PricingPlansTab() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  placeholder="e.g. Basic, Standard, Premium"
                 />
               </div>
               <div>
-                <Label>Price</Label>
+                <Label>Description</Label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Brief description of this package"
+                  rows={2}
+                />
+              </div>
+              <div>
+                <Label>Price (₹)</Label>
                 <Input
+                  type="number"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   required
-                  placeholder="₹ 8,500 +GST"
+                  placeholder="8500"
                 />
               </div>
               <div>
-                <Label>Features (JSON array)</Label>
-                <Textarea
-                  value={formData.features}
-                  onChange={(e) => setFormData({ ...formData, features: e.target.value })}
-                  placeholder='["Feature 1", "Feature 2"]'
-                  rows={6}
-                />
+                <Label>Features</Label>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      value={formData.newFeature}
+                      onChange={(e) => setFormData({ ...formData, newFeature: e.target.value })}
+                      placeholder="Add a feature..."
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                    />
+                    <Button type="button" variant="outline" onClick={addFeature}>
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {formData.features.map((feature, index) => (
+                      <Badge key={index} variant="secondary" className="flex items-center gap-1 py-1.5 px-3">
+                        <Check className="w-3 h-3 text-green-600" />
+                        {feature}
+                        <button
+                          type="button"
+                          onClick={() => removeFeature(index)}
+                          className="ml-1 hover:text-destructive"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  {formData.features.length === 0 && (
+                    <p className="text-sm text-muted-foreground">No features added yet</p>
+                  )}
+                </div>
               </div>
               <div>
-                <Label>Plan Image</Label>
+                <Label>Plan Image (Optional)</Label>
                 <div className="flex gap-2 items-center">
                   <Input
                     value={formData.image_url}
@@ -246,7 +315,7 @@ export function PricingPlansTab() {
                       checked={formData.popular}
                       onCheckedChange={(checked) => setFormData({ ...formData, popular: checked })}
                     />
-                    <Label>Popular</Label>
+                    <Label>Popular (Highlight)</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Switch
@@ -265,50 +334,59 @@ export function PricingPlansTab() {
         </Dialog>
       </div>
 
-      <Card className="overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Popular</TableHead>
-              <TableHead>Active</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {plans?.map((plan) => (
-              <TableRow key={plan.id}>
-                <TableCell className="font-medium">{plan.name}</TableCell>
-                <TableCell>{plan.price}</TableCell>
-                <TableCell>{plan.popular ? "Yes" : "No"}</TableCell>
-                <TableCell>{plan.active ? "Yes" : "No"}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(plan)}>
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => deleteMutation.mutate(plan.id)}
-                    >
-                      <Trash className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-            {!plans?.length && (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
-                  No pricing plans yet
-                </TableCell>
-              </TableRow>
+      {/* Pricing Cards Preview */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {plans?.map((plan) => (
+          <Card key={plan.id} className={`relative ${plan.popular ? 'ring-2 ring-primary' : ''}`}>
+            {plan.popular && (
+              <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-primary">
+                Popular
+              </Badge>
             )}
-          </TableBody>
-        </Table>
-      </Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">{plan.name}</CardTitle>
+              <div className="flex items-baseline gap-1">
+                <IndianRupee className="w-4 h-4" />
+                <span className="text-2xl font-bold">{plan.price?.toLocaleString()}</span>
+              </div>
+              {plan.description && (
+                <p className="text-sm text-muted-foreground">{plan.description}</p>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="space-y-1">
+                {Array.isArray(plan.features) && plan.features.slice(0, 3).map((feature: string, i: number) => (
+                  <div key={i} className="flex items-center gap-2 text-sm">
+                    <Check className="w-3 h-3 text-green-600" />
+                    <span className="truncate">{feature}</span>
+                  </div>
+                ))}
+                {Array.isArray(plan.features) && plan.features.length > 3 && (
+                  <p className="text-xs text-muted-foreground">+{plan.features.length - 3} more features</p>
+                )}
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button size="sm" variant="outline" className="flex-1" onClick={() => handleEdit(plan)}>
+                  <Edit className="w-3 h-3 mr-1" /> Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => deleteMutation.mutate(plan.id)}
+                >
+                  <Trash className="w-3 h-3" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {!plans?.length && (
+        <Card className="p-8 text-center">
+          <p className="text-muted-foreground">No pricing plans yet. Add your first plan above.</p>
+        </Card>
+      )}
     </div>
   );
 }
