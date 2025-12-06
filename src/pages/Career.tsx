@@ -8,6 +8,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Career() {
   const [formData, setFormData] = useState({
@@ -108,36 +109,18 @@ export default function Career() {
     }
   };
 
-  const jobOpenings = [
-    {
-      title: "Digital Marketing Executive",
-      type: "Full Time",
-      location: "Hyderabad / Remote",
-      experience: "1-3 years",
-      description: "Looking for a passionate digital marketer with expertise in SEO, social media, and content marketing.",
+  const { data: jobOpenings = [] } = useQuery({
+    queryKey: ["job-openings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("job_openings")
+        .select("*")
+        .eq("active", true)
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return data;
     },
-    {
-      title: "Web Developer",
-      type: "Full Time",
-      location: "Hyderabad / Remote",
-      experience: "2-4 years",
-      description: "Seeking an experienced web developer proficient in React, Node.js, and modern web technologies.",
-    },
-    {
-      title: "Graphic Designer",
-      type: "Full Time / Part Time",
-      location: "Hyderabad / Remote",
-      experience: "1-2 years",
-      description: "Creative designer needed for social media graphics, branding, and marketing materials.",
-    },
-    {
-      title: "Content Writer",
-      type: "Full Time / Freelance",
-      location: "Remote",
-      experience: "1-3 years",
-      description: "Looking for talented content writers with SEO knowledge and creative writing skills.",
-    },
-  ];
+  });
 
   return (
     <div className="font-outfit">
