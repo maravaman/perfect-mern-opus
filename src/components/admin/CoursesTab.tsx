@@ -147,22 +147,14 @@ export function CoursesTab() {
     saveMutation.mutate(formData);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center mb-6">
         <Select value={activeSection} onValueChange={(value: "courses" | "career") => setActiveSection(value)}>
-          <SelectTrigger className="w-[250px] bg-background">
+          <SelectTrigger className="w-[250px] bg-background border-2">
             <SelectValue placeholder="Select section" />
           </SelectTrigger>
-          <SelectContent className="bg-background z-50">
+          <SelectContent className="bg-popover border shadow-lg z-[100]">
             <SelectItem value="courses">Manage Courses</SelectItem>
             <SelectItem value="career">Career Openings</SelectItem>
           </SelectContent>
@@ -171,6 +163,10 @@ export function CoursesTab() {
 
       {activeSection === "career" ? (
         <CareerOpeningsTab />
+      ) : isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
       ) : (
         <>
           <div className="flex justify-between items-center">
