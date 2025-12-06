@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Loader2, ExternalLink, Download } from "lucide-react";
+import { Loader2, Eye, Download, FileText, X } from "lucide-react";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 export function CareerApplicationsTab() {
   const queryClient = useQueryClient();
   const [loadingResume, setLoadingResume] = useState<string | null>(null);
+  const [resumeViewerUrl, setResumeViewerUrl] = useState<string | null>(null);
+  const [resumeViewerOpen, setResumeViewerOpen] = useState(false);
+  const [downloadingResumes, setDownloadingResumes] = useState(false);
 
   const { data: applications, isLoading } = useQuery({
     queryKey: ["career-applications"],
@@ -70,7 +73,6 @@ export function CareerApplicationsTab() {
   // Extract file path from storage URL
   const extractFilePath = (url: string): string | null => {
     try {
-      // URL format: https://xxx.supabase.co/storage/v1/object/public/knight21-uploads/resumes/filename.pdf
       const match = url.match(/knight21-uploads\/(.+)$/);
       return match ? match[1] : null;
     } catch {
@@ -79,19 +81,18 @@ export function CareerApplicationsTab() {
   };
 
   // Get signed URL for secure resume access
-  const handleViewResume = async (resumeUrl: string) => {
+  const getSignedUrl = async (resumeUrl: string): Promise<string | null> => {
     const filePath = extractFilePath(resumeUrl);
     if (!filePath) {
       toast.error("Invalid resume URL");
-      return;
+      return null;
     }
 
-    setLoadingResume(resumeUrl);
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData?.session?.access_token) {
         toast.error("Please log in to view resumes");
-        return;
+        return null;
       }
 
       const response = await supabase.functions.invoke('get-signed-url', {
@@ -102,55 +103,110 @@ export function CareerApplicationsTab() {
         throw new Error(response.error.message || 'Failed to get signed URL');
       }
 
-      if (response.data?.signedUrl) {
-        window.open(response.data.signedUrl, '_blank');
-      } else {
-        throw new Error('No signed URL returned');
-      }
+      return response.data?.signedUrl || null;
     } catch (error) {
       console.error('Error getting signed URL:', error);
       toast.error("Failed to access resume. Please try again.");
+      return null;
+    }
+  };
+
+  // Open resume in embedded viewer
+  const handleViewResume = async (resumeUrl: string) => {
+    setLoadingResume(resumeUrl);
+    try {
+      const signedUrl = await getSignedUrl(resumeUrl);
+      if (signedUrl) {
+        setResumeViewerUrl(signedUrl);
+        setResumeViewerOpen(true);
+      }
     } finally {
       setLoadingResume(null);
     }
   };
 
-  const exportToCSV = () => {
+  // Download a single resume
+  const handleDownloadResume = async (resumeUrl: string, applicantName: string) => {
+    setLoadingResume(resumeUrl);
+    try {
+      const signedUrl = await getSignedUrl(resumeUrl);
+      if (signedUrl) {
+        const link = document.createElement('a');
+        link.href = signedUrl;
+        link.download = `Resume_${applicantName.replace(/\s+/g, '_')}.pdf`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } finally {
+      setLoadingResume(null);
+    }
+  };
+
+  // Export CSV with embedded resume download links
+  const exportToCSV = async () => {
     if (!applications || applications.length === 0) {
       toast.error("No data to export");
       return;
     }
 
-    const headers = ["Name", "Email", "Phone", "Position", "Experience", "Cover Letter", "Resume URL", "Status", "Date"];
-    const csvRows = [
-      headers.join(","),
-      ...applications.map(app => {
-        const parsed = parseMessage(app.message);
-        return [
-          `"${app.name?.replace(/"/g, '""') || ''}"`,
-          `"${app.email?.replace(/"/g, '""') || ''}"`,
-          `"${app.phone?.replace(/"/g, '""') || 'N/A'}"`,
-          `"${(parsed.position || app.subject.replace('Career Application:', '').trim()).replace(/"/g, '""')}"`,
-          `"${parsed.experience?.replace(/"/g, '""') || 'N/A'}"`,
-          `"${parsed.coverLetter?.replace(/"/g, '""').replace(/\n/g, ' ') || ''}"`,
-          `"${parsed.resumeUrl || 'N/A'}"`,
-          `"${app.status || 'new'}"`,
-          `"${app.created_at ? new Date(app.created_at).toLocaleDateString() : ''}"`
-        ].join(",");
-      })
-    ];
+    setDownloadingResumes(true);
+    toast.info("Generating CSV with secure resume links...");
 
-    const csvContent = csvRows.join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `career_applications_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    toast.success("Exported successfully!");
+    try {
+      // Generate signed URLs for all resumes
+      const applicationsWithSignedUrls = await Promise.all(
+        applications.map(async (app) => {
+          const parsed = parseMessage(app.message);
+          let signedResumeUrl = 'N/A';
+          
+          if (parsed.resumeUrl && parsed.resumeUrl !== 'Not provided') {
+            const signedUrl = await getSignedUrl(parsed.resumeUrl);
+            if (signedUrl) {
+              signedResumeUrl = signedUrl;
+            }
+          }
+          
+          return { ...app, parsed, signedResumeUrl };
+        })
+      );
+
+      const headers = ["Name", "Email", "Phone", "Position", "Experience", "Cover Letter", "Resume Download Link", "Status", "Date"];
+      const csvRows = [
+        headers.join(","),
+        ...applicationsWithSignedUrls.map(app => {
+          return [
+            `"${app.name?.replace(/"/g, '""') || ''}"`,
+            `"${app.email?.replace(/"/g, '""') || ''}"`,
+            `"${app.phone?.replace(/"/g, '""') || 'N/A'}"`,
+            `"${(app.parsed.position || app.subject.replace('Career Application:', '').trim()).replace(/"/g, '""')}"`,
+            `"${app.parsed.experience?.replace(/"/g, '""') || 'N/A'}"`,
+            `"${app.parsed.coverLetter?.replace(/"/g, '""').replace(/\n/g, ' ') || ''}"`,
+            `"${app.signedResumeUrl}"`,
+            `"${app.status || 'new'}"`,
+            `"${app.created_at ? new Date(app.created_at).toLocaleDateString() : ''}"`
+          ].join(",");
+        })
+      ];
+
+      const csvContent = csvRows.join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `career_applications_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      toast.success("Exported successfully! Resume links are valid for 1 hour.");
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      toast.error("Failed to export CSV");
+    } finally {
+      setDownloadingResumes(false);
+    }
   };
 
   if (isLoading) {
@@ -178,11 +234,44 @@ export function CareerApplicationsTab() {
           <h2 className="text-2xl font-bold">Career Applications</h2>
           <p className="text-muted-foreground text-sm">{applications?.length || 0} total applications</p>
         </div>
-        <Button onClick={exportToCSV} variant="outline" className="gap-2">
-          <Download className="w-4 h-4" />
+        <Button onClick={exportToCSV} variant="outline" className="gap-2" disabled={downloadingResumes}>
+          {downloadingResumes ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
           Export CSV
         </Button>
       </div>
+      
+      {/* Resume Viewer Dialog */}
+      <Dialog open={resumeViewerOpen} onOpenChange={setResumeViewerOpen}>
+        <DialogContent className="max-w-5xl h-[85vh] bg-white p-0">
+          <DialogHeader className="p-4 border-b flex flex-row items-center justify-between">
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5" />
+              Resume Viewer
+            </DialogTitle>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setResumeViewerOpen(false)}
+              className="h-8 w-8"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </DialogHeader>
+          <div className="flex-1 h-full p-0">
+            {resumeViewerUrl && (
+              <iframe
+                src={resumeViewerUrl}
+                className="w-full h-[calc(85vh-80px)] border-0"
+                title="Resume Viewer"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
       
       <Card className="overflow-hidden">
         <Table>
@@ -211,19 +300,32 @@ export function CareerApplicationsTab() {
                   <TableCell>{parsed.experience || "N/A"}</TableCell>
                   <TableCell>
                     {parsed.resumeUrl && parsed.resumeUrl !== 'Not provided' ? (
-                      <Button
-                        variant="link"
-                        size="sm"
-                        className="text-primary hover:underline p-0 h-auto flex items-center gap-1"
-                        onClick={() => handleViewResume(parsed.resumeUrl)}
-                        disabled={loadingResume === parsed.resumeUrl}
-                      >
-                        {loadingResume === parsed.resumeUrl ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <>View <ExternalLink className="w-3 h-3" /></>
-                        )}
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-primary"
+                          onClick={() => handleViewResume(parsed.resumeUrl)}
+                          disabled={loadingResume === parsed.resumeUrl}
+                          title="View Resume"
+                        >
+                          {loadingResume === parsed.resumeUrl ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-primary"
+                          onClick={() => handleDownloadResume(parsed.resumeUrl, application.name)}
+                          disabled={loadingResume === parsed.resumeUrl}
+                          title="Download Resume"
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </div>
                     ) : (
                       <span className="text-muted-foreground">N/A</span>
                     )}
@@ -296,22 +398,34 @@ export function CareerApplicationsTab() {
                           {parsed.resumeUrl && parsed.resumeUrl !== 'Not provided' && (
                             <div>
                               <p className="text-sm font-medium text-muted-foreground mb-2">Resume</p>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="inline-flex items-center gap-2"
-                                onClick={() => handleViewResume(parsed.resumeUrl)}
-                                disabled={loadingResume === parsed.resumeUrl}
-                              >
-                                {loadingResume === parsed.resumeUrl ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <>
-                                    <ExternalLink className="w-4 h-4" />
-                                    View Resume
-                                  </>
-                                )}
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="inline-flex items-center gap-2"
+                                  onClick={() => handleViewResume(parsed.resumeUrl)}
+                                  disabled={loadingResume === parsed.resumeUrl}
+                                >
+                                  {loadingResume === parsed.resumeUrl ? (
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                  ) : (
+                                    <>
+                                      <Eye className="w-4 h-4" />
+                                      View Resume
+                                    </>
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="inline-flex items-center gap-2"
+                                  onClick={() => handleDownloadResume(parsed.resumeUrl, application.name)}
+                                  disabled={loadingResume === parsed.resumeUrl}
+                                >
+                                  <Download className="w-4 h-4" />
+                                  Download
+                                </Button>
+                              </div>
                             </div>
                           )}
                         </div>
