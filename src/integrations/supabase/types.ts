@@ -456,6 +456,48 @@ export type Database = {
         }
         Relationships: []
       }
+      team_members: {
+        Row: {
+          active: boolean | null
+          bio: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          image_url: string | null
+          name: string
+          rating: string | null
+          reviews_count: string | null
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          bio?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          name: string
+          rating?: string | null
+          reviews_count?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          bio?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          rating?: string | null
+          reviews_count?: string | null
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       tools: {
         Row: {
           active: boolean | null
