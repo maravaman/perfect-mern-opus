@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, BookOpen, Loader2, GraduationCap, Users, Star } from "lucide-react";
@@ -146,9 +147,11 @@ const Courses = () => {
                       </div>
                     </div>
 
-                    <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-semibold shadow-card hover:shadow-card-hover">
-                      Enroll Now
-                    </Button>
+                    <Link to="/contact">
+                      <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-semibold shadow-card hover:shadow-card-hover">
+                        Enroll Now
+                      </Button>
+                    </Link>
                   </div>
                 </Card>
               ))}
