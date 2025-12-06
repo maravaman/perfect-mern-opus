@@ -14,6 +14,7 @@ import { PricingPlansTab } from '@/components/admin/PricingPlansTab';
 import { ContactSubmissionsTab } from '@/components/admin/ContactSubmissionsTab';
 import { ReviewsTab } from '@/components/admin/ReviewsTab';
 import { CareerApplicationsTab } from '@/components/admin/CareerApplicationsTab';
+import { CareerOpeningsTab } from '@/components/admin/CareerOpeningsTab';
 
 export default function AdminDashboardComplete() {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -114,7 +115,13 @@ export default function AdminDashboardComplete() {
           </TabsContent>
 
           <TabsContent value="careers">
-            <CareerApplicationsTab />
+            <div className="space-y-8">
+              <CareerOpeningsTab />
+              <div className="border-t pt-8">
+                <h3 className="text-xl font-bold mb-4">Job Applications</h3>
+                <CareerApplicationsTab />
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
