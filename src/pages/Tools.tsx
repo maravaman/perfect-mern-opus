@@ -91,25 +91,26 @@ const Tools = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-pink-50/20 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-hero pattern-dots flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-pink-50/20">
+    <div className="min-h-screen font-outfit">
       {/* Hero Section */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="container mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
+      <section className="bg-gradient-hero pattern-dots py-16 md:py-24 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full mb-6 shadow-card animate-fade-in">
             <Wrench className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">Free Digital Tools</span>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-poppins text-gray-900">
-            Useful <span className="text-primary">Tools</span> & Resources
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-poppins animate-fade-in" style={{animationDelay: '0.1s'}}>
+            Useful <span className="text-gradient">Tools</span> & Resources
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-outfit">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{animationDelay: '0.2s'}}>
             Access our collection of free tools to help grow your digital presence
           </p>
         </div>
@@ -117,8 +118,9 @@ const Tools = () => {
 
       {/* Category Filter */}
       {categories.length > 2 && (
-        <section className="px-4 pb-8">
-          <div className="container mx-auto max-w-6xl">
+        <section className="px-4 pb-8 bg-white pattern-grid relative">
+          <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+          <div className="container mx-auto max-w-6xl relative z-10 pt-8">
             <div className="flex flex-wrap justify-center gap-3">
               {categories.map((category) => (
                 <Button
@@ -126,7 +128,11 @@ const Tools = () => {
                   variant={selectedCategory === category ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
-                  className="capitalize"
+                  className={`capitalize transition-all ${
+                    selectedCategory === category 
+                      ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg" 
+                      : "border-primary/20 hover:border-primary hover:text-primary"
+                  }`}
                 >
                   {category === "all" ? "All Tools" : category}
                 </Button>
@@ -137,46 +143,48 @@ const Tools = () => {
       )}
 
       {/* Tools Grid */}
-      <section className="py-12 px-4 pb-24">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-12 px-4 pb-24 bg-gradient-hero pattern-dots relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-50"></div>
+        <div className="container mx-auto max-w-6xl relative z-10">
           {filteredTools.length === 0 ? (
-            <Card className="p-12 text-center">
+            <Card className="p-12 text-center glass-card">
               <Wrench className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-muted-foreground">No tools available yet</h3>
               <p className="text-muted-foreground mt-2">Check back soon for useful tools!</p>
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTools.map((tool) => {
+              {filteredTools.map((tool, index) => {
                 const IconComponent = iconMap[tool.icon || ""] || Wrench;
                 const colorScheme = categoryColors[tool.category || ""] || categoryColors.default;
 
                 return (
                   <Card 
                     key={tool.id} 
-                    className="group hover:shadow-xl transition-all duration-300 border bg-white overflow-hidden"
+                    className="group glass-card border-2 border-primary/10 hover:border-primary/30 hover:shadow-card-hover transition-all duration-300 overflow-hidden animate-slide-up"
+                    style={{animationDelay: `${index * 0.05}s`}}
                   >
                     <div className="p-6">
                       {/* Icon & Category */}
                       <div className="flex items-start justify-between mb-4">
-                        <div className={`w-14 h-14 rounded-xl ${colorScheme.bg} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                          <IconComponent className={`w-7 h-7 ${colorScheme.text}`} />
+                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-card`}>
+                          <IconComponent className="w-7 h-7 text-primary" />
                         </div>
                         {tool.category && (
-                          <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${colorScheme.bg} ${colorScheme.text}`}>
+                          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border border-primary/20">
                             {tool.category}
                           </span>
                         )}
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg font-bold mb-2 font-poppins text-gray-900 group-hover:text-primary transition-colors">
+                      <h3 className="text-lg font-bold mb-2 font-poppins group-hover:text-primary transition-colors">
                         {tool.title}
                       </h3>
 
                       {/* Description */}
                       {tool.description && (
-                        <p className="text-muted-foreground text-sm mb-6 line-clamp-3 font-outfit">
+                        <p className="text-muted-foreground text-sm mb-6 line-clamp-3">
                           {tool.description}
                         </p>
                       )}
@@ -184,7 +192,7 @@ const Tools = () => {
                       {/* Action Button */}
                       {tool.url ? (
                         <a href={tool.url} target="_blank" rel="noopener noreferrer" className="block">
-                          <Button className="w-full gap-2 bg-primary hover:bg-primary/90">
+                          <Button className="w-full gap-2 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-card hover:shadow-card-hover">
                             <span>Open Tool</span>
                             <ExternalLink className="w-4 h-4" />
                           </Button>
@@ -204,15 +212,18 @@ const Tools = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-primary to-pink-500">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-poppins text-white">
+      <section className="py-16 px-4 bg-gradient-to-r from-primary via-secondary to-primary relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 25px 25px, white 2%, transparent 0%)', backgroundSize: '50px 50px' }}></div>
+        </div>
+        <div className="container mx-auto text-center relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-poppins text-primary-foreground">
             Need a Custom Tool for Your Business?
           </h2>
-          <p className="text-lg mb-8 text-white/90 font-outfit max-w-2xl mx-auto">
+          <p className="text-lg mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
             We can build custom digital solutions tailored to your specific needs
           </p>
-          <Button size="lg" variant="secondary" className="font-semibold">
+          <Button size="lg" variant="secondary" className="font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
             Contact Us
           </Button>
         </div>
