@@ -11,7 +11,7 @@ import { AppDevelopmentTab } from "@/components/admin/AppDevelopmentTab";
 import { WebApplicationsTab } from "@/components/admin/WebApplicationsTab";
 import { SiteSettingsTab } from "@/components/admin/SiteSettingsTab";
 import { TrustedClientsTab } from "@/components/admin/TrustedClientsTab";
-import { TeamMembersTab } from "@/components/admin/TeamMembersTab";
+
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,9 +65,8 @@ export default function AdminDashboard() {
 
         <Card className="glass-card p-6">
           <Tabs defaultValue="settings" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-12 gap-1">
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-11 gap-1">
               <TabsTrigger value="settings">Settings</TabsTrigger>
-              <TabsTrigger value="team">Team</TabsTrigger>
               <TabsTrigger value="blogs">Blogs</TabsTrigger>
               <TabsTrigger value="services">Services</TabsTrigger>
               <TabsTrigger value="tools">Tools</TabsTrigger>
@@ -82,10 +81,6 @@ export default function AdminDashboard() {
 
             <TabsContent value="settings">
               <SiteSettingsTab />
-            </TabsContent>
-
-            <TabsContent value="team">
-              <TeamMembersTab />
             </TabsContent>
 
             <TabsContent value="contacts">
