@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Loader2, ExternalLink } from "lucide-react";
+import { Loader2, ExternalLink, Download } from "lucide-react";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -65,6 +65,44 @@ export function CareerApplicationsTab() {
     return { position, experience, coverLetter: coverLetter.trim(), resumeUrl };
   };
 
+  const exportToCSV = () => {
+    if (!applications || applications.length === 0) {
+      toast.error("No data to export");
+      return;
+    }
+
+    const headers = ["Name", "Email", "Phone", "Position", "Experience", "Cover Letter", "Resume URL", "Status", "Date"];
+    const csvRows = [
+      headers.join(","),
+      ...applications.map(app => {
+        const parsed = parseMessage(app.message);
+        return [
+          `"${app.name?.replace(/"/g, '""') || ''}"`,
+          `"${app.email?.replace(/"/g, '""') || ''}"`,
+          `"${app.phone?.replace(/"/g, '""') || 'N/A'}"`,
+          `"${(parsed.position || app.subject.replace('Career Application:', '').trim()).replace(/"/g, '""')}"`,
+          `"${parsed.experience?.replace(/"/g, '""') || 'N/A'}"`,
+          `"${parsed.coverLetter?.replace(/"/g, '""').replace(/\n/g, ' ') || ''}"`,
+          `"${parsed.resumeUrl || 'N/A'}"`,
+          `"${app.status || 'new'}"`,
+          `"${app.created_at ? new Date(app.created_at).toLocaleDateString() : ''}"`
+        ].join(",");
+      })
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `career_applications_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("Exported successfully!");
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -85,8 +123,16 @@ export function CareerApplicationsTab() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Career Applications</h2>
-      <p className="text-muted-foreground">View and manage job applications submitted through the career page.</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Career Applications</h2>
+          <p className="text-muted-foreground text-sm">{applications?.length || 0} total applications</p>
+        </div>
+        <Button onClick={exportToCSV} variant="outline" className="gap-2">
+          <Download className="w-4 h-4" />
+          Export CSV
+        </Button>
+      </div>
       
       <Card className="overflow-hidden">
         <Table>
@@ -135,7 +181,7 @@ export function CareerApplicationsTab() {
                       <SelectTrigger className={`w-28 ${getStatusBadgeColor(application.status || 'new')}`}>
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white z-50">
                         <SelectItem value="new">New</SelectItem>
                         <SelectItem value="reviewed">Reviewed</SelectItem>
                         <SelectItem value="shortlisted">Shortlisted</SelectItem>
@@ -151,7 +197,7 @@ export function CareerApplicationsTab() {
                       <DialogTrigger asChild>
                         <Button variant="outline" size="sm">View</Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-2xl">
+                      <DialogContent className="max-w-2xl bg-white">
                         <DialogHeader>
                           <DialogTitle>Application Details - {application.name}</DialogTitle>
                         </DialogHeader>
