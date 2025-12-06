@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 export function CareerApplicationsTab() {
   const queryClient = useQueryClient();
+  const [loadingResume, setLoadingResume] = useState<string | null>(null);
 
   const { data: applications, isLoading } = useQuery({
     queryKey: ["career-applications"],
@@ -63,6 +65,54 @@ export function CareerApplicationsTab() {
     });
 
     return { position, experience, coverLetter: coverLetter.trim(), resumeUrl };
+  };
+
+  // Extract file path from storage URL
+  const extractFilePath = (url: string): string | null => {
+    try {
+      // URL format: https://xxx.supabase.co/storage/v1/object/public/knight21-uploads/resumes/filename.pdf
+      const match = url.match(/knight21-uploads\/(.+)$/);
+      return match ? match[1] : null;
+    } catch {
+      return null;
+    }
+  };
+
+  // Get signed URL for secure resume access
+  const handleViewResume = async (resumeUrl: string) => {
+    const filePath = extractFilePath(resumeUrl);
+    if (!filePath) {
+      toast.error("Invalid resume URL");
+      return;
+    }
+
+    setLoadingResume(resumeUrl);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData?.session?.access_token) {
+        toast.error("Please log in to view resumes");
+        return;
+      }
+
+      const response = await supabase.functions.invoke('get-signed-url', {
+        body: { filePath, bucket: 'knight21-uploads' }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to get signed URL');
+      }
+
+      if (response.data?.signedUrl) {
+        window.open(response.data.signedUrl, '_blank');
+      } else {
+        throw new Error('No signed URL returned');
+      }
+    } catch (error) {
+      console.error('Error getting signed URL:', error);
+      toast.error("Failed to access resume. Please try again.");
+    } finally {
+      setLoadingResume(null);
+    }
   };
 
   const exportToCSV = () => {
@@ -161,14 +211,19 @@ export function CareerApplicationsTab() {
                   <TableCell>{parsed.experience || "N/A"}</TableCell>
                   <TableCell>
                     {parsed.resumeUrl && parsed.resumeUrl !== 'Not provided' ? (
-                      <a 
-                        href={parsed.resumeUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-center gap-1"
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="text-primary hover:underline p-0 h-auto flex items-center gap-1"
+                        onClick={() => handleViewResume(parsed.resumeUrl)}
+                        disabled={loadingResume === parsed.resumeUrl}
                       >
-                        View <ExternalLink className="w-3 h-3" />
-                      </a>
+                        {loadingResume === parsed.resumeUrl ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <>View <ExternalLink className="w-3 h-3" /></>
+                        )}
+                      </Button>
                     ) : (
                       <span className="text-muted-foreground">N/A</span>
                     )}
@@ -241,15 +296,22 @@ export function CareerApplicationsTab() {
                           {parsed.resumeUrl && parsed.resumeUrl !== 'Not provided' && (
                             <div>
                               <p className="text-sm font-medium text-muted-foreground mb-2">Resume</p>
-                              <a 
-                                href={parsed.resumeUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 text-primary hover:underline"
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="inline-flex items-center gap-2"
+                                onClick={() => handleViewResume(parsed.resumeUrl)}
+                                disabled={loadingResume === parsed.resumeUrl}
                               >
-                                <ExternalLink className="w-4 h-4" />
-                                Download Resume
-                              </a>
+                                {loadingResume === parsed.resumeUrl ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <>
+                                    <ExternalLink className="w-4 h-4" />
+                                    View Resume
+                                  </>
+                                )}
+                              </Button>
                             </div>
                           )}
                         </div>
