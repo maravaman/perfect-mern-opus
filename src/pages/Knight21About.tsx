@@ -6,11 +6,12 @@ export default function Knight21About() {
   return (
     <div className="font-outfit">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+      <section className="bg-gradient-hero pattern-dots py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold font-poppins">
-              About <span className="text-primary">Us</span>
+              About <span className="text-gradient">Us</span>
             </h1>
             <p className="text-xl text-muted-foreground">
               Your Digital Growth Partner
@@ -20,12 +21,13 @@ export default function Knight21About() {
       </section>
 
       {/* Company Story */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-white pattern-grid relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto space-y-8">
-            <div>
+            <div className="animate-fade-in">
               <h2 className="text-3xl md:text-4xl font-bold font-poppins mb-6">
-                Welcome to <span className="text-primary">Knight21</span>
+                Welcome to <span className="text-gradient">Knight21</span>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-4">
                 Where creativity meets strategy, and innovation powers results. We are a passionate team of Digital Marketing, designers, and strategists with over 3 years of proven experience in helping businesses grow online.
@@ -36,8 +38,8 @@ export default function Knight21About() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-6">
-                <h3 className="text-2xl font-bold font-poppins mb-4">Who We Are</h3>
+              <Card className="p-6 glass-card border-2 border-primary/10 hover:border-primary/30 hover:shadow-card-hover transition-all animate-slide-up">
+                <h3 className="text-2xl font-bold font-poppins mb-4 text-gradient">Who We Are</h3>
                 <p className="text-muted-foreground">
                   Founded in 2023, Knight21 was born out of a vision to help brands navigate the ever-evolving digital landscape. In just a few years, we've grown from a small team with big dreams to a full-fledged Digi Hub offering end-to-end solutions in website design, SEO, Google Ads, social media marketing, Digital Marketing courses, and more.
                 </p>
@@ -46,10 +48,10 @@ export default function Knight21About() {
                 </p>
               </Card>
 
-              <Card className="p-6 bg-primary text-white">
+              <Card className="p-6 bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg hover:shadow-card-hover transition-all animate-slide-up" style={{animationDelay: '0.1s'}}>
                 <div className="text-6xl font-bold mb-4">3+</div>
                 <p className="text-xl font-semibold mb-2">Years of Experience</p>
-                <p className="text-white/90">in Website Designing & Digital Marketing</p>
+                <p className="text-primary-foreground/90">in Website Designing & Digital Marketing</p>
               </Card>
             </div>
           </div>
@@ -57,11 +59,12 @@ export default function Knight21About() {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gradient-hero pattern-dots relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold font-poppins text-center mb-12">
-              Why Choose <span className="text-primary">Us</span>
+              Why Choose <span className="text-gradient">Us</span>
             </h2>
             <div className="grid md:grid-cols-2 gap-4">
               {[
@@ -72,7 +75,7 @@ export default function Knight21About() {
                 "Transparent Communication and result-focused approach",
                 "Affordable Packages without compromising on quality"
               ].map((item, index) => (
-                <div key={index} className="flex items-start gap-3 p-4 bg-white rounded-lg">
+                <div key={index} className="flex items-start gap-3 p-4 glass-card rounded-lg border-2 border-primary/10 hover:border-primary/30 hover:shadow-card-hover transition-all animate-slide-up" style={{animationDelay: `${index * 0.05}s`}}>
                   <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
                   <span className="text-muted-foreground">{item}</span>
                 </div>
@@ -83,12 +86,13 @@ export default function Knight21About() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-white pattern-grid relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <Card className="p-8">
+            <Card className="p-8 glass-card border-2 border-primary/10 hover:shadow-card-hover transition-all animate-fade-in">
               <div className="mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary/70 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
+                <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto mb-4 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-lg">
                   V
                 </div>
                 <h3 className="text-2xl font-bold font-poppins">Vennela</h3>
@@ -100,17 +104,18 @@ export default function Knight21About() {
                 ))}
                 <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" style={{ clipPath: "inset(0 50% 0 0)" }} />
               </div>
-              <p className="text-lg font-semibold text-primary">(15k+ Positive Reviews)</p>
+              <p className="text-lg font-semibold text-gradient">(15k+ Positive Reviews)</p>
             </Card>
           </div>
         </div>
       </section>
 
       {/* What We Do */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gradient-hero pattern-dots relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold font-poppins text-center mb-12">
-            What We <span className="text-primary">Do</span>
+            What We <span className="text-gradient">Do</span>
           </h2>
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {[
@@ -141,7 +146,7 @@ export default function Knight21About() {
               }
             ].map((service, index) => (
               <Link key={index} to={service.link}>
-                <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer group">
+                <Card className="p-6 glass-card border-2 border-primary/10 hover:border-primary/30 hover:shadow-card-hover transition-all cursor-pointer group animate-slide-up" style={{animationDelay: `${index * 0.1}s`}}>
                   <div className="flex items-start gap-3">
                     <Star className="w-6 h-6 text-primary flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
                     <div>
@@ -157,17 +162,18 @@ export default function Knight21About() {
       </section>
 
       {/* Mission & Vision */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-white pattern-grid relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <Card className="p-8 border-2 border-primary">
-              <h3 className="text-2xl font-bold font-poppins mb-4 text-primary">Our Mission</h3>
+            <Card className="p-8 glass-card border-2 border-primary/20 hover:border-primary/40 hover:shadow-card-hover transition-all animate-slide-up">
+              <h3 className="text-2xl font-bold font-poppins mb-4 text-gradient">Our Mission</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Our mission is simple – to empower businesses of all sizes with result-oriented digital solutions that deliver growth, visibility, and long-term value. We believe every brand has a story, and our job is to tell that story through impactful design and strategic digital execution.
               </p>
             </Card>
-            <Card className="p-8 border-2 border-primary">
-              <h3 className="text-2xl font-bold font-poppins mb-4 text-primary">Our Vision</h3>
+            <Card className="p-8 glass-card border-2 border-secondary/20 hover:border-secondary/40 hover:shadow-card-hover transition-all animate-slide-up" style={{animationDelay: '0.1s'}}>
+              <h3 className="text-2xl font-bold font-poppins mb-4 text-gradient">Our Vision</h3>
               <p className="text-muted-foreground leading-relaxed">
                 To be recognized as one of the most reliable and creative digital marketing agencies, known for delivering innovative, affordable, and scalable solutions that help brands grow with confidence in the digital space.
               </p>

@@ -87,25 +87,26 @@ const Blog = () => {
   ) as string[];
 
   return (
-    <div className="bg-gradient-hero pattern-dots">
+    <div className="font-outfit">
       {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-6xl text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 font-poppins text-gradient">
-            Digital Marketing Blog
+      <section className="bg-gradient-hero pattern-dots py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto max-w-6xl text-center relative z-10">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 font-poppins animate-fade-in">
+            <span className="text-gradient">Digital Marketing</span> Blog
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: '0.1s'}}>
             Stay updated with the latest insights, tips, and trends in digital marketing, web development, and technology.
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-2xl mx-auto animate-fade-in" style={{animationDelay: '0.2s'}}>
             <Input
               type="text"
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-12"
+              className="h-12 bg-white/80 backdrop-blur border-primary/20 focus:border-primary"
             />
           </div>
         </div>
@@ -113,12 +114,17 @@ const Blog = () => {
 
       {/* Categories Filter */}
       {categories.length > 0 && (
-        <section className="pb-8 px-4">
-          <div className="container mx-auto max-w-6xl">
+        <section className="py-8 px-4 bg-white pattern-grid relative">
+          <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+          <div className="container mx-auto max-w-6xl relative z-10">
             <div className="flex flex-wrap gap-3 justify-center">
               <Badge
                 variant={selectedCategory === null ? "default" : "outline"}
-                className="cursor-pointer px-4 py-2 text-sm"
+                className={`cursor-pointer px-4 py-2 text-sm transition-all ${
+                  selectedCategory === null 
+                    ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg" 
+                    : "hover:border-primary hover:text-primary"
+                }`}
                 onClick={() => setSelectedCategory(null)}
               >
                 All Articles
@@ -127,7 +133,11 @@ const Blog = () => {
                 <Badge
                   key={category}
                   variant={selectedCategory === category ? "default" : "outline"}
-                  className="cursor-pointer px-4 py-2 text-sm"
+                  className={`cursor-pointer px-4 py-2 text-sm transition-all ${
+                    selectedCategory === category 
+                      ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg" 
+                      : "hover:border-primary hover:text-primary"
+                  }`}
                   onClick={() => setSelectedCategory(category)}
                 >
                   {category}
@@ -139,8 +149,9 @@ const Blog = () => {
       )}
 
       {/* Blog Posts Grid */}
-      <section className="pb-20 px-4">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-20 px-4 bg-gradient-hero pattern-dots relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-50"></div>
+        <div className="container mx-auto max-w-6xl relative z-10">
           {loading ? (
             <div className="text-center py-12">
               <p className="text-lg text-muted-foreground">Loading articles...</p>
@@ -155,9 +166,9 @@ const Blog = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPosts.map((post) => (
+              {filteredPosts.map((post, index) => (
                 <Link key={post.id} to={`/blog/${post.id}`} className="block group">
-                  <Card className="glass-card hover:shadow-lg transition-all group-hover:scale-[1.02] h-full cursor-pointer">
+                  <Card className="glass-card border-2 border-primary/10 hover:border-primary/30 hover:shadow-card-hover transition-all group-hover:scale-[1.02] h-full cursor-pointer animate-slide-up" style={{animationDelay: `${index * 0.05}s`}}>
                     {post.image_url && (
                       <div className="overflow-hidden rounded-t-lg">
                         <img
@@ -169,7 +180,7 @@ const Blog = () => {
                     )}
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="secondary">{post.category || 'General'}</Badge>
+                        <Badge className="bg-gradient-to-r from-primary/20 to-secondary/20 text-primary border-0">{post.category || 'General'}</Badge>
                         <span className="text-sm text-muted-foreground flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {new Date(post.created_at).toLocaleDateString()}
