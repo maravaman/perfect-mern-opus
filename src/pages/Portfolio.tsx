@@ -118,11 +118,12 @@ export default function Portfolio() {
   return (
     <div className="font-outfit">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+      <section className="bg-gradient-hero pattern-dots py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-mesh"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold font-poppins">
-              Our <span className="text-primary">Portfolio</span>
+              Our <span className="text-gradient">Portfolio</span>
             </h1>
             <p className="text-xl text-muted-foreground">
               Showcasing our best work across web design, branding, and digital marketing
@@ -132,8 +133,9 @@ export default function Portfolio() {
       </section>
 
       {/* Portfolio Tabs */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-white pattern-grid relative">
+        <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <Tabs defaultValue="websites" className="w-full">
             <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5 mb-12">
               <TabsTrigger value="websites">Websites</TabsTrigger>
@@ -147,8 +149,10 @@ export default function Portfolio() {
             <div className="flex flex-wrap gap-2 justify-center mb-8">
               <button
                 onClick={() => setActiveCategory("all")}
-                className={`px-4 py-2 rounded-full transition-colors ${
-                  activeCategory === "all" ? "bg-primary text-white" : "bg-gray-100 hover:bg-gray-200"
+                className={`px-4 py-2 rounded-full transition-all duration-300 font-medium ${
+                  activeCategory === "all" 
+                    ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg shadow-primary/25" 
+                    : "bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 text-foreground border border-primary/20"
                 }`}
               >
                 All
@@ -157,8 +161,10 @@ export default function Portfolio() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-full transition-colors ${
-                    activeCategory === cat ? "bg-primary text-white" : "bg-gray-100 hover:bg-gray-200"
+                  className={`px-4 py-2 rounded-full transition-all duration-300 font-medium ${
+                    activeCategory === cat 
+                      ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg shadow-primary/25" 
+                      : "bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 text-foreground border border-primary/20"
                   }`}
                 >
                   {cat}
@@ -176,27 +182,27 @@ export default function Portfolio() {
                     rel="noopener noreferrer"
                     className="block"
                   >
-                    <Card className="overflow-hidden group cursor-pointer hover:shadow-xl transition-all hover:border-primary/50 border-2 h-full">
-                      <div className="aspect-video overflow-hidden relative bg-gray-100">
+                    <Card className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30 h-full">
+                      <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
                         <img 
                           src={item.image} 
                           alt={item.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center">
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-secondary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg">
                             <ExternalLink className="w-8 h-8 text-primary" />
                           </div>
                         </div>
-                        <div className="absolute top-3 right-3 bg-primary text-white text-xs px-3 py-1 rounded-full">
+                        <div className="absolute top-3 right-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground text-xs px-3 py-1.5 rounded-full font-semibold shadow-lg">
                           Live
                         </div>
                       </div>
-                      <div className="p-4 border-t">
-                        <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                      <div className="p-4 border-t border-primary/10">
+                        <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
                         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-primary">{item.category}</span>
+                          <span className="text-sm font-semibold bg-gradient-to-r from-primary/10 to-secondary/10 text-primary px-3 py-1 rounded-full">{item.category}</span>
                           <span className="text-xs text-muted-foreground hover:text-primary transition-colors">
                             Visit Site →
                           </span>
@@ -211,16 +217,16 @@ export default function Portfolio() {
             <TabsContent value="logos">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {portfolioData.logos.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                    <div className="aspect-square overflow-hidden">
+                  <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                    <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
                       <img
                         src={item.image}
                         alt={item.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
+                    <div className="p-4 border-t border-primary/10">
+                      <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
                       <p className="text-sm text-muted-foreground">{item.category}</p>
                     </div>
                   </Card>
@@ -231,21 +237,21 @@ export default function Portfolio() {
             <TabsContent value="videos">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {portfolioData.videos.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                    <div className="aspect-video overflow-hidden relative">
+                  <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                    <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
                       <img
                         src={item.image}
                         alt={item.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-secondary/40 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                           <div className="w-0 h-0 border-l-8 border-t-4 border-b-4 border-l-primary border-t-transparent border-b-transparent ml-1"></div>
                         </div>
                       </div>
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
+                    <div className="p-4 border-t border-primary/10">
+                      <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
                       <p className="text-sm text-muted-foreground">{item.category}</p>
                     </div>
                   </Card>
@@ -256,16 +262,16 @@ export default function Portfolio() {
             <TabsContent value="posters">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {portfolioData.posters.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                    <div className="aspect-[3/4] overflow-hidden">
+                  <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                    <div className="aspect-[3/4] overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
                       <img
                         src={item.image}
                         alt={item.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
+                    <div className="p-4 border-t border-primary/10">
+                      <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
                       <p className="text-sm text-muted-foreground">{item.category}</p>
                     </div>
                   </Card>
@@ -276,21 +282,21 @@ export default function Portfolio() {
             <TabsContent value="results">
               <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {portfolioData.results.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-                    <div className="aspect-video overflow-hidden relative">
+                  <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                    <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
                       <img
                         src={item.image}
                         alt={item.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
-                        <div className="text-white">
-                          <p className="text-3xl font-bold">{item.metric}</p>
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-secondary/60 to-transparent flex items-end p-6">
+                        <div className="text-primary-foreground">
+                          <p className="text-3xl font-bold drop-shadow-lg">{item.metric}</p>
                         </div>
                       </div>
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg">{item.title}</h3>
+                    <div className="p-4 border-t border-primary/10">
+                      <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{item.title}</h3>
                     </div>
                   </Card>
                 ))}
