@@ -2,9 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -17,6 +16,7 @@ export function ContactSubmissionsTab() {
       const { data, error } = await supabase
         .from("contact_inquiries")
         .select("*")
+        .not("subject", "like", "Career Application:%")
         .order("created_at", { ascending: false });
       
       if (error) throw error;
@@ -41,6 +41,39 @@ export function ContactSubmissionsTab() {
     },
   });
 
+  const exportToCSV = () => {
+    if (!submissions || submissions.length === 0) {
+      toast.error("No data to export");
+      return;
+    }
+
+    const headers = ["Name", "Email", "Phone", "Subject", "Message", "Status", "Date"];
+    const csvRows = [
+      headers.join(","),
+      ...submissions.map(s => [
+        `"${s.name?.replace(/"/g, '""') || ''}"`,
+        `"${s.email?.replace(/"/g, '""') || ''}"`,
+        `"${s.phone?.replace(/"/g, '""') || 'N/A'}"`,
+        `"${s.subject?.replace(/"/g, '""') || ''}"`,
+        `"${s.message?.replace(/"/g, '""').replace(/\n/g, ' ') || ''}"`,
+        `"${s.status || 'new'}"`,
+        `"${s.created_at ? new Date(s.created_at).toLocaleDateString() : ''}"`
+      ].join(","))
+    ];
+
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `contact_submissions_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("Exported successfully!");
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -49,18 +82,19 @@ export function ContactSubmissionsTab() {
     );
   }
 
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'new': return 'default';
-      case 'read': return 'secondary';
-      case 'replied': return 'outline';
-      default: return 'secondary';
-    }
-  };
-
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Contact Inquiries</h2>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Contact Inquiries</h2>
+          <p className="text-muted-foreground text-sm">{submissions?.length || 0} total submissions</p>
+        </div>
+        <Button onClick={exportToCSV} variant="outline" className="gap-2">
+          <Download className="w-4 h-4" />
+          Export CSV
+        </Button>
+      </div>
+      
       <Card className="overflow-hidden">
         <Table>
           <TableHeader>
@@ -87,10 +121,10 @@ export function ContactSubmissionsTab() {
                     value={submission.status || 'new'}
                     onValueChange={(value) => updateStatusMutation.mutate({ id: submission.id, status: value })}
                   >
-                    <SelectTrigger className="w-24">
+                    <SelectTrigger className="w-24 bg-white">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white z-50">
                       <SelectItem value="new">New</SelectItem>
                       <SelectItem value="read">Read</SelectItem>
                       <SelectItem value="replied">Replied</SelectItem>
