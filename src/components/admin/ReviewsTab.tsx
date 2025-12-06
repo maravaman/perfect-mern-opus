@@ -199,8 +199,8 @@ export function ReviewsTab() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Reviews Management</h2>
-          <p className="text-sm text-muted-foreground">Manage customer testimonials</p>
+          <h2 className="text-2xl font-bold">Client Reviews</h2>
+          <p className="text-sm text-muted-foreground">Manage "What Our Clients Say" section on homepage</p>
         </div>
         <Dialog open={isOpen} onOpenChange={(open) => { setIsOpen(open); if (!open) resetForm(); }}>
           <DialogTrigger asChild>

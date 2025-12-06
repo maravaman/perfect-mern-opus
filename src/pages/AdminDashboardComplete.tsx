@@ -10,7 +10,6 @@ import PortfolioTabComplete from '@/components/admin/PortfolioTabComplete';
 import { BlogsTabNew } from '@/components/admin/BlogsTabNew';
 import { ToolsTab } from '@/components/admin/ToolsTab';
 import { SiteSettingsTab } from '@/components/admin/SiteSettingsTab';
-import { TrustedClientsTab } from '@/components/admin/TrustedClientsTab';
 import { PricingPlansTab } from '@/components/admin/PricingPlansTab';
 import { ContactSubmissionsTab } from '@/components/admin/ContactSubmissionsTab';
 import { ReviewsTab } from '@/components/admin/ReviewsTab';
@@ -65,7 +64,7 @@ export default function AdminDashboardComplete() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="settings" className="w-full">
-          <TabsList className="grid w-full grid-cols-6 lg:grid-cols-11 mb-8 h-auto">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 mb-8 h-auto">
             <TabsTrigger value="settings">Settings</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
@@ -73,7 +72,6 @@ export default function AdminDashboardComplete() {
             <TabsTrigger value="blogs">Blogs</TabsTrigger>
             <TabsTrigger value="tools">Tools</TabsTrigger>
             <TabsTrigger value="clients">Clients</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="contacts">Contacts</TabsTrigger>
             <TabsTrigger value="careers">Careers</TabsTrigger>
@@ -104,10 +102,6 @@ export default function AdminDashboardComplete() {
           </TabsContent>
 
           <TabsContent value="clients">
-            <TrustedClientsTab />
-          </TabsContent>
-
-          <TabsContent value="reviews">
             <ReviewsTab />
           </TabsContent>
 
