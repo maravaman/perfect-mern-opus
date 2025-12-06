@@ -47,9 +47,10 @@ const Blog = () => {
 
   const fetchPosts = async () => {
     try {
+      // Only select necessary fields - exclude author_email for security
       const { data, error } = await supabase
         .from("blog_posts")
-        .select("*")
+        .select("id, title, content, excerpt, author_name, category, tags, image_url, created_at, updated_at, meta_title, meta_description")
         .eq("published", true)
         .order("created_at", { ascending: false });
 
