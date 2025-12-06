@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-// Fallback images for other tabs
 import anvikaImg from "@/assets/portfolio/anvika.png";
 import sriAcademyImg from "@/assets/portfolio/sri-academy.png";
 import vedhaImg from "@/assets/portfolio/vedha.png";
@@ -16,8 +15,82 @@ import nextgenImg from "@/assets/portfolio/nextgen.png";
 import newGenElevatorsImg from "@/assets/portfolio/new-gen-elevators.png";
 import leelavathiImg from "@/assets/portfolio/leelavathi.png";
 
-// Static data for non-website tabs (can be managed in admin later)
-const staticPortfolioData = {
+// Original portfolio data
+const portfolioData = {
+  websites: [
+    { 
+      id: 1, 
+      title: "Anvika Computers Services", 
+      category: "Computer Services", 
+      url: "https://anvikacomputersservices.com",
+      description: "Professional computer services and IT solutions",
+      image: anvikaImg
+    },
+    { 
+      id: 2, 
+      title: "Sri Academy", 
+      category: "Education", 
+      url: "https://sriacademy111.com",
+      description: "Educational institution providing quality learning",
+      image: sriAcademyImg
+    },
+    { 
+      id: 3, 
+      title: "Vedha Software Solutions", 
+      category: "Software", 
+      url: "https://vedhasoftwaresolutions.com",
+      description: "Complete software development and IT consulting",
+      image: vedhaImg
+    },
+    { 
+      id: 4, 
+      title: "Dine Empire", 
+      category: "Restaurant", 
+      url: "https://dineempire.com",
+      description: "Fine dining restaurant and culinary experiences",
+      image: dineEmpireImg
+    },
+    { 
+      id: 5, 
+      title: "Jireh Melodies", 
+      category: "Music", 
+      url: "https://www.jirehmelodies.com",
+      description: "Music production and entertainment services",
+      image: jirehMelodiesImg
+    },
+    { 
+      id: 7, 
+      title: "MB Prime Projects",
+      category: "Real Estate", 
+      url: "https://mbprimeprojects.com",
+      description: "Prime real estate and construction projects",
+      image: mbPrimeImg
+    },
+    { 
+      id: 10, 
+      title: "Next Gens Store",
+      category: "E-commerce", 
+      url: "https://nextgensstore.com",
+      description: "Modern online store with latest products",
+      image: nextgenImg
+    },
+    { 
+      id: 11, 
+      title: "New Gen Elevators",
+      category: "Industrial", 
+      url: "https://newgenelevators.in",
+      description: "Elevator installation and maintenance services",
+      image: newGenElevatorsImg
+    },
+    { 
+      id: 8, 
+      title: "Leelavathi Designer",
+      category: "Fashion", 
+      url: "https://leelavathidesigner.com",
+      description: "Custom fashion design and styling services",
+      image: leelavathiImg
+    }
+  ],
   logos: [
     { id: 1, title: "Tech Startup Logo", category: "Technology", image: "https://images.unsplash.com/photo-1634942537034-2531766767d1?w=500" },
     { id: 2, title: "Restaurant Branding", category: "Restaurant", image: "https://images.unsplash.com/photo-1635405074683-96d6921a2a68?w=500" },
@@ -37,86 +110,10 @@ const staticPortfolioData = {
   ],
 };
 
-// Fallback websites if database is empty
-const fallbackWebsites = [
-  { 
-    id: "1", 
-    title: "Anvika Computers Services", 
-    category: "Computer Services", 
-    project_url: "https://anvikacomputersservices.com",
-    description: "Professional computer services and IT solutions",
-    image_url: anvikaImg
-  },
-  { 
-    id: "2", 
-    title: "Sri Academy", 
-    category: "Education", 
-    project_url: "https://sriacademy111.com",
-    description: "Educational institution providing quality learning",
-    image_url: sriAcademyImg
-  },
-  { 
-    id: "3", 
-    title: "Vedha Software Solutions", 
-    category: "Software", 
-    project_url: "https://vedhasoftwaresolutions.com",
-    description: "Complete software development and IT consulting",
-    image_url: vedhaImg
-  },
-  { 
-    id: "4", 
-    title: "Dine Empire", 
-    category: "Restaurant", 
-    project_url: "https://dineempire.com",
-    description: "Fine dining restaurant and culinary experiences",
-    image_url: dineEmpireImg
-  },
-  { 
-    id: "5", 
-    title: "Jireh Melodies", 
-    category: "Music", 
-    project_url: "https://www.jirehmelodies.com",
-    description: "Music production and entertainment services",
-    image_url: jirehMelodiesImg
-  },
-  { 
-    id: "7", 
-    title: "MB Prime Projects",
-    category: "Real Estate", 
-    project_url: "https://mbprimeprojects.com",
-    description: "Prime real estate and construction projects",
-    image_url: mbPrimeImg
-  },
-  { 
-    id: "10", 
-    title: "Next Gens Store",
-    category: "E-commerce", 
-    project_url: "https://nextgensstore.com",
-    description: "Modern online store with latest products",
-    image_url: nextgenImg
-  },
-  { 
-    id: "11", 
-    title: "New Gen Elevators",
-    category: "Industrial", 
-    project_url: "https://newgenelevators.in",
-    description: "Elevator installation and maintenance services",
-    image_url: newGenElevatorsImg
-  },
-  { 
-    id: "8", 
-    title: "Leelavathi Designer",
-    category: "Fashion", 
-    project_url: "https://leelavathidesigner.com",
-    description: "Custom fashion design and styling services",
-    image_url: leelavathiImg
-  }
-];
-
 export default function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
-  // Fetch portfolio items from database
+  // Fetch additional portfolio items from database
   const { data: dbPortfolioItems, isLoading } = useQuery({
     queryKey: ["portfolio_items_public"],
     queryFn: async () => {
@@ -130,13 +127,28 @@ export default function Portfolio() {
     },
   });
 
-  // Use database items if available, otherwise use fallback
-  const websiteItems = dbPortfolioItems && dbPortfolioItems.length > 0 
-    ? dbPortfolioItems 
-    : fallbackWebsites;
+  // Combine original websites with database items
+  const allWebsites = [
+    ...portfolioData.websites.map(item => ({
+      id: `static-${item.id}`,
+      title: item.title,
+      category: item.category,
+      project_url: item.url,
+      description: item.description,
+      image_url: item.image,
+    })),
+    ...(dbPortfolioItems || []).map(item => ({
+      id: item.id,
+      title: item.title,
+      category: item.category,
+      project_url: item.project_url,
+      description: item.description,
+      image_url: item.image_url,
+    })),
+  ];
 
-  // Get unique categories from website items
-  const categories = [...new Set(websiteItems.map(item => item.category).filter(Boolean))];
+  // Get unique categories from all website items
+  const categories = [...new Set(allWebsites.map(item => item.category).filter(Boolean))];
 
   const filterByCategory = (items: any[]) => {
     if (activeCategory === "all") return items;
@@ -207,7 +219,7 @@ export default function Portfolio() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filterByCategory(websiteItems).map((item) => (
+                  {filterByCategory(allWebsites).map((item) => (
                     <a 
                       key={item.id} 
                       href={item.project_url || "#"} 
@@ -227,11 +239,9 @@ export default function Portfolio() {
                               <ExternalLink className="w-8 h-8 text-primary" />
                             </div>
                           </div>
-                          {item.project_url && (
-                            <div className="absolute top-3 right-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground text-xs px-3 py-1.5 rounded-full font-semibold shadow-lg">
-                              Live
-                            </div>
-                          )}
+                          <div className="absolute top-3 right-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground text-xs px-3 py-1.5 rounded-full font-semibold shadow-lg">
+                            Live
+                          </div>
                         </div>
                         <div className="p-4 border-t border-primary/10">
                           <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
@@ -252,7 +262,7 @@ export default function Portfolio() {
 
             <TabsContent value="logos">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {staticPortfolioData.logos.map((item) => (
+                {portfolioData.logos.map((item) => (
                   <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
                     <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
                       <img
@@ -272,7 +282,7 @@ export default function Portfolio() {
 
             <TabsContent value="videos">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {staticPortfolioData.videos.map((item) => (
+                {portfolioData.videos.map((item) => (
                   <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
                     <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
                       <img
@@ -297,7 +307,7 @@ export default function Portfolio() {
 
             <TabsContent value="posters">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {staticPortfolioData.posters.map((item) => (
+                {portfolioData.posters.map((item) => (
                   <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
                     <div className="aspect-[3/4] overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
                       <img
@@ -317,7 +327,7 @@ export default function Portfolio() {
 
             <TabsContent value="results">
               <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {staticPortfolioData.results.map((item) => (
+                {portfolioData.results.map((item) => (
                   <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
                     <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
                       <img
