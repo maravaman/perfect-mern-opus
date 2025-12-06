@@ -1,8 +1,40 @@
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Knight21About() {
+  const { data: teamMembers } = useQuery({
+    queryKey: ["team_members"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("team_members")
+        .select("*")
+        .eq("active", true)
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const renderStars = (rating: string) => {
+    const numRating = parseFloat(rating) || 0;
+    const fullStars = Math.floor(numRating);
+    const hasHalfStar = numRating % 1 >= 0.5;
+    
+    return (
+      <div className="flex justify-center gap-1 mb-2">
+        {[...Array(fullStars)].map((_, i) => (
+          <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+        ))}
+        {hasHalfStar && (
+          <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" style={{ clipPath: "inset(0 50% 0 0)" }} />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="font-outfit">
       {/* Hero Section */}
@@ -89,23 +121,59 @@ export default function Knight21About() {
       <section className="py-20 bg-white pattern-grid relative">
         <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <Card className="p-8 glass-card border-2 border-primary/10 hover:shadow-card-hover transition-all animate-fade-in">
-              <div className="mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto mb-4 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-lg">
-                  V
+          <h2 className="text-3xl md:text-4xl font-bold font-poppins text-center mb-12">
+            Meet Our <span className="text-gradient">Team</span>
+          </h2>
+          <div className="max-w-4xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {teamMembers && teamMembers.length > 0 ? (
+              teamMembers.map((member, index) => (
+                <Card key={member.id} className="p-8 glass-card border-2 border-primary/10 hover:shadow-card-hover transition-all animate-fade-in" style={{animationDelay: `${index * 0.1}s`}}>
+                  <div className="text-center">
+                    <div className="mb-6">
+                      {member.image_url ? (
+                        <img 
+                          src={member.image_url} 
+                          alt={member.name} 
+                          className="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-lg"
+                        />
+                      ) : (
+                        <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto mb-4 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-lg">
+                          {member.name.charAt(0)}
+                        </div>
+                      )}
+                      <h3 className="text-2xl font-bold font-poppins">{member.name}</h3>
+                      <p className="text-muted-foreground">{member.role}</p>
+                    </div>
+                    {member.bio && (
+                      <p className="text-sm text-muted-foreground mb-4">{member.bio}</p>
+                    )}
+                    {member.rating && renderStars(member.rating)}
+                    {member.reviews_count && (
+                      <p className="text-lg font-semibold text-gradient">({member.reviews_count})</p>
+                    )}
+                  </div>
+                </Card>
+              ))
+            ) : (
+              <Card className="p-8 glass-card border-2 border-primary/10 hover:shadow-card-hover transition-all animate-fade-in col-span-full max-w-md mx-auto">
+                <div className="text-center">
+                  <div className="mb-6">
+                    <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto mb-4 flex items-center justify-center text-primary-foreground text-3xl font-bold shadow-lg">
+                      V
+                    </div>
+                    <h3 className="text-2xl font-bold font-poppins">Vennela</h3>
+                    <p className="text-muted-foreground">CEO, Head Director</p>
+                  </div>
+                  <div className="flex justify-center gap-1 mb-2">
+                    {[1, 2, 3, 4].map((i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                    <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" style={{ clipPath: "inset(0 50% 0 0)" }} />
+                  </div>
+                  <p className="text-lg font-semibold text-gradient">(15k+ Positive Reviews)</p>
                 </div>
-                <h3 className="text-2xl font-bold font-poppins">Vennela</h3>
-                <p className="text-muted-foreground">CEO, Head Director</p>
-              </div>
-              <div className="flex justify-center gap-1 mb-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                ))}
-                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" style={{ clipPath: "inset(0 50% 0 0)" }} />
-              </div>
-              <p className="text-lg font-semibold text-gradient">(15k+ Positive Reviews)</p>
-            </Card>
+              </Card>
+            )}
           </div>
         </div>
       </section>
