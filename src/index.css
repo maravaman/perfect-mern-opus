@@ -11,10 +11,10 @@ All colors MUST be HSL.
     --background: 192 100% 96%;
     --foreground: 215 50% 25%;
 
-    --card: 0 0% 100%;
+    --card: 192 100% 98%;
     --card-foreground: 215 50% 25%;
 
-    --popover: 0 0% 100%;
+    --popover: 192 100% 98%;
     --popover-foreground: 215 50% 25%;
 
     --primary: 338 100% 60%;
@@ -24,7 +24,7 @@ All colors MUST be HSL.
     --secondary: 265 45% 45%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 96%;
+    --muted: 192 60% 94%;
     --muted-foreground: 215 30% 45%;
 
     --accent: 38 100% 50%;
@@ -48,7 +48,7 @@ All colors MUST be HSL.
                      radial-gradient(at 0% 50%, hsl(38 100% 55% / 0.15) 0px, transparent 50%),
                      radial-gradient(at 80% 50%, hsl(338 100% 60% / 0.1) 0px, transparent 50%),
                      radial-gradient(at 0% 100%, hsl(265 45% 45% / 0.1) 0px, transparent 50%);
-    --gradient-hero: linear-gradient(180deg, hsl(338 100% 98%) 0%, hsl(265 45% 98%) 50%, hsl(38 100% 98%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(192 100% 96%) 0%, hsl(192 80% 94%) 50%, hsl(192 60% 92%) 100%);
     
     /* Shadows */
     --shadow-primary: 0 10px 40px -10px hsl(338 100% 60% / 0.3);
@@ -94,14 +94,14 @@ All colors MUST be HSL.
   }
   
   .glass-card {
-    background: hsl(0 0% 100% / 0.7);
+    background: hsl(192 100% 98% / 0.8);
     backdrop-filter: blur(12px);
-    border: 1px solid hsl(338 100% 60% / 0.1);
+    border: 1px solid hsl(192 60% 80% / 0.3);
   }
   
   .gradient-border {
     position: relative;
-    background: white;
+    background: hsl(192 100% 98%);
   }
   
   .gradient-border::before {
