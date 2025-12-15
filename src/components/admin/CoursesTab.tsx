@@ -25,7 +25,7 @@ export function CoursesTab() {
     duration: "",
     price: "",
     features: "",
-    icon: "",
+    image_url: "",
     active: true,
     display_order: 0,
   });
@@ -47,8 +47,14 @@ export function CoursesTab() {
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
       const courseData = {
-        ...data,
-        features: data.features ? JSON.parse(data.features) : [],
+        title: data.title,
+        description: data.description,
+        duration: data.duration,
+        price: data.price ? parseFloat(data.price) : null,
+        syllabus: data.features ? JSON.parse(data.features) : [],
+        image_url: data.image_url || null,
+        active: data.active,
+        display_order: data.display_order,
       };
 
       if (editingCourse) {
@@ -104,7 +110,7 @@ export function CoursesTab() {
         .from('knight21-uploads')
         .getPublicUrl(filePath);
 
-      setFormData(prev => ({ ...prev, icon: publicUrl }));
+      setFormData(prev => ({ ...prev, image_url: publicUrl }));
       toast.success("Image uploaded successfully");
     } catch (error: any) {
       toast.error(error.message);
@@ -120,7 +126,7 @@ export function CoursesTab() {
       duration: "",
       price: "",
       features: "",
-      icon: "",
+      image_url: "",
       active: true,
       display_order: 0,
     });
@@ -134,8 +140,8 @@ export function CoursesTab() {
       description: course.description,
       duration: course.duration || "",
       price: course.price || "",
-      features: JSON.stringify(course.features || []),
-      icon: course.icon || "",
+      features: JSON.stringify(course.syllabus || course.features || []),
+      image_url: course.image_url || "",
       active: course.active,
       display_order: course.display_order || 0,
     });
@@ -224,12 +230,12 @@ export function CoursesTab() {
                 />
               </div>
               <div>
-                <Label>Icon/Image</Label>
+                <Label>Course Image</Label>
                 <div className="flex gap-2 items-center">
                   <Input
-                    value={formData.icon}
-                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                    placeholder="Icon name or image URL"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    placeholder="Image URL"
                   />
                   <Button
                     type="button"
@@ -247,15 +253,15 @@ export function CoursesTab() {
                     onChange={handleImageUpload}
                   />
                 </div>
-                {formData.icon && formData.icon.startsWith('http') && (
+                {formData.image_url && formData.image_url.startsWith('http') && (
                   <div className="mt-2 relative inline-block">
-                    <img src={formData.icon} alt="Preview" className="h-20 w-20 object-cover rounded" />
+                    <img src={formData.image_url} alt="Preview" className="h-20 w-20 object-cover rounded" />
                     <Button
                       type="button"
                       variant="destructive"
                       size="icon"
                       className="absolute -top-2 -right-2 h-6 w-6"
-                      onClick={() => setFormData({ ...formData, icon: "" })}
+                      onClick={() => setFormData({ ...formData, image_url: "" })}
                     >
                       <X className="w-4 h-4" />
                     </Button>

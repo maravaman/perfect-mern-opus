@@ -14,22 +14,23 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
-// Service categories with their icons
+// Service categories with their icons (including all existing categories from database)
 const SERVICE_CATEGORIES = [
+  // Primary categories
+  { value: "Development", label: "Development", icon: Code },
+  { value: "Marketing", label: "Marketing", icon: TrendingUp },
+  { value: "Design", label: "Design", icon: Palette },
+  { value: "Social Media", label: "Social Media", icon: Users },
+  // Additional categories
   { value: "App & Software Development", label: "App & Software Development", icon: Code },
   { value: "Digital Marketing", label: "Digital Marketing", icon: TrendingUp },
   { value: "Business Certificates", label: "Business Certificates", icon: FileText },
   { value: "Web Development", label: "Web Development", icon: Globe },
   { value: "Design Services", label: "Design Services", icon: Palette },
-  { value: "Social Media", label: "Social Media", icon: Users },
   { value: "E-commerce", label: "E-commerce", icon: ShoppingCart },
   { value: "Training & Courses", label: "Training & Courses", icon: GraduationCap },
   { value: "Advertising", label: "Advertising", icon: Megaphone },
   { value: "Mobile Apps", label: "Mobile Apps", icon: Smartphone },
-  // Legacy categories from existing data
-  { value: "Development", label: "Development", icon: Code },
-  { value: "Marketing", label: "Marketing", icon: TrendingUp },
-  { value: "Design", label: "Design", icon: Palette },
 ];
 
 export function ServicesTab() {
