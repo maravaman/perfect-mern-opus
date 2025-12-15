@@ -13,6 +13,7 @@ interface OfferBanner {
   link_text: string | null;
   background_color: string | null;
   text_color: string | null;
+  image_url: string | null;
 }
 
 export function OffersPopup() {
@@ -67,6 +68,7 @@ export function OffersPopup() {
   if (!isOpen || visibleBanners.length === 0) return null;
 
   const currentOffer = visibleBanners[0];
+  const hasImage = currentOffer.image_url && currentOffer.image_url.startsWith('http');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -95,10 +97,18 @@ export function OffersPopup() {
 
         {/* Content */}
         <div className="p-8 text-center">
-          {/* Icon */}
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-            <Gift className="w-8 h-8 text-white" />
-          </div>
+          {/* Image or Icon */}
+          {hasImage ? (
+            <img 
+              src={currentOffer.image_url!} 
+              alt={currentOffer.title}
+              className="w-32 h-32 mx-auto mb-6 object-contain rounded-lg"
+            />
+          ) : (
+            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+              <Gift className="w-8 h-8 text-white" />
+            </div>
+          )}
 
           {/* Title */}
           <h2 className="text-2xl md:text-3xl font-bold font-poppins mb-3">
