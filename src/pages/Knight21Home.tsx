@@ -5,6 +5,7 @@ import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileT
 import { Link } from "react-router-dom";
 import { TrustedClients } from "@/components/TrustedClients";
 import { OffersBanner } from "@/components/OffersBanner";
+import { OffersPopup } from "@/components/OffersPopup";
 import { useEffect, useRef } from "react";
 import anvikaImg from "@/assets/portfolio/anvika.png";
 import sriAcademyImg from "@/assets/portfolio/sri-academy.png";
@@ -134,6 +135,9 @@ export default function Knight21Home() {
 
   return (
     <div className="font-outfit">
+      {/* Offers Popup */}
+      <OffersPopup />
+
       {/* Hero Section */}
       <section className="bg-gradient-hero pattern-dots py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-mesh"></div>
