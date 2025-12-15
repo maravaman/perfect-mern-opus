@@ -21,12 +21,12 @@ export const Footer = () => {
 
   const email = settings?.contact_email || "knight21digihub@gmail.com";
   const phone = settings?.contact_phone || "+91 8187007475";
-  const address = settings?.contact_address || "Near msn charities, mahalaxmi nagar, jaganaikpur, kakinada, 522003";
-  const facebook = settings?.social_facebook || "https://www.facebook.com/share/1JYd3DXAxz/";
-  const instagram = settings?.social_instagram || "https://www.instagram.com/knight21.in";
-  const youtube = settings?.social_youtube || "https://youtube.com/@knight21digihub";
-  const linkedin = settings?.social_linkedin || "https://www.linkedin.com/in/knight-digi-hub-9a597528b";
-  const whatsapp = settings?.social_whatsapp || "http://wa.me/918187007475";
+  const address = settings?.address || "Near msn charities, mahalaxmi nagar, jaganaikpur, kakinada, 522003";
+  const facebook = settings?.facebook_url || "https://www.facebook.com/share/1JYd3DXAxz/";
+  const instagram = settings?.instagram_url || "https://www.instagram.com/knight21.in";
+  const youtube = settings?.youtube_url || "https://youtube.com/@knight21digihub";
+  const linkedin = settings?.linkedin_url || "https://www.linkedin.com/in/knight-digi-hub-9a597528b";
+  const whatsapp = settings?.whatsapp_number ? `http://wa.me/${settings.whatsapp_number.replace(/[^0-9]/g, '')}` : "http://wa.me/918187007475";
 
   return (
     <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-12 relative overflow-hidden">
