@@ -5,7 +5,7 @@ import { CoursesTab } from "@/components/admin/CoursesTab";
 import { ServicesTab } from "@/components/admin/ServicesTab";
 import { PricingPlansTab } from "@/components/admin/PricingPlansTab";
 import { ToolsTab } from "@/components/admin/ToolsTab";
-import { PortfolioTab } from "@/components/admin/PortfolioTab";
+import PortfolioTabComplete from "@/components/admin/PortfolioTabComplete";
 import { BlogsTabNew } from "@/components/admin/BlogsTabNew";
 import { AppDevelopmentTab } from "@/components/admin/AppDevelopmentTab";
 import { WebApplicationsTab } from "@/components/admin/WebApplicationsTab";
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
             </TabsContent>
 
             <TabsContent value="portfolio">
-              <PortfolioTab />
+              <PortfolioTabComplete />
             </TabsContent>
 
             <TabsContent value="pricing">
