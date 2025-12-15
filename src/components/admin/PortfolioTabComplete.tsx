@@ -11,12 +11,11 @@ import { Plus, Pencil, Trash2, ExternalLink, Image, Globe, Smartphone, Palette, 
 import { uploadImage } from '@/lib/storage';
 
 const PORTFOLIO_CATEGORIES = [
-  { value: 'Web Development', label: 'Websites', icon: Globe },
-  { value: 'App Development', label: 'Mobile Apps', icon: Smartphone },
-  { value: 'Graphic Design', label: 'Graphics & Logos', icon: Palette },
-  { value: 'Video Production', label: 'Videos', icon: Video },
-  { value: 'UI/UX Design', label: 'UI/UX Design', icon: Layout },
-  { value: 'Branding', label: 'Branding', icon: FileText },
+  { value: 'Websites', label: 'Websites', icon: Globe },
+  { value: 'Logos', label: 'Logos', icon: Palette },
+  { value: 'Videos', label: 'Videos', icon: Video },
+  { value: 'Posters', label: 'Posters', icon: FileText },
+  { value: 'Results', label: 'Results', icon: Layout },
 ];
 
 export default function PortfolioTabComplete() {

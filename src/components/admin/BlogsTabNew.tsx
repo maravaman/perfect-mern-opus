@@ -442,9 +442,18 @@ export function BlogsTabNew() {
                     <Button
                       variant="ghost"
                       size="icon"
+                      title="Preview blog"
+                      onClick={() => window.open(`/blog/${blog.id}`, '_blank')}
+                    >
+                      <Eye className="w-4 h-4 text-blue-600" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title={blog.published ? 'Unpublish' : 'Publish'}
                       onClick={() => handleTogglePublished(blog.id, !blog.published)}
                     >
-                      {blog.published ? <Eye className="w-4 h-4 text-green-600" /> : <EyeOff className="w-4 h-4 text-gray-400" />}
+                      {blog.published ? <EyeOff className="w-4 h-4 text-green-600" /> : <EyeOff className="w-4 h-4 text-gray-400" />}
                     </Button>
                     <Button variant="outline" size="icon" onClick={() => handleEdit(blog)}>
                       <Pencil className="w-4 h-4" />
