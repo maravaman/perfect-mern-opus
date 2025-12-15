@@ -247,6 +247,48 @@ export type Database = {
         }
         Relationships: []
       }
+      offers_banner: {
+        Row: {
+          active: boolean | null
+          background_color: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          link_text: string | null
+          link_url: string | null
+          text_color: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          background_color?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          link_text?: string | null
+          link_url?: string | null
+          text_color?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          background_color?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          link_text?: string | null
+          link_url?: string | null
+          text_color?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       packages: {
         Row: {
           active: boolean | null

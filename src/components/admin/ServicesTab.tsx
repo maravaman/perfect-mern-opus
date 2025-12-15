@@ -7,20 +7,37 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Plus, Edit, Trash, Loader2, Upload, X } from "lucide-react";
+import { Plus, Edit, Trash, Loader2, Upload, X, Code, TrendingUp, FileText, Smartphone, Globe, Palette, Users, ShoppingCart, GraduationCap, Megaphone } from "lucide-react";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+
+// Service categories with their icons
+const SERVICE_CATEGORIES = [
+  { value: "App & Software Development", label: "App & Software Development", icon: Code },
+  { value: "Digital Marketing", label: "Digital Marketing", icon: TrendingUp },
+  { value: "Business Certificates", label: "Business Certificates", icon: FileText },
+  { value: "Web Development", label: "Web Development", icon: Globe },
+  { value: "Design Services", label: "Design Services", icon: Palette },
+  { value: "Social Media", label: "Social Media", icon: Users },
+  { value: "E-commerce", label: "E-commerce", icon: ShoppingCart },
+  { value: "Training & Courses", label: "Training & Courses", icon: GraduationCap },
+  { value: "Advertising", label: "Advertising", icon: Megaphone },
+  { value: "Mobile Apps", label: "Mobile Apps", icon: Smartphone },
+];
 
 export function ServicesTab() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingService, setEditingService] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>("all");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "",
-    subcategories: "",
+    number: "",
     icon: "",
     active: true,
     display_order: 0,
@@ -34,6 +51,7 @@ export function ServicesTab() {
       const { data, error } = await supabase
         .from("services")
         .select("*")
+        .order("category", { ascending: true })
         .order("display_order", { ascending: true });
       if (error) throw error;
       return data;
@@ -42,19 +60,14 @@ export function ServicesTab() {
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
-      const serviceData = {
-        ...data,
-        subcategories: data.subcategories ? JSON.parse(data.subcategories) : [],
-      };
-
       if (editingService) {
         const { error } = await supabase
           .from("services")
-          .update(serviceData)
+          .update(data)
           .eq("id", editingService.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("services").insert(serviceData);
+        const { error } = await supabase.from("services").insert(data);
         if (error) throw error;
       }
     },
@@ -114,7 +127,7 @@ export function ServicesTab() {
       title: "",
       description: "",
       category: "",
-      subcategories: "",
+      number: "",
       icon: "",
       active: true,
       display_order: 0,
@@ -126,9 +139,9 @@ export function ServicesTab() {
     setEditingService(service);
     setFormData({
       title: service.title,
-      description: service.description,
+      description: service.description || "",
       category: service.category || "",
-      subcategories: JSON.stringify(service.subcategories || []),
+      number: service.number || "",
       icon: service.icon || "",
       active: service.active,
       display_order: service.display_order || 0,
@@ -138,8 +151,24 @@ export function ServicesTab() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.category) {
+      toast.error("Please select a category");
+      return;
+    }
     saveMutation.mutate(formData);
   };
+
+  // Group services by category
+  const groupedServices = services?.reduce((acc: any, service) => {
+    const cat = service.category || "Uncategorized";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(service);
+    return acc;
+  }, {}) || {};
+
+  const filteredServices = selectedCategoryFilter === "all" 
+    ? services 
+    : services?.filter(s => s.category === selectedCategoryFilter);
 
   if (isLoading) {
     return (
@@ -151,119 +180,177 @@ export function ServicesTab() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold font-poppins">Manage Services</h2>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Service
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{editingService ? "Edit Service" : "Add New Service"}</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label>Title</Label>
-                <Input
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Description</Label>
-                <Textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Category</Label>
-                <Input
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label>Subcategories (JSON array)</Label>
-                <Textarea
-                  value={formData.subcategories}
-                  onChange={(e) => setFormData({ ...formData, subcategories: e.target.value })}
-                  placeholder='["Subcategory 1", "Subcategory 2"]'
-                />
-              </div>
-              <div>
-                <Label>Icon/Image</Label>
-                <div className="flex gap-2 items-center">
-                  <Input
-                    value={formData.icon}
-                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                    placeholder="Icon name or image URL"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => document.getElementById('service-upload')?.click()}
-                    disabled={uploading}
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 className="text-2xl font-bold font-poppins">Manage Services</h2>
+          <p className="text-sm text-muted-foreground">
+            {services?.length || 0} services across {Object.keys(groupedServices).length} categories
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <Select value={selectedCategoryFilter} onValueChange={setSelectedCategoryFilter}>
+            <SelectTrigger className="w-[200px] bg-white">
+              <SelectValue placeholder="Filter by category" />
+            </SelectTrigger>
+            <SelectContent className="bg-white z-50">
+              <SelectItem value="all">All Categories</SelectItem>
+              {SERVICE_CATEGORIES.map(cat => (
+                <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={resetForm}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Service
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{editingService ? "Edit Service" : "Add New Service"}</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label>Category *</Label>
+                  <Select 
+                    value={formData.category} 
+                    onValueChange={(value) => setFormData({ ...formData, category: value })}
                   >
-                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                  </Button>
-                  <input
-                    id="service-upload"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
+                    <SelectTrigger className="bg-white mt-1">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      {SERVICE_CATEGORIES.map(cat => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          <div className="flex items-center gap-2">
+                            <cat.icon className="w-4 h-4" />
+                            {cat.label}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Service Title *</Label>
+                  <Input
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="E.g., SEO Optimization"
+                    required
                   />
                 </div>
-                {formData.icon && formData.icon.startsWith('http') && (
-                  <div className="mt-2 relative inline-block">
-                    <img src={formData.icon} alt="Preview" className="h-20 w-20 object-cover rounded" />
+                <div>
+                  <Label>Description *</Label>
+                  <Textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Brief description of the service"
+                    required
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Service Number</Label>
+                    <Input
+                      value={formData.number}
+                      onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+                      placeholder="E.g., 01"
+                    />
+                  </div>
+                  <div>
+                    <Label>Display Order</Label>
+                    <Input
+                      type="number"
+                      value={formData.display_order}
+                      onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) })}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label>Icon/Image</Label>
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      value={formData.icon}
+                      onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                      placeholder="Icon name or image URL"
+                    />
                     <Button
                       type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute -top-2 -right-2 h-6 w-6"
-                      onClick={() => setFormData({ ...formData, icon: "" })}
+                      variant="outline"
+                      onClick={() => document.getElementById('service-upload')?.click()}
+                      disabled={uploading}
                     >
-                      <X className="w-4 h-4" />
+                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     </Button>
+                    <input
+                      id="service-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                    />
                   </div>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Display Order</Label>
-                  <Input
-                    type="number"
-                    value={formData.display_order}
-                    onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) })}
-                  />
+                  {formData.icon && formData.icon.startsWith('http') && (
+                    <div className="mt-2 relative inline-block">
+                      <img src={formData.icon} alt="Preview" className="h-20 w-20 object-cover rounded" />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6"
+                        onClick={() => setFormData({ ...formData, icon: "" })}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center space-x-2 pt-6">
+                <div className="flex items-center space-x-2">
                   <Switch
                     checked={formData.active}
                     onCheckedChange={(checked) => setFormData({ ...formData, active: checked })}
                   />
                   <Label>Active</Label>
                 </div>
+                <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
+                  {saveMutation.isPending ? "Saving..." : "Save Service"}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      {/* Category Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+        {SERVICE_CATEGORIES.slice(0, 5).map(cat => {
+          const count = groupedServices[cat.value]?.length || 0;
+          const Icon = cat.icon;
+          return (
+            <Card 
+              key={cat.value}
+              className={`p-3 cursor-pointer transition-all hover:shadow-md ${selectedCategoryFilter === cat.value ? 'ring-2 ring-primary bg-primary/5' : 'bg-white'}`}
+              onClick={() => setSelectedCategoryFilter(cat.value === selectedCategoryFilter ? 'all' : cat.value)}
+            >
+              <div className="flex items-center gap-2">
+                <Icon className="w-4 h-4 text-primary" />
+                <div>
+                  <p className="text-xs font-medium truncate">{cat.label.split(' ')[0]}</p>
+                  <p className="text-xs text-muted-foreground">{count} services</p>
+                </div>
               </div>
-              <Button type="submit" className="w-full" disabled={saveMutation.isPending}>
-                {saveMutation.isPending ? "Saving..." : "Save Service"}
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
+            </Card>
+          );
+        })}
       </div>
 
       <Card className="overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>#</TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Active</TableHead>
@@ -271,10 +358,15 @@ export function ServicesTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {services?.map((service) => (
+            {filteredServices?.map((service) => (
               <TableRow key={service.id}>
+                <TableCell className="font-mono text-sm">{service.number || '-'}</TableCell>
                 <TableCell className="font-medium">{service.title}</TableCell>
-                <TableCell>{service.category}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary" className="text-xs">
+                    {service.category || 'Uncategorized'}
+                  </Badge>
+                </TableCell>
                 <TableCell>{service.active ? "Yes" : "No"}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
@@ -284,7 +376,11 @@ export function ServicesTab() {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => deleteMutation.mutate(service.id)}
+                      onClick={() => {
+                        if (confirm("Delete this service?")) {
+                          deleteMutation.mutate(service.id);
+                        }
+                      }}
                     >
                       <Trash className="w-4 h-4" />
                     </Button>
@@ -292,10 +388,10 @@ export function ServicesTab() {
                 </TableCell>
               </TableRow>
             ))}
-            {!services?.length && (
+            {!filteredServices?.length && (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground">
-                  No services yet
+                <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  No services found
                 </TableCell>
               </TableRow>
             )}
