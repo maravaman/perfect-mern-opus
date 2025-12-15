@@ -15,6 +15,7 @@ import { ContactSubmissionsTab } from '@/components/admin/ContactSubmissionsTab'
 import { ReviewsTab } from '@/components/admin/ReviewsTab';
 import { CareerApplicationsTab } from '@/components/admin/CareerApplicationsTab';
 import { CareerOpeningsTab } from '@/components/admin/CareerOpeningsTab';
+import { OffersBannerTab } from '@/components/admin/OffersBannerTab';
 
 export default function AdminDashboardComplete() {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -65,8 +66,9 @@ export default function AdminDashboardComplete() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="settings" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 mb-8 h-auto">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-11 mb-8 h-auto">
             <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="offers">Offers</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
@@ -80,6 +82,10 @@ export default function AdminDashboardComplete() {
 
           <TabsContent value="settings">
             <SiteSettingsTab />
+          </TabsContent>
+
+          <TabsContent value="offers">
+            <OffersBannerTab />
           </TabsContent>
 
           <TabsContent value="services">
