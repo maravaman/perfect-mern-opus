@@ -149,13 +149,13 @@ export default function Portfolio() {
       case 'websites':
         return [...new Set(allWebsites.map(item => item.sub_category).filter(Boolean))];
       case 'logos':
-        return [...new Set(allLogos.map(item => item.client_name).filter(Boolean))];
+        return [...new Set(allLogos.map(item => item.sub_category).filter(Boolean))];
       case 'videos':
-        return [...new Set(allVideos.map(item => item.client_name).filter(Boolean))];
+        return [...new Set(allVideos.map(item => item.sub_category).filter(Boolean))];
       case 'posters':
-        return [...new Set(allPosters.map(item => item.client_name).filter(Boolean))];
+        return [...new Set(allPosters.map(item => item.sub_category).filter(Boolean))];
       case 'results':
-        return [...new Set(allResults.map(item => item.client_name).filter(Boolean))];
+        return [...new Set(allResults.map(item => item.sub_category).filter(Boolean))];
       default:
         return [];
     }
@@ -169,10 +169,10 @@ export default function Portfolio() {
     setActiveCategory("all");
   };
 
-  const filterByCategory = (items: any[], categoryField: string = 'sub_category') => {
+  const filterByCategory = (items: any[]) => {
     if (activeCategory === "all") return items;
     return items.filter(item => {
-      const cat = item[categoryField] || item.client_name;
+      const cat = item.sub_category;
       return cat?.toLowerCase().includes(activeCategory.toLowerCase());
     });
   };
@@ -296,7 +296,7 @@ export default function Portfolio() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filterByCategory(allLogos, 'client_name').map((item) => (
+                  {filterByCategory(allLogos).map((item) => (
                     <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
                       <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
                         <img
@@ -307,13 +307,13 @@ export default function Portfolio() {
                       </div>
                       <div className="p-4 border-t border-primary/10">
                         <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
-                        <p className="text-sm text-muted-foreground">{item.client_name || item.description}</p>
+                        <p className="text-sm text-muted-foreground">{item.sub_category || item.client_name || item.description}</p>
                       </div>
                     </Card>
                   ))}
                 </div>
               )}
-              {!isLoading && filterByCategory(allLogos, 'client_name').length === 0 && (
+              {!isLoading && filterByCategory(allLogos).length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
                   No logos found. Add logos from the admin panel.
                 </div>
@@ -327,7 +327,7 @@ export default function Portfolio() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filterByCategory(allVideos, 'client_name').map((item) => (
+                  {filterByCategory(allVideos).map((item) => (
                     <a 
                       key={item.id} 
                       href={item.project_url || "#"} 
@@ -350,14 +350,14 @@ export default function Portfolio() {
                         </div>
                         <div className="p-4 border-t border-primary/10">
                           <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
-                          <p className="text-sm text-muted-foreground">{item.client_name || item.description}</p>
+                          <p className="text-sm text-muted-foreground">{item.sub_category || item.client_name || item.description}</p>
                         </div>
                       </Card>
                     </a>
                   ))}
                 </div>
               )}
-              {!isLoading && filterByCategory(allVideos, 'client_name').length === 0 && (
+              {!isLoading && filterByCategory(allVideos).length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
                   No videos found. Add videos from the admin panel.
                 </div>
@@ -371,7 +371,7 @@ export default function Portfolio() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filterByCategory(allPosters, 'client_name').map((item) => (
+                  {filterByCategory(allPosters).map((item) => (
                     <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
                       <div className="aspect-[3/4] overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
                         <img
@@ -382,13 +382,13 @@ export default function Portfolio() {
                       </div>
                       <div className="p-4 border-t border-primary/10">
                         <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
-                        <p className="text-sm text-muted-foreground">{item.client_name || item.description}</p>
+                        <p className="text-sm text-muted-foreground">{item.sub_category || item.client_name || item.description}</p>
                       </div>
                     </Card>
                   ))}
                 </div>
               )}
-              {!isLoading && filterByCategory(allPosters, 'client_name').length === 0 && (
+              {!isLoading && filterByCategory(allPosters).length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
                   No posters found. Add posters from the admin panel.
                 </div>
@@ -402,7 +402,7 @@ export default function Portfolio() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                  {filterByCategory(allResults, 'client_name').map((item) => (
+                  {filterByCategory(allResults).map((item) => (
                     <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
                       <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
                         <img
@@ -418,13 +418,13 @@ export default function Portfolio() {
                       </div>
                       <div className="p-4 border-t border-primary/10">
                         <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{item.title}</h3>
-                        {item.client_name && <p className="text-sm text-muted-foreground">{item.client_name}</p>}
+                        <p className="text-sm text-muted-foreground">{item.sub_category || item.client_name}</p>
                       </div>
                     </Card>
                   ))}
                 </div>
               )}
-              {!isLoading && filterByCategory(allResults, 'client_name').length === 0 && (
+              {!isLoading && filterByCategory(allResults).length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
                   No results found. Add results from the admin panel.
                 </div>
