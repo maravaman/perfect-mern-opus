@@ -156,8 +156,16 @@ export function ServicesTab() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.title.trim()) {
+      toast.error("Please enter a title");
+      return;
+    }
     if (!formData.category) {
       toast.error("Please select a category");
+      return;
+    }
+    if (!formData.description.trim()) {
+      toast.error("Please enter a description");
       return;
     }
     saveMutation.mutate(formData);

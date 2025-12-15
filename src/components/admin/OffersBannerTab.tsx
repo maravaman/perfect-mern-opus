@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { Plus, Edit, Trash, Loader2, Eye, EyeOff } from "lucide-react";
+import { Plus, Edit, Trash, Loader2, Eye, EyeOff, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -20,6 +20,7 @@ interface OfferBanner {
   link_text: string | null;
   background_color: string | null;
   text_color: string | null;
+  image_url: string | null;
   active: boolean | null;
   display_order: number | null;
   created_at: string | null;
@@ -29,6 +30,7 @@ interface OfferBanner {
 export function OffersBannerTab() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<OfferBanner | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -36,6 +38,7 @@ export function OffersBannerTab() {
     link_text: "Learn More",
     background_color: "#EBFBFF",
     text_color: "#000000",
+    image_url: "",
     active: true,
     display_order: 0,
   });
@@ -103,6 +106,35 @@ export function OffersBannerTab() {
     },
   });
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `banners/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('knight21-uploads')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('knight21-uploads')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({ ...prev, image_url: publicUrl }));
+      toast.success("Image uploaded successfully");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       title: "",
@@ -111,6 +143,7 @@ export function OffersBannerTab() {
       link_text: "Learn More",
       background_color: "#EBFBFF",
       text_color: "#000000",
+      image_url: "",
       active: true,
       display_order: 0,
     });
@@ -126,6 +159,7 @@ export function OffersBannerTab() {
       link_text: banner.link_text || "Learn More",
       background_color: banner.background_color || "#EBFBFF",
       text_color: banner.text_color || "#000000",
+      image_url: banner.image_url || "",
       active: banner.active ?? true,
       display_order: banner.display_order || 0,
     });
@@ -234,6 +268,46 @@ export function OffersBannerTab() {
                   </div>
                 </div>
               </div>
+              <div>
+                <Label>Banner Image</Label>
+                <div className="flex gap-2 items-center">
+                  <Input
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    placeholder="Image URL or upload"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('banner-upload')?.click()}
+                    disabled={uploading}
+                  >
+                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  </Button>
+                  <input
+                    id="banner-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                </div>
+                {formData.image_url && (
+                  <div className="mt-2 relative inline-block">
+                    <img src={formData.image_url} alt="Preview" className="h-20 w-auto object-cover rounded" />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute -top-2 -right-2 h-6 w-6"
+                      onClick={() => setFormData({ ...formData, image_url: "" })}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Display Order</Label>
