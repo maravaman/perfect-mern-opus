@@ -21,6 +21,7 @@ const SERVICE_CATEGORIES = [
   { value: "Marketing", label: "Marketing", icon: TrendingUp },
   { value: "Design", label: "Design", icon: Palette },
   { value: "Social Media", label: "Social Media", icon: Users },
+  { value: "Advertising", label: "Advertising", icon: Megaphone },
   // Additional categories
   { value: "App & Software Development", label: "App & Software Development", icon: Code },
   { value: "Digital Marketing", label: "Digital Marketing", icon: TrendingUp },
@@ -29,7 +30,6 @@ const SERVICE_CATEGORIES = [
   { value: "Design Services", label: "Design Services", icon: Palette },
   { value: "E-commerce", label: "E-commerce", icon: ShoppingCart },
   { value: "Training & Courses", label: "Training & Courses", icon: GraduationCap },
-  { value: "Advertising", label: "Advertising", icon: Megaphone },
   { value: "Mobile Apps", label: "Mobile Apps", icon: Smartphone },
 ];
 
