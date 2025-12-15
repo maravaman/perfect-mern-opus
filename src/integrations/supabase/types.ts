@@ -255,6 +255,7 @@ export type Database = {
           description: string | null
           display_order: number | null
           id: string
+          image_url: string | null
           link_text: string | null
           link_url: string | null
           text_color: string | null
@@ -268,6 +269,7 @@ export type Database = {
           description?: string | null
           display_order?: number | null
           id?: string
+          image_url?: string | null
           link_text?: string | null
           link_url?: string | null
           text_color?: string | null
@@ -281,6 +283,7 @@ export type Database = {
           description?: string | null
           display_order?: number | null
           id?: string
+          image_url?: string | null
           link_text?: string | null
           link_url?: string | null
           text_color?: string | null
