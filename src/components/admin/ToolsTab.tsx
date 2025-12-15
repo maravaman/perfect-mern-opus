@@ -232,7 +232,7 @@ export function ToolsTab() {
                   onChange={handleImageUpload}
                 />
               </div>
-              {formData.icon && (
+              {formData.icon && formData.icon.startsWith('http') && (
                 <div className="mt-2 relative inline-block">
                   <img src={formData.icon} alt="Preview" className="h-20 w-20 object-cover rounded" />
                   <Button
