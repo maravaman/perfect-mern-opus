@@ -165,11 +165,19 @@ const Tools = () => {
                     style={{animationDelay: `${index * 0.05}s`}}
                   >
                     <div className="p-6">
-                      {/* Icon & Category */}
+                      {/* Icon/Image & Category */}
                       <div className="flex items-start justify-between mb-4">
-                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-card`}>
-                          <IconComponent className="w-7 h-7 text-primary" />
-                        </div>
+                        {tool.icon && tool.icon.startsWith('http') ? (
+                          <img 
+                            src={tool.icon} 
+                            alt={tool.title} 
+                            className="w-14 h-14 rounded-xl object-cover group-hover:scale-110 transition-transform duration-300 shadow-card"
+                          />
+                        ) : (
+                          <div className={`w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-card`}>
+                            <IconComponent className="w-7 h-7 text-primary" />
+                          </div>
+                        )}
                         {tool.category && (
                           <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 text-primary border border-primary/20">
                             {tool.category}
