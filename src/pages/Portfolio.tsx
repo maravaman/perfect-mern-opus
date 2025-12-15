@@ -15,105 +15,87 @@ import nextgenImg from "@/assets/portfolio/nextgen.png";
 import newGenElevatorsImg from "@/assets/portfolio/new-gen-elevators.png";
 import leelavathiImg from "@/assets/portfolio/leelavathi.png";
 
-// Original portfolio data
-const portfolioData = {
-  websites: [
-    { 
-      id: 1, 
-      title: "Anvika Computers Services", 
-      category: "Computer Services", 
-      url: "https://anvikacomputersservices.com",
-      description: "Professional computer services and IT solutions",
-      image: anvikaImg
-    },
-    { 
-      id: 2, 
-      title: "Sri Academy", 
-      category: "Education", 
-      url: "https://sriacademy111.com",
-      description: "Educational institution providing quality learning",
-      image: sriAcademyImg
-    },
-    { 
-      id: 3, 
-      title: "Vedha Software Solutions", 
-      category: "Software", 
-      url: "https://vedhasoftwaresolutions.com",
-      description: "Complete software development and IT consulting",
-      image: vedhaImg
-    },
-    { 
-      id: 4, 
-      title: "Dine Empire", 
-      category: "Restaurant", 
-      url: "https://dineempire.com",
-      description: "Fine dining restaurant and culinary experiences",
-      image: dineEmpireImg
-    },
-    { 
-      id: 5, 
-      title: "Jireh Melodies", 
-      category: "Music", 
-      url: "https://www.jirehmelodies.com",
-      description: "Music production and entertainment services",
-      image: jirehMelodiesImg
-    },
-    { 
-      id: 7, 
-      title: "MB Prime Projects",
-      category: "Real Estate", 
-      url: "https://mbprimeprojects.com",
-      description: "Prime real estate and construction projects",
-      image: mbPrimeImg
-    },
-    { 
-      id: 10, 
-      title: "Next Gens Store",
-      category: "E-commerce", 
-      url: "https://nextgensstore.com",
-      description: "Modern online store with latest products",
-      image: nextgenImg
-    },
-    { 
-      id: 11, 
-      title: "New Gen Elevators",
-      category: "Industrial", 
-      url: "https://newgenelevators.in",
-      description: "Elevator installation and maintenance services",
-      image: newGenElevatorsImg
-    },
-    { 
-      id: 8, 
-      title: "Leelavathi Designer",
-      category: "Fashion", 
-      url: "https://leelavathidesigner.com",
-      description: "Custom fashion design and styling services",
-      image: leelavathiImg
-    }
-  ],
-  logos: [
-    { id: 1, title: "Tech Startup Logo", category: "Technology", image: "https://images.unsplash.com/photo-1634942537034-2531766767d1?w=500" },
-    { id: 2, title: "Restaurant Branding", category: "Restaurant", image: "https://images.unsplash.com/photo-1635405074683-96d6921a2a68?w=500" },
-    { id: 3, title: "Healthcare Logo", category: "Hospital", image: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=500" },
-  ],
-  videos: [
-    { id: 1, title: "Product Demo Video", category: "Marketing", image: "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=500" },
-    { id: 2, title: "Brand Story", category: "Branding", image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" },
-  ],
-  posters: [
-    { id: 1, title: "Social Media Campaign", category: "Social Media", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500" },
-    { id: 2, title: "Event Poster", category: "Events", image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=500" },
-  ],
-  results: [
-    { id: 1, title: "SEO Growth Report", metric: "+250% Traffic", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500" },
-    { id: 2, title: "Social Media ROI", metric: "+180% Engagement", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500" },
-  ],
-};
+// Static portfolio data for websites
+const staticWebsites = [
+  { 
+    id: 1, 
+    title: "Anvika Computers Services", 
+    category: "Computer Services", 
+    url: "https://anvikacomputersservices.com",
+    description: "Professional computer services and IT solutions",
+    image: anvikaImg
+  },
+  { 
+    id: 2, 
+    title: "Sri Academy", 
+    category: "Education", 
+    url: "https://sriacademy111.com",
+    description: "Educational institution providing quality learning",
+    image: sriAcademyImg
+  },
+  { 
+    id: 3, 
+    title: "Vedha Software Solutions", 
+    category: "Software", 
+    url: "https://vedhasoftwaresolutions.com",
+    description: "Complete software development and IT consulting",
+    image: vedhaImg
+  },
+  { 
+    id: 4, 
+    title: "Dine Empire", 
+    category: "Restaurant", 
+    url: "https://dineempire.com",
+    description: "Fine dining restaurant and culinary experiences",
+    image: dineEmpireImg
+  },
+  { 
+    id: 5, 
+    title: "Jireh Melodies", 
+    category: "Music", 
+    url: "https://www.jirehmelodies.com",
+    description: "Music production and entertainment services",
+    image: jirehMelodiesImg
+  },
+  { 
+    id: 7, 
+    title: "MB Prime Projects",
+    category: "Real Estate", 
+    url: "https://mbprimeprojects.com",
+    description: "Prime real estate and construction projects",
+    image: mbPrimeImg
+  },
+  { 
+    id: 10, 
+    title: "Next Gens Store",
+    category: "E-commerce", 
+    url: "https://nextgensstore.com",
+    description: "Modern online store with latest products",
+    image: nextgenImg
+  },
+  { 
+    id: 11, 
+    title: "New Gen Elevators",
+    category: "Industrial", 
+    url: "https://newgenelevators.in",
+    description: "Elevator installation and maintenance services",
+    image: newGenElevatorsImg
+  },
+  { 
+    id: 8, 
+    title: "Leelavathi Designer",
+    category: "Fashion", 
+    url: "https://leelavathidesigner.com",
+    description: "Custom fashion design and styling services",
+    image: leelavathiImg
+  }
+];
 
 export default function Portfolio() {
+  const [activeTab, setActiveTab] = useState<string>("websites");
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
-  // Fetch additional portfolio items from database
+  // Fetch portfolio items from database
   const { data: dbPortfolioItems, isLoading } = useQuery({
     queryKey: ["portfolio_items_public"],
     queryFn: async () => {
@@ -127,32 +109,72 @@ export default function Portfolio() {
     },
   });
 
-  // Combine original websites with database items
+  // Filter database items by portfolio type
+  const getDbItemsByType = (type: string) => {
+    return (dbPortfolioItems || []).filter(item => 
+      item.category?.toLowerCase() === type.toLowerCase()
+    );
+  };
+
+  // Combine static websites with database website items
   const allWebsites = [
-    ...portfolioData.websites.map(item => ({
+    ...staticWebsites.map(item => ({
       id: `static-${item.id}`,
       title: item.title,
-      category: item.category,
+      category: 'Websites',
       project_url: item.url,
       description: item.description,
       image_url: item.image,
+      sub_category: item.category,
     })),
-    ...(dbPortfolioItems || []).map(item => ({
+    ...getDbItemsByType('Websites').map(item => ({
       id: item.id,
       title: item.title,
-      category: item.category,
+      category: 'Websites',
       project_url: item.project_url,
       description: item.description,
       image_url: item.image_url,
+      sub_category: item.client_name || 'General',
     })),
   ];
 
-  // Get unique categories from all website items
-  const categories = [...new Set(allWebsites.map(item => item.category).filter(Boolean))];
+  const allLogos = getDbItemsByType('Logos');
+  const allVideos = getDbItemsByType('Videos');
+  const allPosters = getDbItemsByType('Posters');
+  const allResults = getDbItemsByType('Results');
 
-  const filterByCategory = (items: any[]) => {
+  // Get unique sub-categories based on active tab
+  const getCategories = () => {
+    switch (activeTab) {
+      case 'websites':
+        return [...new Set(allWebsites.map(item => item.sub_category).filter(Boolean))];
+      case 'logos':
+        return [...new Set(allLogos.map(item => item.client_name).filter(Boolean))];
+      case 'videos':
+        return [...new Set(allVideos.map(item => item.client_name).filter(Boolean))];
+      case 'posters':
+        return [...new Set(allPosters.map(item => item.client_name).filter(Boolean))];
+      case 'results':
+        return [...new Set(allResults.map(item => item.client_name).filter(Boolean))];
+      default:
+        return [];
+    }
+  };
+
+  const categories = getCategories();
+
+  // Reset category filter when tab changes
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setActiveCategory("all");
+  };
+
+  const filterByCategory = (items: any[], categoryField: string = 'sub_category') => {
     if (activeCategory === "all") return items;
-    return items.filter(item => item.category?.toLowerCase().includes(activeCategory.toLowerCase()));
+    return items.filter(item => {
+      const cat = item[categoryField] || item.client_name;
+      return cat?.toLowerCase().includes(activeCategory.toLowerCase());
+    });
   };
 
   return (
@@ -176,7 +198,7 @@ export default function Portfolio() {
       <section className="py-20 bg-white pattern-grid relative">
         <div className="absolute inset-0 bg-gradient-mesh opacity-30"></div>
         <div className="container mx-auto px-4 relative z-10">
-          <Tabs defaultValue="websites" className="w-full">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5 mb-12">
               <TabsTrigger value="websites">Websites</TabsTrigger>
               <TabsTrigger value="logos">Logos</TabsTrigger>
@@ -185,32 +207,34 @@ export default function Portfolio() {
               <TabsTrigger value="results">Results</TabsTrigger>
             </TabsList>
 
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2 justify-center mb-8">
-              <button
-                onClick={() => setActiveCategory("all")}
-                className={`px-4 py-2 rounded-full transition-all duration-300 font-medium ${
-                  activeCategory === "all" 
-                    ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg shadow-primary/25" 
-                    : "bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 text-foreground border border-primary/20"
-                }`}
-              >
-                All
-              </button>
-              {categories.map((cat) => (
+            {/* Category Filter - Dynamic based on active tab */}
+            {categories.length > 0 && (
+              <div className="flex flex-wrap gap-2 justify-center mb-8">
                 <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
+                  onClick={() => setActiveCategory("all")}
                   className={`px-4 py-2 rounded-full transition-all duration-300 font-medium ${
-                    activeCategory === cat 
+                    activeCategory === "all" 
                       ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg shadow-primary/25" 
                       : "bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 text-foreground border border-primary/20"
                   }`}
                 >
-                  {cat}
+                  All
                 </button>
-              ))}
-            </div>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-4 py-2 rounded-full transition-all duration-300 font-medium ${
+                      activeCategory === cat 
+                        ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg shadow-primary/25" 
+                        : "bg-gradient-to-r from-primary/10 to-secondary/10 hover:from-primary/20 hover:to-secondary/20 text-foreground border border-primary/20"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <TabsContent value="websites">
               {isLoading ? (
@@ -247,7 +271,7 @@ export default function Portfolio() {
                           <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
                           <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-semibold bg-gradient-to-r from-primary/10 to-secondary/10 text-primary px-3 py-1 rounded-full">{item.category}</span>
+                            <span className="text-sm font-semibold bg-gradient-to-r from-primary/10 to-secondary/10 text-primary px-3 py-1 rounded-full">{item.sub_category}</span>
                             <span className="text-xs text-muted-foreground hover:text-primary transition-colors">
                               Visit Site →
                             </span>
@@ -258,95 +282,153 @@ export default function Portfolio() {
                   ))}
                 </div>
               )}
+              {!isLoading && filterByCategory(allWebsites).length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No websites found in this category.
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="logos">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {portfolioData.logos.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
-                    <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="p-4 border-t border-primary/10">
-                      <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.category}</p>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filterByCategory(allLogos, 'client_name').map((item) => (
+                    <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                      <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
+                        <img
+                          src={item.image_url || "https://images.unsplash.com/photo-1634942537034-2531766767d1?w=500"}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      </div>
+                      <div className="p-4 border-t border-primary/10">
+                        <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground">{item.client_name || item.description}</p>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+              {!isLoading && filterByCategory(allLogos, 'client_name').length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No logos found. Add logos from the admin panel.
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="videos">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {portfolioData.videos.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
-                    <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-secondary/40 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                          <div className="w-0 h-0 border-l-8 border-t-4 border-b-4 border-l-primary border-t-transparent border-b-transparent ml-1"></div>
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filterByCategory(allVideos, 'client_name').map((item) => (
+                    <a 
+                      key={item.id} 
+                      href={item.project_url || "#"} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <Card className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                        <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
+                          <img
+                            src={item.image_url || "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=500"}
+                            alt={item.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-secondary/40 flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                              <div className="w-0 h-0 border-l-8 border-t-4 border-b-4 border-l-primary border-t-transparent border-b-transparent ml-1"></div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    <div className="p-4 border-t border-primary/10">
-                      <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.category}</p>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+                        <div className="p-4 border-t border-primary/10">
+                          <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
+                          <p className="text-sm text-muted-foreground">{item.client_name || item.description}</p>
+                        </div>
+                      </Card>
+                    </a>
+                  ))}
+                </div>
+              )}
+              {!isLoading && filterByCategory(allVideos, 'client_name').length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No videos found. Add videos from the admin panel.
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="posters">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {portfolioData.posters.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
-                    <div className="aspect-[3/4] overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <div className="p-4 border-t border-primary/10">
-                      <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.category}</p>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filterByCategory(allPosters, 'client_name').map((item) => (
+                    <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                      <div className="aspect-[3/4] overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
+                        <img
+                          src={item.image_url || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500"}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      </div>
+                      <div className="p-4 border-t border-primary/10">
+                        <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground">{item.client_name || item.description}</p>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+              {!isLoading && filterByCategory(allPosters, 'client_name').length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No posters found. Add posters from the admin panel.
+                </div>
+              )}
             </TabsContent>
 
             <TabsContent value="results">
-              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                {portfolioData.results.map((item) => (
-                  <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
-                    <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-secondary/60 to-transparent flex items-end p-6">
-                        <div className="text-primary-foreground">
-                          <p className="text-3xl font-bold drop-shadow-lg">{item.metric}</p>
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                  {filterByCategory(allResults, 'client_name').map((item) => (
+                    <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                      <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
+                        <img
+                          src={item.image_url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500"}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-secondary/60 to-transparent flex items-end p-6">
+                          <div className="text-primary-foreground">
+                            <p className="text-3xl font-bold drop-shadow-lg">{item.description || 'View Results'}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="p-4 border-t border-primary/10">
-                      <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{item.title}</h3>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+                      <div className="p-4 border-t border-primary/10">
+                        <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{item.title}</h3>
+                        {item.client_name && <p className="text-sm text-muted-foreground">{item.client_name}</p>}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+              {!isLoading && filterByCategory(allResults, 'client_name').length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No results found. Add results from the admin panel.
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </div>
