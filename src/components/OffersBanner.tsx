@@ -12,6 +12,7 @@ interface OfferBanner {
   link_text: string | null;
   background_color: string | null;
   text_color: string | null;
+  image_url: string | null;
 }
 
 export function OffersBanner() {
@@ -46,6 +47,13 @@ export function OffersBanner() {
           }}
         >
           <div className="container mx-auto flex items-center justify-center gap-4 flex-wrap text-center">
+            {banner.image_url && banner.image_url.startsWith('http') && (
+              <img 
+                src={banner.image_url} 
+                alt={banner.title} 
+                className="h-10 w-auto object-contain rounded"
+              />
+            )}
             <div className="flex items-center gap-2 flex-wrap justify-center">
               <span className="font-semibold">{banner.title}</span>
               {banner.description && (
