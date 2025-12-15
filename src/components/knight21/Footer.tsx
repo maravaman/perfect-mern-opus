@@ -1,7 +1,33 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Youtube, Linkedin, MessageCircle, Mail, Phone, MapPin, Shield } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Footer = () => {
+  const { data: settings } = useQuery({
+    queryKey: ["site_settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("key, value");
+      if (error) throw error;
+      const settingsMap: Record<string, string> = {};
+      data?.forEach(item => {
+        settingsMap[item.key] = item.value || "";
+      });
+      return settingsMap;
+    },
+  });
+
+  const email = settings?.contact_email || "knight21digihub@gmail.com";
+  const phone = settings?.contact_phone || "+91 8187007475";
+  const address = settings?.contact_address || "Near msn charities, mahalaxmi nagar, jaganaikpur, kakinada, 522003";
+  const facebook = settings?.social_facebook || "https://www.facebook.com/share/1JYd3DXAxz/";
+  const instagram = settings?.social_instagram || "https://www.instagram.com/knight21.in";
+  const youtube = settings?.social_youtube || "https://youtube.com/@knight21digihub";
+  const linkedin = settings?.social_linkedin || "https://www.linkedin.com/in/knight-digi-hub-9a597528b";
+  const whatsapp = settings?.social_whatsapp || "http://wa.me/918187007475";
+
   return (
     <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-12 relative overflow-hidden">
       {/* Background Pattern */}
@@ -50,19 +76,19 @@ export const Footer = () => {
             <ul className="space-y-3 text-sm text-slate-400">
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 mt-1 flex-shrink-0 text-primary" />
-                <a href="mailto:knight21digihub@gmail.com" className="hover:text-primary transition-colors">
-                  knight21digihub@gmail.com
+                <a href={`mailto:${email}`} className="hover:text-primary transition-colors">
+                  {email}
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-1 flex-shrink-0 text-primary" />
-                <a href="tel:+918187007475" className="hover:text-primary transition-colors">
-                  +91 8187007475
+                <a href={`tel:${phone.replace(/\s/g, '')}`} className="hover:text-primary transition-colors">
+                  {phone}
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-1 flex-shrink-0 text-primary" />
-                <span>Near msn charities, mahalaxmi nagar, jaganaikpur, kakinada, 522003</span>
+                <span>{address}</span>
               </li>
             </ul>
           </div>
@@ -71,26 +97,36 @@ export const Footer = () => {
           <div>
             <h6 className="font-semibold text-lg mb-4 text-gradient">Follow Us</h6>
             <div className="flex gap-3">
-              <a href="https://www.facebook.com/share/1JYd3DXAxz/" target="_blank" rel="noopener noreferrer" 
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="https://www.instagram.com/knight21.in" target="_blank" rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="https://youtube.com/@knight21digihub" target="_blank" rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
-                <Youtube className="w-5 h-5" />
-              </a>
-              <a href="https://www.linkedin.com/in/knight-digi-hub-9a597528b" target="_blank" rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
-                <MessageCircle className="w-5 h-5" />
-              </a>
+              {facebook && (
+                <a href={facebook} target="_blank" rel="noopener noreferrer" 
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
+                  <Facebook className="w-5 h-5" />
+                </a>
+              )}
+              {instagram && (
+                <a href={instagram} target="_blank" rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
+                  <Instagram className="w-5 h-5" />
+                </a>
+              )}
+              {youtube && (
+                <a href={youtube} target="_blank" rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
+                  <Youtube className="w-5 h-5" />
+                </a>
+              )}
+              {linkedin && (
+                <a href={linkedin} target="_blank" rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
+                  <Linkedin className="w-5 h-5" />
+                </a>
+              )}
+              {whatsapp && (
+                <a href={whatsapp} target="_blank" rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-gradient-to-r hover:from-primary hover:to-secondary flex items-center justify-center transition-all hover:scale-110 hover:shadow-lg">
+                  <MessageCircle className="w-5 h-5" />
+                </a>
+              )}
             </div>
           </div>
         </div>
