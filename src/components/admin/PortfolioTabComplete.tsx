@@ -10,39 +10,85 @@ import { toast } from 'sonner';
 import { Plus, Pencil, Trash2, ExternalLink, Image, Globe, Palette, Video, FileText, Layout } from 'lucide-react';
 import { uploadImage } from '@/lib/storage';
 
-// Main portfolio categories with their sub-categories
+// Main portfolio categories with their sub-categories and required fields
 const PORTFOLIO_CATEGORIES = [
   { 
     value: 'Websites', 
     label: 'Websites', 
     icon: Globe,
-    subCategories: ['E-commerce', 'Education', 'Restaurant', 'Real Estate', 'Healthcare', 'Fashion', 'Technology', 'Corporate', 'Portfolio', 'Blog', 'Other']
+    subCategories: ['E-commerce', 'Education', 'Restaurant', 'Real Estate', 'Healthcare', 'Fashion', 'Technology', 'Corporate', 'Portfolio', 'Blog', 'Other'],
+    fields: {
+      title: { label: 'Website Title', placeholder: 'E.g., Fashion Store Website', required: true },
+      project_url: { label: 'Live Website URL', placeholder: 'https://example.com', required: true },
+      description: { label: 'Short Description', placeholder: 'Brief description of the website', required: false },
+      client_name: { label: 'Client Name', placeholder: 'Client or Business Name', required: false },
+      image_url: { label: 'Website Screenshot', required: true },
+    }
   },
   { 
     value: 'Logos', 
     label: 'Logos', 
     icon: Palette,
-    subCategories: ['Minimalist', 'Vintage', 'Modern', 'Abstract', 'Mascot', 'Wordmark', 'Emblem', 'Other']
+    subCategories: ['Minimalist', 'Vintage', 'Modern', 'Abstract', 'Mascot', 'Wordmark', 'Emblem', 'Other'],
+    fields: {
+      title: { label: 'Logo Title', placeholder: 'E.g., Tech Startup Logo', required: true },
+      client_name: { label: 'Client/Brand Name', placeholder: 'Brand or Company Name', required: true },
+      description: { label: 'Design Notes', placeholder: 'Brief notes about the design', required: false },
+      image_url: { label: 'Logo Image', required: true },
+    }
   },
   { 
     value: 'Videos', 
     label: 'Videos', 
     icon: Video,
-    subCategories: ['Promotional', 'Explainer', 'Product Demo', 'Testimonial', 'Social Media', 'Animation', 'Corporate', 'Other']
+    subCategories: ['Promotional', 'Explainer', 'Product Demo', 'Testimonial', 'Social Media', 'Animation', 'Corporate', 'Other'],
+    fields: {
+      title: { label: 'Video Title', placeholder: 'E.g., Product Launch Video', required: true },
+      project_url: { label: 'Video URL (YouTube/Vimeo)', placeholder: 'https://youtube.com/watch?v=...', required: true },
+      client_name: { label: 'Client Name', placeholder: 'Client or Brand Name', required: false },
+      description: { label: 'Video Description', placeholder: 'Brief description of the video', required: false },
+      image_url: { label: 'Thumbnail Image (Optional)', required: false },
+    }
   },
   { 
     value: 'Posters', 
     label: 'Posters', 
     icon: FileText,
-    subCategories: ['Event', 'Product', 'Social Media', 'Flyer', 'Banner', 'Infographic', 'Advertisement', 'Other']
+    subCategories: ['Event', 'Product', 'Social Media', 'Flyer', 'Banner', 'Infographic', 'Advertisement', 'Other'],
+    fields: {
+      title: { label: 'Poster Title', placeholder: 'E.g., Summer Sale Poster', required: true },
+      client_name: { label: 'Client Name', placeholder: 'Client or Brand Name', required: false },
+      description: { label: 'Design Brief', placeholder: 'Brief about the poster design', required: false },
+      image_url: { label: 'Poster Image', required: true },
+    }
   },
   { 
     value: 'Results', 
     label: 'Results', 
     icon: Layout,
-    subCategories: ['SEO', 'Social Media', 'PPC/Ads', 'Email Marketing', 'Content Marketing', 'Lead Generation', 'Other']
+    subCategories: ['SEO', 'Social Media', 'PPC/Ads', 'Email Marketing', 'Content Marketing', 'Lead Generation', 'Other'],
+    fields: {
+      title: { label: 'Campaign/Project Name', placeholder: 'E.g., SEO Campaign for XYZ', required: true },
+      description: { label: 'Key Result/Metric', placeholder: 'E.g., +250% Traffic Increase', required: true },
+      client_name: { label: 'Client Name', placeholder: 'Client or Company Name', required: true },
+      image_url: { label: 'Result Screenshot/Graph', required: true },
+    }
   },
 ];
+
+interface FieldConfig {
+  label: string;
+  placeholder?: string;
+  required: boolean;
+}
+
+interface CategoryFields {
+  title?: FieldConfig;
+  project_url?: FieldConfig;
+  description?: FieldConfig;
+  client_name?: FieldConfig;
+  image_url?: FieldConfig;
+}
 
 export default function PortfolioTabComplete() {
   const [portfolio, setPortfolio] = useState<any[]>([]);
@@ -94,16 +140,42 @@ export default function PortfolioTabComplete() {
     });
   };
 
+  const getCategoryConfig = (category: string) => {
+    return PORTFOLIO_CATEGORIES.find(c => c.value === category);
+  };
+
   const getSubCategories = (category: string) => {
-    const cat = PORTFOLIO_CATEGORIES.find(c => c.value === category);
+    const cat = getCategoryConfig(category);
     return cat?.subCategories || [];
   };
 
+  const getFields = (category: string): CategoryFields => {
+    const cat = getCategoryConfig(category);
+    return (cat?.fields || {}) as CategoryFields;
+  };
+
+  const validateForm = () => {
+    const fields = getFields(formData.category);
+    for (const [key, config] of Object.entries(fields)) {
+      if ((config as any).required && !formData[key]) {
+        toast.error(`Please fill in ${(config as any).label}`);
+        return false;
+      }
+    }
+    if (!formData.sub_category) {
+      toast.error('Please select a sub-category');
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = async () => {
-    if (!formData.title || !formData.category) {
-      toast.error('Please fill in required fields (title, category)');
+    if (!formData.category) {
+      toast.error('Please select a category');
       return;
     }
+
+    if (!validateForm()) return;
 
     try {
       if (editingItem?.id) {
@@ -180,6 +252,8 @@ export default function PortfolioTabComplete() {
     ? portfolio 
     : portfolio.filter(p => p.category === selectedCategory);
 
+  const currentFields = getFields(formData.category);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center flex-wrap gap-4">
@@ -196,7 +270,7 @@ export default function PortfolioTabComplete() {
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={() => { setEditingItem({}); setFormData({ active: true, display_order: 0, category: 'Websites' }); }}>
+          <Button onClick={() => { setEditingItem({}); setFormData({ active: true, display_order: 0 }); }}>
             <Plus className="w-4 h-4 mr-2" />
             Add Project
           </Button>
@@ -231,16 +305,18 @@ export default function PortfolioTabComplete() {
           <h3 className="text-lg font-semibold mb-4">
             {editingItem.id ? 'Edit Project' : 'Add New Project'}
           </h3>
+          
+          {/* Step 1: Select Category */}
           <div className="grid gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label>Category *</Label>
+                <Label className="text-base font-semibold">1. Select Category *</Label>
                 <Select 
                   value={formData.category || ''} 
                   onValueChange={handleCategoryChange}
                 >
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="Select category" />
+                  <SelectTrigger className="bg-white mt-2">
+                    <SelectValue placeholder="Choose a category first" />
                   </SelectTrigger>
                   <SelectContent className="bg-white z-50">
                     {PORTFOLIO_CATEGORIES.map(cat => (
@@ -255,112 +331,148 @@ export default function PortfolioTabComplete() {
                 </Select>
               </div>
 
-              <div>
-                <Label>Sub-Category</Label>
-                <Select 
-                  value={formData.sub_category || ''} 
-                  onValueChange={(value) => setFormData({ ...formData, sub_category: value })}
-                  disabled={!formData.category}
-                >
-                  <SelectTrigger className="bg-white">
-                    <SelectValue placeholder="Select sub-category" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white z-50">
-                    {getSubCategories(formData.category).map(subCat => (
-                      <SelectItem key={subCat} value={subCat}>
-                        {subCat}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Project Title *</Label>
-                <Input
-                  value={formData.title || ''}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="E-Commerce Website"
-                  className="bg-white"
-                />
-              </div>
-
-              <div>
-                <Label>Client Name</Label>
-                <Input
-                  value={formData.client_name || ''}
-                  onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
-                  placeholder="Acme Corp"
-                  className="bg-white"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label>Description</Label>
-              <Textarea
-                value={formData.description || ''}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={3}
-                placeholder="Brief description of the project"
-                className="bg-white"
-              />
-            </div>
-
-            <div>
-              <Label>Project URL</Label>
-              <Input
-                value={formData.project_url || ''}
-                onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
-                placeholder="https://example.com"
-                className="bg-white"
-              />
-            </div>
-
-            <div>
-              <Label>Project Image</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={uploading}
-                  className="bg-white"
-                />
-                {uploading && <span className="text-sm text-gray-600">Uploading...</span>}
-              </div>
-              {formData.image_url && (
-                <img src={formData.image_url} alt="Preview" className="mt-2 w-full h-48 object-cover rounded border" />
+              {formData.category && (
+                <div>
+                  <Label className="text-base font-semibold">2. Select Sub-Category *</Label>
+                  <Select 
+                    value={formData.sub_category || ''} 
+                    onValueChange={(value) => setFormData({ ...formData, sub_category: value })}
+                  >
+                    <SelectTrigger className="bg-white mt-2">
+                      <SelectValue placeholder="Choose sub-category" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white z-50">
+                      {getSubCategories(formData.category).map(subCat => (
+                        <SelectItem key={subCat} value={subCat}>
+                          {subCat}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Display Order</Label>
-                <Input
-                  type="number"
-                  value={formData.display_order || 0}
-                  onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
-                  className="bg-white"
-                />
-              </div>
+            {/* Dynamic Fields based on Category */}
+            {formData.category && (
+              <>
+                <div className="border-t pt-4 mt-2">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Fill in the details for your {formData.category.toLowerCase()} project:
+                  </p>
+                </div>
 
-              <div className="flex items-center space-x-2 pt-6">
-                <input
-                  type="checkbox"
-                  id="portfolio-active"
-                  checked={formData.active ?? true}
-                  onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
-                  className="rounded"
-                />
-                <Label htmlFor="portfolio-active">Active (visible on website)</Label>
-              </div>
-            </div>
+                {/* Title Field */}
+                {currentFields.title && (
+                  <div>
+                    <Label>{(currentFields.title as any).label} {(currentFields.title as any).required && '*'}</Label>
+                    <Input
+                      value={formData.title || ''}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder={(currentFields.title as any).placeholder}
+                      className="bg-white mt-1"
+                    />
+                  </div>
+                )}
 
-            <div className="flex gap-2">
-              <Button onClick={handleSave}>
+                {/* URL Field - Only for Websites and Videos */}
+                {currentFields.project_url && (
+                  <div>
+                    <Label>{(currentFields.project_url as any).label} {(currentFields.project_url as any).required && '*'}</Label>
+                    <Input
+                      value={formData.project_url || ''}
+                      onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
+                      placeholder={(currentFields.project_url as any).placeholder}
+                      className="bg-white mt-1"
+                    />
+                    {formData.category === 'Videos' && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Paste YouTube or Vimeo URL for embedded playback
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Client Name Field */}
+                {currentFields.client_name && (
+                  <div>
+                    <Label>{(currentFields.client_name as any).label} {(currentFields.client_name as any).required && '*'}</Label>
+                    <Input
+                      value={formData.client_name || ''}
+                      onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
+                      placeholder={(currentFields.client_name as any).placeholder}
+                      className="bg-white mt-1"
+                    />
+                  </div>
+                )}
+
+                {/* Description Field */}
+                {currentFields.description && (
+                  <div>
+                    <Label>{(currentFields.description as any).label} {(currentFields.description as any).required && '*'}</Label>
+                    <Textarea
+                      value={formData.description || ''}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={3}
+                      placeholder={(currentFields.description as any).placeholder}
+                      className="bg-white mt-1"
+                    />
+                    {formData.category === 'Results' && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        This will be displayed as the main metric (e.g., "+250% Traffic")
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Image Upload Field */}
+                {currentFields.image_url && (
+                  <div>
+                    <Label>{(currentFields.image_url as any).label} {(currentFields.image_url as any).required && '*'}</Label>
+                    <div className="flex items-center gap-4 mt-1">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploading}
+                        className="bg-white"
+                      />
+                      {uploading && <span className="text-sm text-gray-600">Uploading...</span>}
+                    </div>
+                    {formData.image_url && (
+                      <img src={formData.image_url} alt="Preview" className="mt-2 w-full h-48 object-cover rounded border" />
+                    )}
+                  </div>
+                )}
+
+                {/* Additional Settings */}
+                <div className="grid grid-cols-2 gap-4 border-t pt-4">
+                  <div>
+                    <Label>Display Order</Label>
+                    <Input
+                      type="number"
+                      value={formData.display_order || 0}
+                      onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
+                      className="bg-white mt-1"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2 pt-6">
+                    <input
+                      type="checkbox"
+                      id="portfolio-active"
+                      checked={formData.active ?? true}
+                      onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
+                      className="rounded"
+                    />
+                    <Label htmlFor="portfolio-active">Active (visible on website)</Label>
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div className="flex gap-2 pt-2">
+              <Button onClick={handleSave} disabled={!formData.category}>
                 {editingItem.id ? 'Update Project' : 'Create Project'}
               </Button>
               <Button variant="outline" onClick={() => { setEditingItem(null); setFormData({}); }}>
@@ -409,7 +521,6 @@ export default function PortfolioTabComplete() {
                     {item.sub_category && (
                       <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-full">{item.sub_category}</span>
                     )}
-                    <span className="text-xs text-gray-400">Order: {item.display_order}</span>
                   </div>
                   <div className="flex gap-2 mt-4 pt-3 border-t">
                     {item.project_url && (
