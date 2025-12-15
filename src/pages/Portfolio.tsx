@@ -164,32 +164,8 @@ export default function Portfolio() {
   const allPosters = getDbItemsByType('Posters');
   const allResults = getDbItemsByType('Results');
 
-  // Get sub-categories - use shared categories that exist in data
-  const getCategories = () => {
-    let items: any[] = [];
-    switch (activeTab) {
-      case 'websites':
-        items = allWebsites;
-        break;
-      case 'logos':
-        items = allLogos;
-        break;
-      case 'videos':
-        items = allVideos;
-        break;
-      case 'posters':
-        items = allPosters;
-        break;
-      case 'results':
-        items = allResults;
-        break;
-    }
-    // Get unique sub-categories from items, ordered by SHARED_SUB_CATEGORIES
-    const existingCats = new Set(items.map(item => item.sub_category).filter(Boolean));
-    return SHARED_SUB_CATEGORIES.filter(cat => existingCats.has(cat));
-  };
-
-  const categories = getCategories();
+  // Show all sub-categories for filtering (same as admin panel)
+  const categories = SHARED_SUB_CATEGORIES;
 
   // Reset category filter when tab changes
   const handleTabChange = (value: string) => {
