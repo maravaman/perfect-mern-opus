@@ -4,6 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ArrowRight, Star, CheckCircle2, Globe, Search, Megaphone, Share2, FileText, Users, Smartphone, GraduationCap, ShoppingCart, Code, TrendingUp, Bot, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TrustedClients } from "@/components/TrustedClients";
+import { OffersBanner } from "@/components/OffersBanner";
 import { useEffect, useRef } from "react";
 import anvikaImg from "@/assets/portfolio/anvika.png";
 import sriAcademyImg from "@/assets/portfolio/sri-academy.png";
@@ -145,7 +146,7 @@ export default function Knight21Home() {
             <h1 className="text-4xl md:text-6xl font-bold font-poppins">
               We Are <span className="text-gradient">KNIGHT21</span>
               <br />
-              Digi Hub
+              <span className="text-gradient">DIGI HUB</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Your Growth Partner In Website Designing, SEO Management, Google Ads, Social Media Marketing, Content Marketing, Email Marketing, Mobile Apps
@@ -166,6 +167,9 @@ export default function Knight21Home() {
           </div>
         </div>
       </section>
+
+      {/* Offers Banner */}
+      <OffersBanner />
 
       {/* Trusted Clients */}
       <TrustedClients />

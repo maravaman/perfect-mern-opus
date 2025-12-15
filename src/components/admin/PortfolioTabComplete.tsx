@@ -10,13 +10,20 @@ import { toast } from 'sonner';
 import { Plus, Pencil, Trash2, ExternalLink, Image, Globe, Palette, Video, FileText, Layout } from 'lucide-react';
 import { uploadImage } from '@/lib/storage';
 
-// Main portfolio categories with their sub-categories and required fields
+// Shared sub-categories for all portfolio types
+const SHARED_SUB_CATEGORIES = [
+  'E-commerce', 'Education', 'Restaurant', 'Real Estate', 'Healthcare', 
+  'Fashion', 'Technology', 'Corporate', 'Portfolio', 'Entertainment',
+  'Finance', 'Travel', 'Sports', 'Food & Beverage', 'Automotive', 'Other'
+];
+
+// Main portfolio categories with their required fields
 const PORTFOLIO_CATEGORIES = [
   { 
     value: 'Websites', 
     label: 'Websites', 
     icon: Globe,
-    subCategories: ['E-commerce', 'Education', 'Restaurant', 'Real Estate', 'Healthcare', 'Fashion', 'Technology', 'Corporate', 'Portfolio', 'Blog', 'Other'],
+    subCategories: SHARED_SUB_CATEGORIES,
     fields: {
       title: { label: 'Website Title', placeholder: 'E.g., Fashion Store Website', required: true },
       project_url: { label: 'Live Website URL', placeholder: 'https://example.com', required: true },
@@ -29,7 +36,7 @@ const PORTFOLIO_CATEGORIES = [
     value: 'Logos', 
     label: 'Logos', 
     icon: Palette,
-    subCategories: ['Minimalist', 'Vintage', 'Modern', 'Abstract', 'Mascot', 'Wordmark', 'Emblem', 'Other'],
+    subCategories: SHARED_SUB_CATEGORIES,
     fields: {
       title: { label: 'Logo Title', placeholder: 'E.g., Tech Startup Logo', required: true },
       client_name: { label: 'Client/Brand Name', placeholder: 'Brand or Company Name', required: true },
@@ -41,7 +48,7 @@ const PORTFOLIO_CATEGORIES = [
     value: 'Videos', 
     label: 'Videos', 
     icon: Video,
-    subCategories: ['Promotional', 'Explainer', 'Product Demo', 'Testimonial', 'Social Media', 'Animation', 'Corporate', 'Other'],
+    subCategories: SHARED_SUB_CATEGORIES,
     fields: {
       title: { label: 'Video Title', placeholder: 'E.g., Product Launch Video', required: true },
       project_url: { label: 'Video URL (YouTube/Vimeo)', placeholder: 'https://youtube.com/watch?v=...', required: true },
@@ -54,7 +61,7 @@ const PORTFOLIO_CATEGORIES = [
     value: 'Posters', 
     label: 'Posters', 
     icon: FileText,
-    subCategories: ['Event', 'Product', 'Social Media', 'Flyer', 'Banner', 'Infographic', 'Advertisement', 'Other'],
+    subCategories: SHARED_SUB_CATEGORIES,
     fields: {
       title: { label: 'Poster Title', placeholder: 'E.g., Summer Sale Poster', required: true },
       client_name: { label: 'Client Name', placeholder: 'Client or Brand Name', required: false },
@@ -66,7 +73,7 @@ const PORTFOLIO_CATEGORIES = [
     value: 'Results', 
     label: 'Results', 
     icon: Layout,
-    subCategories: ['SEO', 'Social Media', 'PPC/Ads', 'Email Marketing', 'Content Marketing', 'Lead Generation', 'Other'],
+    subCategories: SHARED_SUB_CATEGORIES,
     fields: {
       title: { label: 'Campaign/Project Name', placeholder: 'E.g., SEO Campaign for XYZ', required: true },
       description: { label: 'Key Result/Metric', placeholder: 'E.g., +250% Traffic Increase', required: true },
