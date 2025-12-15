@@ -296,7 +296,7 @@ export function ToolsTab() {
             <TableRow key={tool.id}>
               <TableCell>
                 {tool.icon && tool.icon.startsWith('http') && (
-                  <img src={tool.icon} alt={tool.title} className="h-8 w-8 object-cover rounded" />
+                  <img src={tool.icon} alt={tool.title} className="h-12 w-12 object-cover rounded" />
                 )}
               </TableCell>
               <TableCell>{tool.title}</TableCell>
