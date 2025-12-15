@@ -7,15 +7,41 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Plus, Pencil, Trash2, ExternalLink, Image, Globe, Smartphone, Palette, Video, FileText, Layout } from 'lucide-react';
+import { Plus, Pencil, Trash2, ExternalLink, Image, Globe, Palette, Video, FileText, Layout } from 'lucide-react';
 import { uploadImage } from '@/lib/storage';
 
+// Main portfolio categories with their sub-categories
 const PORTFOLIO_CATEGORIES = [
-  { value: 'Websites', label: 'Websites', icon: Globe },
-  { value: 'Logos', label: 'Logos', icon: Palette },
-  { value: 'Videos', label: 'Videos', icon: Video },
-  { value: 'Posters', label: 'Posters', icon: FileText },
-  { value: 'Results', label: 'Results', icon: Layout },
+  { 
+    value: 'Websites', 
+    label: 'Websites', 
+    icon: Globe,
+    subCategories: ['E-commerce', 'Education', 'Restaurant', 'Real Estate', 'Healthcare', 'Fashion', 'Technology', 'Corporate', 'Portfolio', 'Blog', 'Other']
+  },
+  { 
+    value: 'Logos', 
+    label: 'Logos', 
+    icon: Palette,
+    subCategories: ['Minimalist', 'Vintage', 'Modern', 'Abstract', 'Mascot', 'Wordmark', 'Emblem', 'Other']
+  },
+  { 
+    value: 'Videos', 
+    label: 'Videos', 
+    icon: Video,
+    subCategories: ['Promotional', 'Explainer', 'Product Demo', 'Testimonial', 'Social Media', 'Animation', 'Corporate', 'Other']
+  },
+  { 
+    value: 'Posters', 
+    label: 'Posters', 
+    icon: FileText,
+    subCategories: ['Event', 'Product', 'Social Media', 'Flyer', 'Banner', 'Infographic', 'Advertisement', 'Other']
+  },
+  { 
+    value: 'Results', 
+    label: 'Results', 
+    icon: Layout,
+    subCategories: ['SEO', 'Social Media', 'PPC/Ads', 'Email Marketing', 'Content Marketing', 'Lead Generation', 'Other']
+  },
 ];
 
 export default function PortfolioTabComplete() {
@@ -60,6 +86,19 @@ export default function PortfolioTabComplete() {
     }
   };
 
+  const handleCategoryChange = (category: string) => {
+    setFormData({ 
+      ...formData, 
+      category,
+      sub_category: '' // Reset sub-category when main category changes
+    });
+  };
+
+  const getSubCategories = (category: string) => {
+    const cat = PORTFOLIO_CATEGORIES.find(c => c.value === category);
+    return cat?.subCategories || [];
+  };
+
   const handleSave = async () => {
     if (!formData.title || !formData.category) {
       toast.error('Please fill in required fields (title, category)');
@@ -73,6 +112,7 @@ export default function PortfolioTabComplete() {
           .update({
             title: formData.title,
             category: formData.category,
+            sub_category: formData.sub_category || null,
             description: formData.description || null,
             client_name: formData.client_name || null,
             project_url: formData.project_url || null,
@@ -90,6 +130,7 @@ export default function PortfolioTabComplete() {
           .insert([{
             title: formData.title,
             category: formData.category,
+            sub_category: formData.sub_category || null,
             description: formData.description || null,
             client_name: formData.client_name || null,
             project_url: formData.project_url || null,
@@ -155,7 +196,7 @@ export default function PortfolioTabComplete() {
               ))}
             </SelectContent>
           </Select>
-          <Button onClick={() => { setEditingItem({}); setFormData({ active: true, display_order: 0, category: 'Web Development' }); }}>
+          <Button onClick={() => { setEditingItem({}); setFormData({ active: true, display_order: 0, category: 'Websites' }); }}>
             <Plus className="w-4 h-4 mr-2" />
             Add Project
           </Button>
@@ -163,7 +204,7 @@ export default function PortfolioTabComplete() {
       </div>
 
       {/* Category Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
         {PORTFOLIO_CATEGORIES.map(cat => {
           const count = groupedPortfolio[cat.value]?.length || 0;
           const Icon = cat.icon;
@@ -196,7 +237,7 @@ export default function PortfolioTabComplete() {
                 <Label>Category *</Label>
                 <Select 
                   value={formData.category || ''} 
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  onValueChange={handleCategoryChange}
                 >
                   <SelectTrigger className="bg-white">
                     <SelectValue placeholder="Select category" />
@@ -215,6 +256,38 @@ export default function PortfolioTabComplete() {
               </div>
 
               <div>
+                <Label>Sub-Category</Label>
+                <Select 
+                  value={formData.sub_category || ''} 
+                  onValueChange={(value) => setFormData({ ...formData, sub_category: value })}
+                  disabled={!formData.category}
+                >
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select sub-category" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white z-50">
+                    {getSubCategories(formData.category).map(subCat => (
+                      <SelectItem key={subCat} value={subCat}>
+                        {subCat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Project Title *</Label>
+                <Input
+                  value={formData.title || ''}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="E-Commerce Website"
+                  className="bg-white"
+                />
+              </div>
+
+              <div>
                 <Label>Client Name</Label>
                 <Input
                   value={formData.client_name || ''}
@@ -223,16 +296,6 @@ export default function PortfolioTabComplete() {
                   className="bg-white"
                 />
               </div>
-            </div>
-
-            <div>
-              <Label>Project Title *</Label>
-              <Input
-                value={formData.title || ''}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="E-Commerce Website"
-                className="bg-white"
-              />
             </div>
 
             <div>
@@ -341,8 +404,11 @@ export default function PortfolioTabComplete() {
                   {item.description && (
                     <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{item.description}</p>
                   )}
-                  <div className="flex items-center gap-2 mt-3">
+                  <div className="flex items-center gap-2 mt-3 flex-wrap">
                     <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">{item.category}</span>
+                    {item.sub_category && (
+                      <span className="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-full">{item.sub_category}</span>
+                    )}
                     <span className="text-xs text-gray-400">Order: {item.display_order}</span>
                   </div>
                   <div className="flex gap-2 mt-4 pt-3 border-t">
