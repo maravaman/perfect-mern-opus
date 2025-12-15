@@ -1,9 +1,23 @@
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { ExternalLink, Loader2, Play } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+
+// Helper to extract YouTube video ID
+const getYouTubeId = (url: string): string | null => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
+// Helper to check if URL is a direct video file
+const isDirectVideo = (url: string): boolean => {
+  if (!url) return false;
+  return /\.(mp4|webm|ogg|mov)$/i.test(url);
+};
 
 import anvikaImg from "@/assets/portfolio/anvika.png";
 import sriAcademyImg from "@/assets/portfolio/sri-academy.png";
@@ -327,34 +341,60 @@ export default function Portfolio() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filterByCategory(allVideos).map((item) => (
-                    <a 
-                      key={item.id} 
-                      href={item.project_url || "#"} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
-                      <Card className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
+                  {filterByCategory(allVideos).map((item) => {
+                    const youtubeId = getYouTubeId(item.project_url || '');
+                    const isDirectVid = isDirectVideo(item.project_url || '');
+                    
+                    return (
+                      <Card key={item.id} className="overflow-hidden glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
                         <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
-                          <img
-                            src={item.image_url || "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=500"}
-                            alt={item.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-secondary/40 flex items-center justify-center">
-                            <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                              <div className="w-0 h-0 border-l-8 border-t-4 border-b-4 border-l-primary border-t-transparent border-b-transparent ml-1"></div>
-                            </div>
-                          </div>
+                          {youtubeId ? (
+                            // YouTube embed
+                            <iframe
+                              src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&rel=0`}
+                              title={item.title}
+                              className="w-full h-full"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          ) : isDirectVid ? (
+                            // Direct video file
+                            <video
+                              src={item.project_url}
+                              controls
+                              className="w-full h-full object-cover"
+                              poster={item.image_url || undefined}
+                            >
+                              Your browser does not support the video tag.
+                            </video>
+                          ) : (
+                            // Fallback: thumbnail with play button linking to URL
+                            <a 
+                              href={item.project_url || "#"} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="block w-full h-full"
+                            >
+                              <img
+                                src={item.image_url || "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=500"}
+                                alt={item.title}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-secondary/40 flex items-center justify-center hover:bg-primary/40 transition-colors">
+                                <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                                  <Play className="w-8 h-8 text-primary ml-1" />
+                                </div>
+                              </div>
+                            </a>
+                          )}
                         </div>
                         <div className="p-4 border-t border-primary/10">
-                          <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
+                          <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
                           <p className="text-sm text-muted-foreground">{item.sub_category || item.client_name || item.description}</p>
                         </div>
                       </Card>
-                    </a>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
               {!isLoading && filterByCategory(allVideos).length === 0 && (
