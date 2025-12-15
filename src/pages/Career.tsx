@@ -54,11 +54,8 @@ export default function Career() {
 
         if (uploadError) throw uploadError;
 
-        const { data: { publicUrl } } = supabase.storage
-          .from("knight21-uploads")
-          .getPublicUrl(filePath);
-
-        resumeUrl = publicUrl;
+        // Store only the file path - admins access via signed URLs
+        resumeUrl = filePath;
       }
 
       // Save application to contact_inquiries table
