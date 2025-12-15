@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Pencil, Trash2, Plus, X, Search, Upload, Eye, EyeOff } from "lucide-react";
+import { Pencil, Trash2, Plus, X, Search, Upload } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -439,14 +439,6 @@ export function BlogsTabNew() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      title={blog.published ? 'Click to unpublish' : 'Click to publish'}
-                      onClick={() => handleTogglePublished(blog.id, !blog.published)}
-                    >
-                      {blog.published ? <Eye className="w-4 h-4 text-green-600" /> : <EyeOff className="w-4 h-4 text-gray-400" />}
-                    </Button>
                     <Button variant="outline" size="icon" onClick={() => handleEdit(blog)}>
                       <Pencil className="w-4 h-4" />
                     </Button>
