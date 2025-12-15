@@ -143,7 +143,7 @@ export default function Knight21Home() {
               Enterprise-Grade Digital Marketing
             </div>
             <h1 className="text-4xl md:text-6xl font-bold font-poppins">
-              We Are <span className="text-gradient">Knight 21</span>
+              We Are <span className="text-gradient">KNIGHT21</span>
               <br />
               Digi Hub
             </h1>
