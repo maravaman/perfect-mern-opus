@@ -102,11 +102,11 @@ export function OffersPopup() {
             <img 
               src={currentOffer.image_url!} 
               alt={currentOffer.title}
-              className="w-32 h-32 mx-auto mb-6 object-contain rounded-lg"
+              className="w-full max-w-[200px] h-auto mx-auto mb-6 object-contain rounded-lg shadow-lg"
             />
           ) : (
-            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-              <Gift className="w-8 h-8 text-white" />
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+              <Gift className="w-10 h-10 text-white" />
             </div>
           )}
 
