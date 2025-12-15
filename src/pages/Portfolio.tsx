@@ -19,6 +19,13 @@ const isDirectVideo = (url: string): boolean => {
   return /\.(mp4|webm|ogg|mov)$/i.test(url);
 };
 
+// Shared sub-categories (same as admin panel)
+const SHARED_SUB_CATEGORIES = [
+  'E-commerce', 'Education', 'Restaurant', 'Real Estate', 'Healthcare', 
+  'Fashion', 'Technology', 'Corporate', 'Portfolio', 'Entertainment',
+  'Finance', 'Travel', 'Sports', 'Food & Beverage', 'Automotive', 'Other'
+];
+
 import anvikaImg from "@/assets/portfolio/anvika.png";
 import sriAcademyImg from "@/assets/portfolio/sri-academy.png";
 import vedhaImg from "@/assets/portfolio/vedha.png";
@@ -29,12 +36,12 @@ import nextgenImg from "@/assets/portfolio/nextgen.png";
 import newGenElevatorsImg from "@/assets/portfolio/new-gen-elevators.png";
 import leelavathiImg from "@/assets/portfolio/leelavathi.png";
 
-// Static portfolio data for websites
+// Static portfolio data for websites (with matching sub-categories)
 const staticWebsites = [
   { 
     id: 1, 
     title: "Anvika Computers Services", 
-    category: "Computer Services", 
+    sub_category: "Technology", 
     url: "https://anvikacomputersservices.com",
     description: "Professional computer services and IT solutions",
     image: anvikaImg
@@ -42,7 +49,7 @@ const staticWebsites = [
   { 
     id: 2, 
     title: "Sri Academy", 
-    category: "Education", 
+    sub_category: "Education", 
     url: "https://sriacademy111.com",
     description: "Educational institution providing quality learning",
     image: sriAcademyImg
@@ -50,7 +57,7 @@ const staticWebsites = [
   { 
     id: 3, 
     title: "Vedha Software Solutions", 
-    category: "Software", 
+    sub_category: "Technology", 
     url: "https://vedhasoftwaresolutions.com",
     description: "Complete software development and IT consulting",
     image: vedhaImg
@@ -58,7 +65,7 @@ const staticWebsites = [
   { 
     id: 4, 
     title: "Dine Empire", 
-    category: "Restaurant", 
+    sub_category: "Restaurant", 
     url: "https://dineempire.com",
     description: "Fine dining restaurant and culinary experiences",
     image: dineEmpireImg
@@ -66,7 +73,7 @@ const staticWebsites = [
   { 
     id: 5, 
     title: "Jireh Melodies", 
-    category: "Music", 
+    sub_category: "Entertainment", 
     url: "https://www.jirehmelodies.com",
     description: "Music production and entertainment services",
     image: jirehMelodiesImg
@@ -74,7 +81,7 @@ const staticWebsites = [
   { 
     id: 7, 
     title: "MB Prime Projects",
-    category: "Real Estate", 
+    sub_category: "Real Estate", 
     url: "https://mbprimeprojects.com",
     description: "Prime real estate and construction projects",
     image: mbPrimeImg
@@ -82,7 +89,7 @@ const staticWebsites = [
   { 
     id: 10, 
     title: "Next Gens Store",
-    category: "E-commerce", 
+    sub_category: "E-commerce", 
     url: "https://nextgensstore.com",
     description: "Modern online store with latest products",
     image: nextgenImg
@@ -90,7 +97,7 @@ const staticWebsites = [
   { 
     id: 11, 
     title: "New Gen Elevators",
-    category: "Industrial", 
+    sub_category: "Corporate", 
     url: "https://newgenelevators.in",
     description: "Elevator installation and maintenance services",
     image: newGenElevatorsImg
@@ -98,7 +105,7 @@ const staticWebsites = [
   { 
     id: 8, 
     title: "Leelavathi Designer",
-    category: "Fashion", 
+    sub_category: "Fashion", 
     url: "https://leelavathidesigner.com",
     description: "Custom fashion design and styling services",
     image: leelavathiImg
@@ -139,7 +146,7 @@ export default function Portfolio() {
       project_url: item.url,
       description: item.description,
       image_url: item.image,
-      sub_category: item.category,
+      sub_category: item.sub_category,
     })),
     ...getDbItemsByType('Websites').map(item => ({
       id: item.id,
@@ -148,7 +155,7 @@ export default function Portfolio() {
       project_url: item.project_url,
       description: item.description,
       image_url: item.image_url,
-      sub_category: item.client_name || 'General',
+      sub_category: item.sub_category || 'Other',
     })),
   ];
 
@@ -157,22 +164,29 @@ export default function Portfolio() {
   const allPosters = getDbItemsByType('Posters');
   const allResults = getDbItemsByType('Results');
 
-  // Get unique sub-categories based on active tab
+  // Get sub-categories - use shared categories that exist in data
   const getCategories = () => {
+    let items: any[] = [];
     switch (activeTab) {
       case 'websites':
-        return [...new Set(allWebsites.map(item => item.sub_category).filter(Boolean))];
+        items = allWebsites;
+        break;
       case 'logos':
-        return [...new Set(allLogos.map(item => item.sub_category).filter(Boolean))];
+        items = allLogos;
+        break;
       case 'videos':
-        return [...new Set(allVideos.map(item => item.sub_category).filter(Boolean))];
+        items = allVideos;
+        break;
       case 'posters':
-        return [...new Set(allPosters.map(item => item.sub_category).filter(Boolean))];
+        items = allPosters;
+        break;
       case 'results':
-        return [...new Set(allResults.map(item => item.sub_category).filter(Boolean))];
-      default:
-        return [];
+        items = allResults;
+        break;
     }
+    // Get unique sub-categories from items, ordered by SHARED_SUB_CATEGORIES
+    const existingCats = new Set(items.map(item => item.sub_category).filter(Boolean));
+    return SHARED_SUB_CATEGORIES.filter(cat => existingCats.has(cat));
   };
 
   const categories = getCategories();
@@ -185,10 +199,7 @@ export default function Portfolio() {
 
   const filterByCategory = (items: any[]) => {
     if (activeCategory === "all") return items;
-    return items.filter(item => {
-      const cat = item.sub_category;
-      return cat?.toLowerCase().includes(activeCategory.toLowerCase());
-    });
+    return items.filter(item => item.sub_category === activeCategory);
   };
 
   return (

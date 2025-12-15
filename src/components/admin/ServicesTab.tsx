@@ -26,6 +26,10 @@ const SERVICE_CATEGORIES = [
   { value: "Training & Courses", label: "Training & Courses", icon: GraduationCap },
   { value: "Advertising", label: "Advertising", icon: Megaphone },
   { value: "Mobile Apps", label: "Mobile Apps", icon: Smartphone },
+  // Legacy categories from existing data
+  { value: "Development", label: "Development", icon: Code },
+  { value: "Marketing", label: "Marketing", icon: TrendingUp },
+  { value: "Design", label: "Design", icon: Palette },
 ];
 
 export function ServicesTab() {
