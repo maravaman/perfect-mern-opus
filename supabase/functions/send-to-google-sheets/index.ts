@@ -5,6 +5,38 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input sanitization to prevent CSV/formula injection
+function sanitizeForSheets(value: string | undefined): string {
+  if (!value) return '';
+  
+  const trimmed = value.trim();
+  
+  // Prevent formula injection by prefixing dangerous characters with single quote
+  // Characters that can trigger formula execution in spreadsheets: = + - @ |
+  if (trimmed.match(/^[=+\-@|]/)) {
+    return "'" + trimmed;
+  }
+  
+  // Limit length to prevent abuse (1000 chars max)
+  return trimmed.substring(0, 1000);
+}
+
+// Email validation
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// URL validation for resume URLs
+function isValidUrl(url: string | undefined): boolean {
+  if (!url) return true; // Optional field
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -14,6 +46,37 @@ serve(async (req) => {
     const { name, email, phone, message, type, position, experience, resumeUrl } = await req.json();
 
     console.log('Received submission:', { name, email, phone, type: type || 'contact' });
+
+    // Server-side validation
+    if (!name || !email) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Missing required fields: name and email are required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!isValidEmail(email)) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid email format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (resumeUrl && !isValidUrl(resumeUrl)) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid resume URL format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Sanitize all user inputs to prevent formula injection
+    const sanitizedName = sanitizeForSheets(name);
+    const sanitizedEmail = sanitizeForSheets(email);
+    const sanitizedPhone = sanitizeForSheets(phone);
+    const sanitizedMessage = sanitizeForSheets(message);
+    const sanitizedPosition = sanitizeForSheets(position);
+    const sanitizedExperience = sanitizeForSheets(experience);
+    const sanitizedResumeUrl = sanitizeForSheets(resumeUrl);
 
     // Get Google Sheets credentials from environment
     const privateKey = Deno.env.get('GOOGLE_SHEETS_PRIVATE_KEY');
@@ -129,16 +192,16 @@ serve(async (req) => {
     // Append data to Google Sheets
     const timestamp = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
 
-    // Determine which sheet and data based on type
+    // Determine which sheet and data based on type (using sanitized values)
     let sheetName = 'Sheet1'; // Default for contact
-    let values: any[][];
+    let values: string[][];
 
     if (type === 'career') {
       sheetName = 'Career Applications'; // Career submissions go to different sheet
-      values = [[timestamp, name, email, phone, position || '', experience || '', message || '', resumeUrl || '']];
+      values = [[timestamp, sanitizedName, sanitizedEmail, sanitizedPhone, sanitizedPosition, sanitizedExperience, sanitizedMessage, sanitizedResumeUrl]];
     } else {
       sheetName = 'Contact Submissions'; // Contact submissions
-      values = [[timestamp, name, email, phone, message || '']];
+      values = [[timestamp, sanitizedName, sanitizedEmail, sanitizedPhone, sanitizedMessage]];
     }
 
     const sheetsResponse = await fetch(
@@ -170,9 +233,8 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error('Error in send-to-google-sheets function:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ success: false, error: errorMessage }),
+      JSON.stringify({ success: false, error: 'An error occurred processing your request' }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
