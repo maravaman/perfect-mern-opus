@@ -139,15 +139,22 @@ export default function Knight21Services() {
   // Combine static services with database services (avoid duplicates by title)
   const staticTitles = staticServices.map(s => s.title.toLowerCase());
   const additionalServices = dbServices.filter(s => !staticTitles.includes(s.title.toLowerCase()));
-  const services = [...staticServices, ...additionalServices.map((s, idx) => ({
+  const combinedServices = [...staticServices, ...additionalServices.map((s) => ({
     ...s,
     id: s.id,
-    number: s.number || String(staticServices.length + idx + 1).padStart(2, '0'),
     description: s.description || '',
-    display_order: s.display_order || staticServices.length + idx + 1,
+    display_order: s.display_order || 999,
     active: s.active ?? true,
     category: s.category || 'Other'
   }))];
+  
+  // Sort by display_order and assign unique sequential numbers
+  const services = combinedServices
+    .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+    .map((s, idx) => ({
+      ...s,
+      number: String(idx + 1).padStart(2, '0')
+    }));
   
   const filteredDetailedServices = categoryFilter 
     ? detailedServices.filter(s => s.title === categoryFilter)
@@ -240,7 +247,7 @@ export default function Knight21Services() {
                   <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
                     <IconComponent className="w-7 h-7 text-white" />
                   </div>
-                  <div className="text-sm font-bold text-primary/40 mb-2">{service.number || `0${index + 1}`}</div>
+                  <div className="text-sm font-bold text-primary/40 mb-2">{service.number}</div>
                   <h3 className="text-xl font-semibold font-poppins mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
                   <p className="text-muted-foreground mb-4">{service.description}</p>
                   <Link to={`/service/${service.title.toLowerCase().replace(/\s+/g, '-').replace(/[()&/]/g, '').replace(/--+/g, '-')}`} className="text-primary font-medium inline-flex items-center hover:gap-2 transition-all group">
