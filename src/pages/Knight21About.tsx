@@ -83,7 +83,7 @@ export default function Knight21About() {
               <Card className="p-6 bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg hover:shadow-card-hover transition-all animate-slide-up" style={{animationDelay: '0.1s'}}>
                 <div className="text-6xl font-bold mb-4">3+</div>
                 <p className="text-xl font-semibold mb-2">Years of Experience</p>
-                <p className="text-primary-foreground/90">in Website, App Designing & Digital Marketing</p>
+                <p className="text-primary-foreground/90">in Web, App Development & Digital Marketing</p>
               </Card>
             </div>
           </div>
