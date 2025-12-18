@@ -70,11 +70,19 @@ export function CareerApplicationsTab() {
     return { position, experience, coverLetter: coverLetter.trim(), resumeUrl };
   };
 
-  // Extract file path from storage URL
+  // Extract file path from storage URL or direct path
   const extractFilePath = (url: string): string | null => {
     try {
-      const match = url.match(/knight21-uploads\/(.+)$/);
-      return match ? match[1] : null;
+      // If it's a full URL, extract the path after the bucket name
+      if (url.includes('knight21-uploads/')) {
+        const match = url.match(/knight21-uploads\/(.+)$/);
+        return match ? match[1] : null;
+      }
+      // If it's just a file path (e.g., "resumes/filename.pdf"), return as is
+      if (url.startsWith('resumes/')) {
+        return url;
+      }
+      return null;
     } catch {
       return null;
     }

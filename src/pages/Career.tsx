@@ -54,8 +54,12 @@ export default function Career() {
 
         if (uploadError) throw uploadError;
 
-        // Store only the file path - admins access via signed URLs
-        resumeUrl = filePath;
+        // Get the public URL for the uploaded file (includes bucket name in path)
+        const { data: urlData } = supabase.storage
+          .from("knight21-uploads")
+          .getPublicUrl(filePath);
+        
+        resumeUrl = urlData.publicUrl;
       }
 
       // Save application to contact_inquiries table

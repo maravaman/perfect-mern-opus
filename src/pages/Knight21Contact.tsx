@@ -9,6 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import { useQuery } from "@tanstack/react-query";
 
 const inquiryCategories = [
   { value: "general", label: "General Inquiry" },
@@ -38,6 +39,26 @@ export default function Knight21Contact() {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Fetch site settings for dynamic contact info
+  const { data: settings } = useQuery({
+    queryKey: ["site_settings_contact"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("key, value");
+      if (error) throw error;
+      return data.reduce((acc: Record<string, string>, item) => {
+        acc[item.key] = item.value || "";
+        return acc;
+      }, {});
+    },
+  });
+
+  const contactEmail = settings?.contact_email || "knight21digihub@gmail.com";
+  const contactPhone = settings?.contact_phone || "+91 8187007475";
+  const contactAddress = settings?.contact_address || "Near msn charities, mahalaxmi nagar, jaganaikpur, kakinada, 522003";
+  const whatsappNumber = contactPhone.replace(/[^0-9]/g, "");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,8 +167,8 @@ export default function Knight21Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Email Address</h3>
-                      <a href="mailto:knight21digihub@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">
-                        knight21digihub@gmail.com
+                      <a href={`mailto:${contactEmail}`} className="text-muted-foreground hover:text-primary transition-colors">
+                        {contactEmail}
                       </a>
                     </div>
                   </div>
@@ -158,8 +179,8 @@ export default function Knight21Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Phone Number</h3>
-                      <a href="tel:+918187007475" className="text-muted-foreground hover:text-primary transition-colors">
-                        +91 8187007475
+                      <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="text-muted-foreground hover:text-primary transition-colors">
+                        {contactPhone}
                       </a>
                     </div>
                   </div>
@@ -171,7 +192,7 @@ export default function Knight21Contact() {
                     <div>
                       <h3 className="font-semibold mb-1">Location Address</h3>
                       <p className="text-muted-foreground">
-                        Near msn charities, mahalaxmi nagar, jaganaikpur, kakinada, 522003
+                        {contactAddress}
                       </p>
                     </div>
                   </div>
@@ -198,7 +219,7 @@ export default function Knight21Contact() {
                     className="w-12 h-12 rounded-full glass-card hover:bg-primary hover:text-white flex items-center justify-center transition-all hover:scale-110 shadow-card hover:shadow-card-hover">
                     <Linkedin className="w-5 h-5" />
                   </a>
-                  <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer"
+                  <a href={`http://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer"
                     className="w-12 h-12 rounded-full glass-card hover:bg-primary hover:text-white flex items-center justify-center transition-all hover:scale-110 shadow-card hover:shadow-card-hover">
                     <MessageCircle className="w-5 h-5" />
                   </a>
