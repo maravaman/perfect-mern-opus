@@ -754,6 +754,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_blog_posts: {
+        Args: never
+        Returns: {
+          author_name: string
+          category: string
+          content: string
+          created_at: string
+          excerpt: string
+          id: string
+          image_url: string
+          meta_description: string
+          meta_title: string
+          published: boolean
+          tags: string[]
+          title: string
+          updated_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
