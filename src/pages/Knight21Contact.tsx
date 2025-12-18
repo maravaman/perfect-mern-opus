@@ -57,8 +57,8 @@ export default function Knight21Contact() {
 
   const contactEmail = settings?.contact_email || "knight21digihub@gmail.com";
   const contactPhone = settings?.contact_phone || "+91 8187007475";
-  const contactAddress = settings?.contact_address || "Near msn charities, mahalaxmi nagar, jaganaikpur, kakinada, 522003";
-  const whatsappNumber = contactPhone.replace(/[^0-9]/g, "");
+  const contactAddress = settings?.address || "Near msn charities, mahalaxmi nagar, jaganaikpur, kakinada, 522003";
+  const whatsappNumber = (settings?.whatsapp_number || contactPhone).replace(/[^0-9]/g, "");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
