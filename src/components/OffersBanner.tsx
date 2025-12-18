@@ -47,11 +47,14 @@ export function OffersBanner() {
           }}
         >
           <div className="container mx-auto flex items-center justify-center gap-4 flex-wrap text-center">
-            {banner.image_url && banner.image_url.startsWith('http') && (
+            {banner.image_url && banner.image_url.trim() !== '' && (
               <img 
                 src={banner.image_url} 
                 alt={banner.title} 
                 className="h-10 w-auto object-contain rounded"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
               />
             )}
             <div className="flex items-center gap-2 flex-wrap justify-center">

@@ -371,14 +371,23 @@ export default function ServiceDetail() {
   const { slug } = useParams<{ slug: string }>();
   const service = slug ? serviceDetails[slug as keyof typeof serviceDetails] : null;
 
+  // For services not in the hardcoded list (newly added via admin), redirect to contact page
   if (!service) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">Service Not Found</h1>
-          <Link to="/services">
-            <Button>Back to Services</Button>
-          </Link>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-hero pattern-dots">
+        <div className="text-center max-w-md mx-auto p-8">
+          <h1 className="text-3xl font-bold mb-4 font-poppins">Interested in This Service?</h1>
+          <p className="text-muted-foreground mb-6">
+            Contact us to learn more about this service and how we can help your business grow.
+          </p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link to="/contact">
+              <Button size="lg">Contact Us</Button>
+            </Link>
+            <Link to="/services">
+              <Button variant="outline" size="lg">View All Services</Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
