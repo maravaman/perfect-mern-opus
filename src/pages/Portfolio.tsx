@@ -244,14 +244,9 @@ export default function Portfolio() {
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filterByCategory(allWebsites).map((item) => (
-                    <a 
-                      key={item.id} 
-                      href={item.project_url || "#"} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
+                  {filterByCategory(allWebsites).map((item) => {
+                    const hasValidUrl = item.project_url && item.project_url.startsWith('http');
+                    const CardContent = (
                       <Card className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30 h-full">
                         <div className="aspect-video overflow-hidden relative bg-gradient-to-br from-primary/5 to-secondary/5">
                           <img 
@@ -259,28 +254,50 @@ export default function Portfolio() {
                             alt={item.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-secondary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg">
-                              <ExternalLink className="w-8 h-8 text-primary" />
+                          {hasValidUrl && (
+                            <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-secondary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-lg">
+                                <ExternalLink className="w-8 h-8 text-primary" />
+                              </div>
                             </div>
-                          </div>
-                          <div className="absolute top-3 right-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground text-xs px-3 py-1.5 rounded-full font-semibold shadow-lg">
-                            Live
-                          </div>
+                          )}
+                          {hasValidUrl && (
+                            <div className="absolute top-3 right-3 bg-gradient-to-r from-primary to-secondary text-primary-foreground text-xs px-3 py-1.5 rounded-full font-semibold shadow-lg">
+                              Live
+                            </div>
+                          )}
                         </div>
                         <div className="p-4 border-t border-primary/10">
                           <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
                           <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-semibold bg-gradient-to-r from-primary/10 to-secondary/10 text-primary px-3 py-1 rounded-full">{item.sub_category}</span>
-                            <span className="text-xs text-muted-foreground hover:text-primary transition-colors">
-                              Visit Site →
-                            </span>
+                            {hasValidUrl && (
+                              <span className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                                Visit Site →
+                              </span>
+                            )}
                           </div>
                         </div>
                       </Card>
-                    </a>
-                  ))}
+                    );
+
+                    return hasValidUrl ? (
+                      <a 
+                        key={item.id} 
+                        href={item.project_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        {CardContent}
+                      </a>
+                    ) : (
+                      <div key={item.id} className="block">
+                        {CardContent}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
               {!isLoading && filterByCategory(allWebsites).length === 0 && (
