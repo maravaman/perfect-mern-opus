@@ -6,7 +6,9 @@ import { Link } from "react-router-dom";
 import { TrustedClients } from "@/components/TrustedClients";
 import { OffersBanner } from "@/components/OffersBanner";
 import { OffersPopup } from "@/components/OffersPopup";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import anvikaImg from "@/assets/portfolio/anvika.png";
 import sriAcademyImg from "@/assets/portfolio/sri-academy.png";
 import vedhaImg from "@/assets/portfolio/vedha.png";
@@ -23,55 +25,58 @@ const serviceIcons = {
   "Business Certificates": FileText
 } as const;
 
-const pricingPlans = [
-  {
-    name: "Free Plan",
-    price: "₹ 0",
-    features: [
-      "Website Designing",
-      "SEO",
-      "Google Ads",
-      "Social Media Marketing",
-      "FB Ads",
-      "Email Marketing",
-      "Google Analytics",
-      "No Job Support",
-      "Free On Youtube"
-    ]
-  },
-  {
-    name: "45 Days Plan",
-    price: "₹ 8,500 +GST",
-    features: [
-      "Website Designing",
-      "Landing Page (Elementor)",
-      "Blogging & E-commerce",
-      "SEO",
-      "Mock Interviews",
-      "Resume Prepare",
-      "Live Projects",
-      "No Job Support"
-    ],
-    popular: false
-  },
-  {
-    name: "3 Months Plan",
-    price: "₹ 18,500 +GST",
-    features: [
-      "Everything in 45 Days",
-      "Google Ads",
-      "Canva Design",
-      "Social Media Marketing",
-      "Email Marketing",
-      "Google Analytics",
-      "AI Tools",
-      "Job Assistance"
-    ],
-    popular: true
-  }
-];
+// Packages are now fetched from Supabase
+
+interface Package {
+  id: string;
+  name: string;
+  price: number;
+  description: string | null;
+  features: string[] | null;
+  popular: boolean | null;
+  active: boolean | null;
+  display_order: number | null;
+  image_url: string | null;
+}
 
 export default function Knight21Home() {
+  const queryClient = useQueryClient();
+
+  // Fetch packages from Supabase
+  const { data: packages = [] } = useQuery({
+    queryKey: ['packages'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('packages')
+        .select('*')
+        .eq('active', true)
+        .order('display_order', { ascending: true });
+      if (error) throw error;
+      return data as Package[];
+    }
+  });
+
+  // Real-time subscription for packages
+  useEffect(() => {
+    const channel = supabase
+      .channel('packages-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'packages'
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['packages'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
   const services = [
     {
       id: 1,
@@ -501,75 +506,41 @@ export default function Knight21Home() {
               Choose the perfect package for your business needs
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Basic",
-                price: "₹5,999",
-                features: [
-                  "Create Facebook and Instagram accounts",
-                  "SMO (Social Media Optimization)",
-                  "SMM (Facebook and Instagram ads)",
-                  "12 posters, 4 videos + festival posters",
-                  "Maintenance",
-                  "Daily Report"
-                ]
-              },
-              {
-                name: "Standard",
-                price: "₹7,499",
-                popular: true,
-                features: [
-                  "Create Facebook, Instagram and YouTube",
-                  "SMO (Social Media Optimization)",
-                  "SMM (Facebook, Instagram, and YouTube ads)",
-                  "12 posters, 4 videos + festival posters",
-                  "YouTube SEO and maintenance",
-                  "Facebook 20 groups share",
-                  "WhatsApp marketing 200 numbers",
-                  "Daily report"
-                ]
-              },
-              {
-                name: "Premium",
-                price: "₹9,999",
-                features: [
-                  "Create Facebook, Instagram and YouTube",
-                  "Google ads & Local SEO",
-                  "GMB Setup",
-                  "SMO (Social Media Optimization)",
-                  "SMM (Facebook, Instagram, and YouTube ads)",
-                  "12 posters, 4 videos + festival posters",
-                  "5 videos editing related business promotion",
-                  "YouTube SEO and maintenance",
-                  "Facebook 20 groups and marketplace share",
-                  "WhatsApp marketing 500 numbers",
-                  "Daily report"
-                ]
-              }
-            ].map((pkg) => (
-              <Card key={pkg.name} className={`p-6 ${pkg.popular ? "border-primary border-2 relative" : ""}`}>
-                {pkg.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-sm font-semibold">
-                    Most Popular
-                  </div>
-                )}
-                <h3 className="text-2xl font-bold font-poppins mb-2">{pkg.name}</h3>
-                <div className="text-3xl font-bold text-primary mb-6">{pkg.price}</div>
-                <ul className="space-y-3 mb-6">
-                  {pkg.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" className="block">
-                  <Button className="w-full">Get Started</Button>
-                </a>
-              </Card>
-            ))}
+          <div className={`grid gap-6 max-w-5xl mx-auto ${packages.length === 1 ? 'md:grid-cols-1 max-w-md' : packages.length === 2 ? 'md:grid-cols-2 max-w-3xl' : 'md:grid-cols-3'}`}>
+            {packages.map((pkg) => {
+              const features = Array.isArray(pkg.features) ? pkg.features : [];
+              return (
+                <Card key={pkg.id} className={`p-6 ${pkg.popular ? "border-primary border-2 relative" : ""}`}>
+                  {pkg.popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-sm font-semibold">
+                      Most Popular
+                    </div>
+                  )}
+                  <h3 className="text-2xl font-bold font-poppins mb-2">{pkg.name}</h3>
+                  <div className="text-3xl font-bold text-primary mb-6">₹{pkg.price.toLocaleString('en-IN')}</div>
+                  {pkg.description && (
+                    <p className="text-muted-foreground mb-4">{pkg.description}</p>
+                  )}
+                  <ul className="space-y-3 mb-6">
+                    {features.map((feature, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="http://wa.me/918187007475" target="_blank" rel="noopener noreferrer" className="block">
+                    <Button className="w-full">Get Started</Button>
+                  </a>
+                </Card>
+              );
+            })}
           </div>
+          {packages.length === 0 && (
+            <div className="text-center text-muted-foreground py-8">
+              No packages available at the moment.
+            </div>
+          )}
         </div>
       </section>
 
