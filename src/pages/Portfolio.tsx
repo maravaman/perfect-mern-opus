@@ -417,7 +417,7 @@ export default function Portfolio() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filterByCategory(allPosters).map((item) => (
                     <Card key={item.id} className="overflow-hidden group cursor-pointer glass-card hover:shadow-card-hover transition-all border-2 border-primary/10 hover:border-primary/30">
-                      <div className="aspect-[3/4] overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
+                      <div className="aspect-square overflow-hidden bg-gradient-to-br from-primary/5 to-secondary/5">
                         <img
                           src={item.image_url || "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500"}
                           alt={item.title}
