@@ -124,15 +124,27 @@ export function OffersPopup() {
 
           {/* CTA Button */}
           {currentOffer.link_url && (
-            <Link to={currentOffer.link_url} onClick={handleClose}>
-              <Button 
-                size="lg" 
-                className="w-full bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 shadow-lg group"
-              >
-                {currentOffer.link_text || "Learn More"}
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
+            currentOffer.link_url.startsWith('http://') || currentOffer.link_url.startsWith('https://') ? (
+              <a href={currentOffer.link_url} target="_blank" rel="noopener noreferrer" onClick={handleClose}>
+                <Button 
+                  size="lg" 
+                  className="w-full bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 shadow-lg group"
+                >
+                  {currentOffer.link_text || "Learn More"}
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </a>
+            ) : (
+              <Link to={currentOffer.link_url} onClick={handleClose}>
+                <Button 
+                  size="lg" 
+                  className="w-full bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 shadow-lg group"
+                >
+                  {currentOffer.link_text || "Learn More"}
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            )
           )}
 
           {/* Skip link */}
