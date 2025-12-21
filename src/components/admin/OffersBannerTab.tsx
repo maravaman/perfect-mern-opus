@@ -168,7 +168,15 @@ export function OffersBannerTab() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    saveMutation.mutate(formData);
+    
+    // Auto-fix URLs that look like domains but missing protocol
+    let fixedLinkUrl = formData.link_url.trim();
+    if (fixedLinkUrl && !fixedLinkUrl.startsWith('/') && !fixedLinkUrl.startsWith('http://') && !fixedLinkUrl.startsWith('https://')) {
+      // Looks like a domain (e.g., "knight21.in" or "www.example.com")
+      fixedLinkUrl = 'https://' + fixedLinkUrl;
+    }
+    
+    saveMutation.mutate({ ...formData, link_url: fixedLinkUrl });
   };
 
   if (isLoading) {
