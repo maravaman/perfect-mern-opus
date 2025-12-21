@@ -64,13 +64,25 @@ export function OffersBanner() {
               )}
             </div>
             {banner.link_url && (
-              <Link
-                to={banner.link_url}
-                className="inline-flex items-center gap-1 font-medium underline hover:opacity-80 transition-opacity"
-              >
-                {banner.link_text || "Learn More"}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              banner.link_url.startsWith('http://') || banner.link_url.startsWith('https://') ? (
+                <a
+                  href={banner.link_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-medium underline hover:opacity-80 transition-opacity"
+                >
+                  {banner.link_text || "Learn More"}
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              ) : (
+                <Link
+                  to={banner.link_url}
+                  className="inline-flex items-center gap-1 font-medium underline hover:opacity-80 transition-opacity"
+                >
+                  {banner.link_text || "Learn More"}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              )
             )}
           </div>
           <button
